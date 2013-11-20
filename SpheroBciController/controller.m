@@ -5,7 +5,7 @@
 settings();
 
 % Create the control window
-guiFig=gui(); 
+guiFig = gui(); 
 info=guidata(guiFig);
 
 % Execute the phase selection loop
