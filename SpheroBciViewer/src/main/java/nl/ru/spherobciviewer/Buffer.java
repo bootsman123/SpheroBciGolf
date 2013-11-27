@@ -36,6 +36,16 @@ public class Buffer extends SwingWorker<Void, BufferEvent>
         
         this.eventIndex = 0;
     }
+    
+    /**
+     * Send events.
+     * @param events
+     * @throws IOException 
+     */
+    public void sendEvents(BufferEvent... events) throws IOException
+    {
+        this.client.putEvents(events);
+    }
 
     @Override
     protected Void doInBackground() throws Exception

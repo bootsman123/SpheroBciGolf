@@ -58,11 +58,12 @@ public class Application extends JFrame
             System.out.println("Unable to connect to the buffer: " + e.getMessage());
         }
         
+        /*
         // Create panels.
         Webcam webcam = Webcam.getWebcams().get(1);
         webcam.setViewSize(webcam.getViewSizes()[webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(webcam);
-        
+        */
         this.directionMeterPanel = new DirectionMeterPanel();
         
         this.powerMeterPanel = new PowerMeterPanel();
@@ -72,17 +73,17 @@ public class Application extends JFrame
         // Create layout.
         this.cardLayout = new CardLayout();
         this.cardPanel = new JPanel(cardLayout);
-        this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
+        //this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
         this.cardPanel.add(this.directionMeterPanel, Application.DIRECTION_METER_PANEL);
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.WEBCAM_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.DIRECTION_METER_PANEL);
         
-        this.setResizable(false);
+        this.setUndecorated(true);
         this.setBackground(Color.BLACK);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.pack();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     private class ApplicationBufferEventListener implements BufferEventListener

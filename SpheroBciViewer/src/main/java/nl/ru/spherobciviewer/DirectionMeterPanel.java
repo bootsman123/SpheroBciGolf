@@ -4,11 +4,14 @@
  */
 package nl.ru.spherobciviewer;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -18,6 +21,11 @@ import javax.swing.JPanel;
  */
 public class DirectionMeterPanel extends JPanel
 {
+    public static final double PREFFERED_IMAGE_SIZE_OF_HEIGHT = 0.4; // In percentages.
+    
+    public static final int FOCUS_SIZE = 30;
+    public static final Color FOCUS_COLOR = Color.red;
+    
     private double rotation;
     private BufferedImage image;
     
@@ -28,7 +36,8 @@ public class DirectionMeterPanel extends JPanel
     {
         super();
         
-        this.setRotation(0);
+        
+        this.setRotation(135);
         
         try
         {
@@ -56,18 +65,22 @@ public class DirectionMeterPanel extends JPanel
         
         Graphics2D g2d = (Graphics2D)g;
         
-        // Draw arrow.
-        g2d.drawImage(this.image, null, this);
+        // Draw focus.
+        g2d.setColor(DirectionMeterPanel.FOCUS_COLOR);
+        g2d.fillOval((this.getWidth() - DirectionMeterPanel.FOCUS_SIZE) / 2, (this.getHeight() - DirectionMeterPanel.FOCUS_SIZE) / 2, DirectionMeterPanel.FOCUS_SIZE, DirectionMeterPanel.FOCUS_SIZE);
         
-        /*
-        double rotationRequired = Math.toRadian(45);
-double locationX = image.getWidth() / 2;
-double locationY = image.getHeight() / 2;
-AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
-AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        double rotationRequired = Math.toRadians(this.getRotation());
+        double locationX = (this.getWidth() - image.getWidth()) / 2;
+        double locationY = (this.getHeight() - image.getHeight()) / 2   ;
+        AffineTransform transformRotate = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+        AffineTransform transformScale = AffineTransform.getScaleInstance(0.5, 0.5);
+        //AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        transformScale.concatenate(transformRotate);
 
-// Drawing the rotated image at the required drawing locations
-g2d.drawImage(op.filter(image, null), drawLocationX, drawLocationY, null);
-* */
+        // Drawing the rotated image at the required drawing locations
+        g2d.drawImage(image, transformScale, null);
+        
+        //g2d.drawImage(image, op, (this.getWidth() - image.getWidth()) / 2, (this.getHeight() - image.getHeight()) / 2);
+        
     }
 }
