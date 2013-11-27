@@ -5,107 +5,88 @@
 settings();
 
 % Create the control window
-guiFig = gui(); 
-info=guidata(guiFig);
+guiFig = gui();
+handles=guidata(guiFig); % Access all handles in the GUI
 
 % Execute the phase selection loop
-while (ishandle(guiFig))
-  
-  set(guiFig,'visible','on'); % Make the GUI visible
-  uiwait(guiFig); 
-  
-  if ( ~ishandle(guiFig) ) 
-      break; % The handler is not valid/present anymore
-  end;
-  
-  set(guiFig,'visible','off');
-  info=guidata(guiFig); % Get the data structure from GUI
-  subject=info.subject; % Set subject name
-  phaseToRun=lower(info.phaseToRun); % Set current phase
-  fprintf('Start phase : %s\n',phaseToRun);
-  
-  % Execute the selected phase
-  switch phaseToRun;
-   case 'capfitting';
-    sendEvent('subject',info.subject);
-    sendEvent('startPhase.cmd',phaseToRun);
-    % wait until capFitting is done
-    buffer_waitData(buffhost,buffport,[],'exitSet',{{phaseToRun} {'end'}},'verb',verb);       
-
-   case 'eegviewer';
-    sendEvent('subject',info.subject);
-    sendEvent('startPhase.cmd',phaseToRun);
-    % wait until capFitting is done
-    buffer_waitData(buffhost,buffport,[],'exitSet',{{phaseToRun} {'end'}},'verb',verb);           
+while (ishandle(guiFig)) % The handler/GUI is valid/present
     
-   case 'practice';
-    sendEvent('subject',info.subject);
-    sendEvent(phaseToRun,'start');
-    onSeq=nSeq; nSeq=4; % override sequence number
-    try
-      imCalibrateStimulus();
-    catch
-      % do nothing
-    end
-    sendEvent(phaseToRun,'end');
-    nSeq=onSeq;
+    set(guiFig,'visible','on'); % Make the GUI visible
+    uiwait(guiFig); % Wait until UIRESUME is called (interaction is made)
     
-   case {'calibrate','calibration'};
-    sendEvent('subject',info.subject);
-    sendEvent('startPhase.cmd',phaseToRun)
-    sendEvent(phaseToRun,'start');
-    try
-      imCalibrateStimulus();
-    catch
-      sendEvent('stimulus.training','end');    
+    if ( ~ishandle(guiFig) )
+        break; % The handler/GUI is not valid/present anymore
+    end;
+    
+    set(guiFig,'visible','off');
+    guidata(guiFig,handles); % Update data structure from GUI
+    subject=handles.subject; % Set subject name
+    phaseToRun=lower(handles.phaseToRun); % Set current phase
+    
+    fprintf('Start phase : %s\n',phaseToRun);
+    
+    % Execute the selected phase
+    switch phaseToRun;
+        case 'capfitting';
+            sendEvent('subject',handles.subject);
+            sendEvent('startPhase.cmd',phaseToRun);
+            buffer_waitData(buffhost,buffport,[],'exitSet',{{phaseToRun} {'end'}},'verb',verb);
+            
+        case 'eegviewer';
+            sendEvent('subject',handles.subject);
+            sendEvent('startPhase.cmd',phaseToRun);
+            buffer_waitData(buffhost,buffport,[],'exitSet',{{phaseToRun} {'end'}},'verb',verb);
+            
+        case 'training';
+            sendEvent('subject',handles.subject);
+            sendEvent('startPhase.cmd',phaseToRun);
+            onSeq=nSeq; nSeq=4; % override sequence number (why?)
+            % Run two functions simultaneously
+            % phaseClassifierLearn has to gather data and save it when
+            % training phase is completed.
+            matlabpool open 2
+            parfor i = 1:2
+                if i == 1
+                    phaseClassifierLearn();
+                else
+                    phaseTrainging();
+                end
+            end
+            buffer_waitData(buffhost,buffport,[],'exitSet',{{'training.classifier'} {'end'}},'verb',verb);
+            sendEvent(phaseToRun,'end');
+            nSeq=onSeq;
+            
+        case 'feedback';
+            % Trained classifier is used to predict which hand the subject
+            % is imagining moving and this prediction is used to give the
+            % participant feedback about what the classifier though they
+            % were doing.
+            sendEvent('subject',handles.subject);
+            sendEvent('startPhase.cmd',phaseToRun);
+            phaseFeedback();
+            buffer_waitData(buffhost,buffport,[],'exitSet',{{phaseToRun} {'end'}},'verb',verb);
+            
+        case {'golf'};
+            % The game
+            sendEvent('subject',handles.subject);
+            sendEvent('startPhase.cmd',phaseToRun);
+            buffer_waitData(buffhost,buffport,[],'exitSet',{{phaseToRun} {'end'}},'verb',verb);   
     end
-    sendEvent(phaseToRun,'end');
-
-   case {'train','classifier'};
-    sendEvent('subject',info.subject);
-    sendEvent('startPhase.cmd',phaseToRun);
-    % wait until training is done
-    buffer_waitData(buffhost,buffport,[],'exitSet',{{phaseToRun} {'end'}},'verb',verb);  
+    
+    handles.phasesCompleted={handles.phasesCompleted handles.phaseToRun}; % Add the phase runned
+    
+    if (~ishandle(guiFig)) % The handler/GUI is not valid/present anymore
+        oldHandles=handles; % Store data structure from previous GUI
+        guiFig=gui(); % Make a new handler/GUI
+        handles=guidata(guiFig); % Get the data from the new handler
         
-   case {'test','testing'};
-    sendEvent('subject',info.subject);
-    %sleepSec(.1);
-    sendEvent(phaseToRun,'start');
-    %try
-      sendEvent('startPhase.cmd','testing');
-      imOnlineFeedbackStimulus;
-    %catch
-    %end
-    sendEvent('stimulus.test','end');
-    sendEvent(phaseToRun,'end');
-
-   case {'neurofeedback'};
-    sendEvent('subject',info.subject);
-    %sleepSec(.1);
-    sendEvent(phaseToRun,'start');
-    %try
-      sendEvent('startPhase.cmd','testing');
-      imNeuroFeedbackStimulus;
-    %catch
-    %end
-    sendEvent('stimulus.test','end');
-    sendEvent(phaseToRun,'end');
-        
-  end
-  info.phasesCompleted={info.phasesCompleted{:} info.phaseToRun};
-  if ( ~ishandle(guiFig) ) 
-    oinfo=info; % store old info
-    guiFig=controller(); % make new figure
-    info=guidata(guiFig); % get new info
-                           % re-place old info
-    info.phasesCompleted=oinfo.phasesCompleted;
-    info.phaseToRun=oinfo.phaseToRun;
-    info.subject=oinfo.subject; set(info.subjectName,'String',info.subject);
-    guidata(guiFig,info);
-  end;
-  %for i=1:numel(info.phasesCompleted); % set all run phases to have green text
-  %    set(getfield(info,[info.phasesCompleted{i} 'But']),'ForegroundColor',[0 1 0]);
-  %end
+        % Add the important data from the old handler
+        handles.phasesCompleted=oldHandles.phasesCompleted;
+        handles.phaseToRun=oldHandles.phaseToRun;
+        handles.subject=oldHandles.subject; 
+        set(handles.subjectName,'String',handles.subject);
+        guidata(guiFig,handles);
+    end;
 end
 uiwait(msgbox({'Thankyou for participating in our experiment.'},'Thanks','modal'),10);
 pause(1);
