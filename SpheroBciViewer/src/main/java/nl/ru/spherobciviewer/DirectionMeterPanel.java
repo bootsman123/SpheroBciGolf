@@ -140,16 +140,14 @@ public class DirectionMeterPanel extends JPanel
 
         AffineTransform transform = new AffineTransform();
         transform.scale(scaleFactor, scaleFactor);
-        //transform.translate((this.getWidth() - this.arrowImage.getWidth()) / 2, (this.getHeight() - this.arrowImage.getHeight()) / 2);
         transform.rotate(this.getRotation(), this.arrowImage.getWidth() / 2, this.arrowImage.getHeight() / 2);
         
         AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
         BufferedImage image = operation.filter(this.arrowImage, null);
 
-        //double rotationPointX = (this.getWidth() - image.getWidth()) / 2;
-        //double rotationPointY = (this.getHeight() - image.getHeight()) / 2;
+        double rotationPointX = (this.getWidth() - image.getWidth()) / 2;
+        double rotationPointY = (this.getHeight() - image.getHeight()) / 2;
 
-        //g2d.drawImage(image, (int)rotationPointX, (int)rotationPointY, null);
-        g2d.drawImage(image, 300, 300, null);
+        g2d.drawImage(image, (int)rotationPointX, (int)rotationPointY, null);
     }
 }
