@@ -19,20 +19,7 @@ public class Application extends JFrame
     public static final String WEBCAM_PANEL = "webcam-panel";
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
     public static final String POWER_METER_PANEL = "power-meter-panel";
-    
-    public enum ApplicationEvent
-    {
-        APPLICATION_EVENT_WEBCAM_SHOW,
-        APPLICATION_EVENT_WEBCAM_HIDE,
-        APPLICATION_EVENT_WEBCAM_LOAD,
-        APPLICATION_EVENT_DIRECTION_METER_SHOW,
-        APPLICATION_EVENT_DIRECTION_METER_HIDE,
-        APPLICATION_EVENT_DIRECTION_METER_VALUE,
-        APPLICATOIN_EVENT_POWER_METER_SHOW,
-        APPLICATION_EVENT_POWER_METER_HIDE,
-        APPLICATION_EVENT_POWER_METER_VALUE
-    }
-    
+
     private Buffer buffer;
     
     private Meter meter;
@@ -97,15 +84,15 @@ public class Application extends JFrame
         {
             try
             {
-                ApplicationEvent applicationEvent = ApplicationEvent.valueOf(event.getType().toString());
+                ActionEvent actionEvent = ActionEvent.valueOf(event.getType().toString());
                 
-                switch(applicationEvent)
+                switch(actionEvent)
                 {
-                    case APPLICATION_EVENT_WEBCAM_SHOW:
+                    case WEBCAM_SHOW:
                         cardLayout.show(cardPanel, Application.WEBCAM_PANEL);
                         break;
                         
-                    case APPLICATION_EVENT_DIRECTION_METER_VALUE:
+                    case DIRECTION_METER_VALUE:
                         meter.setDirection(Double.parseDouble(event.getValue().toString()));
                         break;
                 }

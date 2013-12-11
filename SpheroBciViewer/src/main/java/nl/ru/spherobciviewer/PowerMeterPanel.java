@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 public class PowerMeterPanel extends JPanel
 {
     public static final Color ROTATION_FRAME_COLOR = Color.black;
-    public static final double ROTATION_POINT_SIZE_FACTOR = 0.05;
     public static final double ROTATION_CIRCLE_SIZE_FACTOR = 0.9;
     public static final int ROTATION_CIRCLE_WIDTH = 5;
         
@@ -54,7 +53,7 @@ public class PowerMeterPanel extends JPanel
         
         try
         {
-            this.arrowImage = ImageIO.read(this.getClass().getResourceAsStream("/images/arrow.png"));
+            this.arrowImage = ImageIO.read(this.getClass().getResourceAsStream("/images/arrow-small.png"));
             this.curvedArrowImage = ImageIO.read(this.getClass().getResourceAsStream("/images/curved-arrow.png"));
         }
         catch(IOException e)
@@ -80,15 +79,6 @@ public class PowerMeterPanel extends JPanel
         Graphics2D g2d = (Graphics2D)g;
         int size = (this.getWidth() > this.getHeight()) ? this.getHeight() : this.getWidth();
         
-        // Rotation point.
-        double rotationPointPreferredSize = DirectionMeterPanel.ROTATION_POINT_SIZE_FACTOR * size;
-        
-        g2d.setColor(DirectionMeterPanel.ROTATION_FRAME_COLOR);
-        g2d.fill(new Ellipse2D.Double((this.getWidth() - rotationPointPreferredSize) / 2,
-                                       (this.getHeight() - rotationPointPreferredSize) / 2,
-                                       rotationPointPreferredSize,
-                                       rotationPointPreferredSize));
-        
         // Rotation circle.
         double rotationCirclePreferredSize = DirectionMeterPanel.ROTATION_CIRCLE_SIZE_FACTOR * size;
         
@@ -104,7 +94,14 @@ public class PowerMeterPanel extends JPanel
                                   Arc2D.CHORD));
         
         // Draw markers.
+        int numberOfMarkers = 9;
+        double angle = 180;
         
+        for(int marker = 0; marker < numberOfMarkers; marker++)
+        {
+            double currentAngle = marker * angle / numberOfMarkers;
+            //g2d.fill(new Ellipse2D.Double);
+        }
     }
     
     /**
