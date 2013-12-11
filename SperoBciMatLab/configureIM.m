@@ -1,16 +1,10 @@
 % guard to prevent running multiple times
-if (exist('imSettings','var') && ~isempty(imSettings) ) 
-    return; 
-end;
+if ( exist('imConfig','var') && ~isempty(imConfig) ) return; end;
+imConfig=true;
 
-imSettings=true;
+run ../utilities/initPaths;
 
-%run ../utilities/initPaths;
-run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
-
-buffhost='localhost';
-buffport=1972;
-
+buffhost='localhost';buffport=1972;
 global ft_buff; ft_buff=struct('host',buffhost,'port',buffport);
 % wait for the buffer to return valid header information
 hdr=[];
@@ -28,7 +22,7 @@ end;
 initgetwTime();
 initsleepSec();
 
-capFile='cap_tmsi_mobita_im';
+capFile='1010';%'cap_tmsi_mobita_im';
 
 verb=0;
 buffhost='localhost';
@@ -46,23 +40,6 @@ fixColor=[1 0 0];
 tgtColor=[0 1 0];
 
 % Neurofeedback smoothing
+trlen_ms=3000;
+trlen_ms_ol=trlen_ms;
 expSmoothFactor = log(2)/log(10); % smooth the last 10...
-
-if ( ~exist('capFile','var') ) 
-    capFile='1010'; 
-end; %'cap_tmsi_mobita_num'; 
-if ( ~isempty(strfind(capFile,'tmsi')) ) 
-    thresh=[.0 .1 .2 5]; 
-    badchThresh=1e-4; 
-    overridechnms=1;
-else
-    thresh=[.5 3];  
-    badchThresh=.5;   
-    overridechnms=0;
-end
-
-datestr = datevec(now); 
-datestr = sprintf('%02d%02d%02d',datestr(1)-2000,datestr(2:3));
-dname='training_data';
-cname='clsfr';
-testname='testing_data';

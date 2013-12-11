@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
 
 % Edit the above text to modify the response to help Gui
 
-% Last Modified by GUIDE v2.5 20-Nov-2013 12:06:13
+% Last Modified by GUIDE v2.5 06-Dec-2013 11:58:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,9 +54,15 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for Gui
 handles.output = hObject;
+data = handles;
+data.subject='';
+data.level =1;
+data.speed =6;
+data.phasesCompleted={};
+data.phaseToRun='';
 
 % Update handles structure
-guidata(hObject, handles);
+guidata(hObject, data);
 
 % UIWAIT makes Gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -73,15 +79,82 @@ function varargout = Gui_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
+% --- Executes on button press in eegviewer.
+function eegviewer_Callback(hObject, eventdata, handles)
+% hObject    handle to eegviewer (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+handles.phaseToRun=get(hObject,'Tag');
+guidata(hObject,handles);
+uiresume;
 
 % --- Executes on button press in pushbutton3.
 function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in capfitting.
+function capfitting_Callback(hObject, eventdata, handles)
+% hObject    handle to capfitting (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.phaseToRun=get(hObject,'Tag');
+guidata(hObject,handles);
+uiresume;
+
+
+% --- Executes on button press in training.
+function training_Callback(hObject, eventdata, handles)
+% hObject    handle to training (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.phaseToRun=get(hObject,'Tag');
+guidata(hObject,handles);
+uiresume;
+
+
+% --- Executes on button press in feedback.
+function feedback_Callback(hObject, eventdata, handles)
+% hObject    handle to feedback (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.phaseToRun=get(hObject,'Tag');
+guidata(hObject,handles);
+uiresume;
+
+
+% --- Executes on button press in golf.
+function golf_Callback(hObject, eventdata, handles)
+% hObject    handle to golf (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.phaseToRun=get(hObject,'Tag');
+guidata(hObject,handles);
+uiresume;
+
+
+
+function subject_name_Callback(hObject, eventdata, handles)
+% hObject    handle to subject_name (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of subject_name as text
+%        str2double(get(hObject,'String')) returns contents of subject_name as a double
+handles.subject=get(hObject,'String');
+guidata(hObject,handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function subject_name_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to subject_name (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
