@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -82,14 +83,20 @@ public class DirectionMeterPanel extends JPanel
         double rotationPointPreferredSize = DirectionMeterPanel.ROTATION_POINT_SIZE_FACTOR * size;
         
         g2d.setColor(DirectionMeterPanel.ROTATION_FRAME_COLOR);
-        g2d.fillOval((int)((this.getWidth() - rotationPointPreferredSize) / 2), (int)((this.getHeight() - rotationPointPreferredSize) / 2), (int)rotationPointPreferredSize, (int)rotationPointPreferredSize);
+        g2d.fill(new Ellipse2D.Double((this.getWidth() - rotationPointPreferredSize) / 2,
+                                       (this.getHeight() - rotationPointPreferredSize) / 2,
+                                       rotationPointPreferredSize,
+                                       rotationPointPreferredSize));
         
         // Rotation circle.
         double rotationCirclePreferredSize = DirectionMeterPanel.ROTATION_CIRCLE_SIZE_FACTOR * size;
         
         g2d.setColor(DirectionMeterPanel.ROTATION_FRAME_COLOR);
         g2d.setStroke(new BasicStroke(DirectionMeterPanel.ROTATION_CIRCLE_WIDTH));
-        g2d.drawOval((int)((this.getWidth() - rotationCirclePreferredSize) / 2), (int)((this.getHeight() - rotationCirclePreferredSize) / 2), (int)rotationCirclePreferredSize, (int)rotationCirclePreferredSize);
+        g2d.draw(new Ellipse2D.Double((this.getWidth() - rotationCirclePreferredSize) / 2,
+                                      (this.getHeight() - rotationCirclePreferredSize) / 2,
+                                      rotationCirclePreferredSize,
+                                      rotationCirclePreferredSize));
     }
     
     /**
