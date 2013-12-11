@@ -1,4 +1,4 @@
-package nl.ru.spherobciviewer;
+package nl.ru.spherobciviewer.views;
 
 import javax.swing.JPanel;
 
