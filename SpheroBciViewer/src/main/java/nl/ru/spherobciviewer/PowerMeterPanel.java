@@ -21,7 +21,8 @@ public class PowerMeterPanel extends JPanel
 {
     public static final Color ROTATION_FRAME_COLOR = Color.black;
     public static final double ROTATION_CIRCLE_SIZE_FACTOR = 0.9;
-    public static final int ROTATION_CIRCLE_WIDTH = 5;
+    public static final double ROTATION_CIRCLE_WIDTH_FACTOR = 0.005;
+    public static final double ROTATION_MARKER_SIZE_FACTOR = 0.02;
         
     public static final double ARROW_RATIO = 0.9;
     
@@ -80,11 +81,11 @@ public class PowerMeterPanel extends JPanel
         int size = (this.getWidth() > this.getHeight()) ? this.getHeight() : this.getWidth();
         
         // Rotation circle.
-        double rotationCirclePreferredSize = DirectionMeterPanel.ROTATION_CIRCLE_SIZE_FACTOR * size;
+        double rotationCirclePreferredSize = PowerMeterPanel.ROTATION_CIRCLE_SIZE_FACTOR * size;
+        double rotationCirclePreferredWidth = PowerMeterPanel.ROTATION_CIRCLE_WIDTH_FACTOR * size;
         
-        g2d.setColor(DirectionMeterPanel.ROTATION_FRAME_COLOR);
-        g2d.setStroke(new BasicStroke(DirectionMeterPanel.ROTATION_CIRCLE_WIDTH));
-        //g2d.drawArc((int)((this.getWidth() - rotationCirclePreferredSize) / 2), (int)((this.getHeight() - rotationCirclePreferredSize) / 2), (int)rotationCirclePreferredSize, (int)rotationCirclePreferredSize, 0, (int)Math.toDegrees(Math.PI));
+        g2d.setColor(PowerMeterPanel.ROTATION_FRAME_COLOR);
+        g2d.setStroke(new BasicStroke((int)rotationCirclePreferredWidth));
         g2d.draw(new Arc2D.Double((this.getWidth() - rotationCirclePreferredSize) / 2,
                                   (this.getHeight() - rotationCirclePreferredSize) / 2,
                                   rotationCirclePreferredSize,
@@ -94,13 +95,19 @@ public class PowerMeterPanel extends JPanel
                                   Arc2D.CHORD));
         
         // Draw markers.
-        int numberOfMarkers = 9;
-        double angle = 180;
+        double rotationCircleRadius = 0.5 * rotationCirclePreferredSize;
+        double rotationMarkerPreferredSize = PowerMeterPanel.ROTATION_MARKER_SIZE_FACTOR * size;
         
-        for(int marker = 0; marker < numberOfMarkers; marker++)
+        int numberOfMarkers = 9;
+        double angleTotal = Math.PI;
+        double angleStep = angleTotal / (numberOfMarkers - 1);
+        
+        for(double angle = 0; angle <= angleTotal; angle += angleStep)
         {
-            double currentAngle = marker * angle / numberOfMarkers;
-            //g2d.fill(new Ellipse2D.Double);
+            g2d.fill(new Ellipse2D.Double((this.getWidth() - rotationMarkerPreferredSize) / 2 + rotationCircleRadius * Math.cos(angle),
+                                          (this.getHeight() - rotationMarkerPreferredSize) / 2 + rotationCircleRadius * Math.sin(-angle),
+                                          rotationMarkerPreferredSize,
+                                          rotationMarkerPreferredSize));
         }
     }
     
@@ -115,7 +122,7 @@ public class PowerMeterPanel extends JPanel
         int size = (this.getWidth() > this.getHeight()) ? this.getHeight() : this.getWidth();
         
         // Arrow.
-        double imagePreferredSize = DirectionMeterPanel.ARROW_RATIO * size;
+        double imagePreferredSize = PowerMeterPanel.ARROW_RATIO * size;
         double imageScaleFactor = (this.arrowImage.getWidth() > this.arrowImage.getHeight()) ? imagePreferredSize / this.arrowImage.getWidth() : imagePreferredSize / this.arrowImage.getHeight();
         int imageWidth = this.arrowImage.getWidth();
         int imageHeight = this.arrowImage.getHeight();
