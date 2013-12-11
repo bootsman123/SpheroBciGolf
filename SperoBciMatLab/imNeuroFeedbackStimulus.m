@@ -3,8 +3,7 @@ configureIM();
 % make the target sequence
 tgtSeq=mkStimSeqRand(nSymbs,nSeq);
 
-clf;
-fig=gcf;
+
 set(fig,'Name','Imagined Movement -- close window to stop.','color',[0 0 0],'menubar','none','toolbar','none','doublebuffer','on');
 stimPos=[]; h=[];
 stimRadius=.5;
@@ -21,20 +20,15 @@ set(gca,'visible','off');
 
 
 % play the stimulus
-% reset the cue and fixation point to indicate trial has finished  
-set(h(:),'facecolor',bgColor);
+%% reset the cue and fixation point to indicate trial has finished  
 sendEvent('stimulus.testing','start');
 
   
-% show the screen to alert the subject to trial start
-set(h(:),'faceColor',bgColor);
-set(h(end),'facecolor',fixColor); % red fixation indicates trial about to start/baseline
-drawnow;% expose; % N.B. needs a full drawnow for some reason
+%% show the screen to alert the subject to trial start
 sendEvent('stimulus.baseline','start');
 sleepSec(baselineDuration);
 sendEvent('stimulus.baseline','end');
-set(h(:),'faceColor',bgColor);
-drawnow;% expose; % N.B. needs a full drawnow for some reason
+%% Reset the figure
 
 % for the trial duration update the fixatation point in response to prediction events
 status=buffer('wait_dat',[-1 -1 -1],buffhost,buffport); % get current state
@@ -46,7 +40,7 @@ trialDuration = 60*60; % 1hr...
 timetogo=trialDuration;
 dv = zeros(nSymbs,1);
 while (timetogo>0)
-  if ( ~ishandle(fig) ) break; end;
+  
   timetogo = trialDuration - (getwTime()-trlStartTime); % time left to run in this trial
   % wait for events to process *or* end of trial
   status=buffer('wait_dat',[-1 nevents min(5000,timetogo*1000/4)],buffhost,buffport); 
@@ -59,12 +53,16 @@ while (timetogo>0)
   end
   
   events=[];
-  if (status.nevents>nevents) events=buffer('get_evt',[nevents status.nevents-1],buffhost,buffport); end;
+  if (status.nevents>nevents) 
+      events=buffer('get_evt',[nevents status.nevents-1],buffhost,buffport); 
+  end;
   nevents=status.nevents;
   mi    =matchEvents(events,{'stimulus.prediction'});
   predevents=events(mi);
   % make a random testing event
-  if ( 0 ) predevents=struct('type','stimulus.prediction','sample',0,'value',ceil(rand()*nSymbs+eps)); end;
+  if ( 0 ) 
+      predevents=struct('type','stimulus.prediction','sample',0,'value',ceil(rand()*nSymbs+eps)); 
+  end;
   if ( ~isempty(predevents) ) 
     [ans,si]=sort([predevents.sample],'ascend'); % proc in *temporal* order
     for ei=1:numel(predevents);
@@ -84,11 +82,11 @@ while (timetogo>0)
         fprintf('%d) dv:',ev.sample);fprintf('%5.4f ',pred);fprintf('\t\tProb:');fprintf('%5.4f ',prob);fprintf('\n'); 
       end;
       
-      % feedback information... simply move to location indicated by the BCI
+      %% feedback information... simply move to location indicated by the BCI
       fixPos = stimPos(:,1:end-1)*prob(:); % position is weighted by class probabilties
-      set(h(end),'position',[fixPos-stimRadius/2;stimRadius/2*[1;1]]);
+      
     end
-    drawnow; % update the display after all events processed
+    %% update the display after all events processed
   end % if prediction events to processa  
 end % loop over epochs in the sequence
 

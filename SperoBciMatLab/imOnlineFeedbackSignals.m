@@ -22,13 +22,18 @@ trlen_samp=opts.trlen_samp;
 if ( isempty(trlen_samp) ) 
   trlen_samp=0;
   if ( ~isempty(opts.trlen_ms) ) 
-    if(~isempty(opts.hdr))fs=opts.hdr.fsample;else hdr=buffer('get_hdr',buffhost,buffport);fs=hdr.fsample; end;
+    if(~isempty(opts.hdr))
+        fs=opts.hdr.fsample;
+    else
+        hdr=buffer('get_hdr',buffhost,buffport);
+        fs=hdr.fsample; 
+    end;
     trlen_samp = opts.trlen_ms /1000 * fs; 
   end
   % ensure is at least a big as the welch window size!
-  if ( isfield(clsfr,'windowFn') ) % est from size welch window function
-    trlen_samp=max(trlen_samp,size(clsfr.windowFn,2)); 
-  end
+%  if ( isfield(clsfr,'windowFn') ) % est from size welch window function
+%    trlen_samp=max(trlen_samp,size(clsfr.windowFn,2)); 
+ % end
 end;
 step_samp = round(trlen_samp * opts.overlap);
 state=[];
@@ -53,19 +58,26 @@ while( ~endTest )
     t=toc;
     if ( t-t1>=5 ) 
       fprintf(' %5.3f seconds, %d samples %d events\r',t,status.nsamples,status.nevents);
-      if ( ispc() ) drawnow; end; % re-draw display
+      if ( ispc() ) 
+          % re-draw display
+      end; 
       t1=t;
     end;
   end;
   
   onSamples=nSamples;
   start = onSamples:step_samp:status.nsamples-trlen_samp-1; % window start positions
-  if( ~isempty(start) ) nSamples=start(end)+step_samp; end % start of next trial for which not enough data yet
+  if( ~isempty(start) ) 
+      nSamples=start(end)+step_samp; 
+  end % start of next trial for which not enough data yet
+  
   for si = 1:numel(start);    
     % get the data
     data = buffer('get_dat',[start(si) start(si)+trlen_samp-1],opts.buffhost,opts.buffport);
 
-    if ( opts.verb>1 ) fprintf('Got data @ %d->%d samp\n',start(si),start(si)+trlen_samp-1); end;
+    if ( opts.verb>1 ) 
+        fprintf('Got data @ %d->%d samp\n',start(si),start(si)+trlen_samp-1); 
+    end;
     
     % apply classification pipeline to this events data
     [f,fraw,p]=buffer_apply_ersp_clsfr(data.buf,clsfr);
