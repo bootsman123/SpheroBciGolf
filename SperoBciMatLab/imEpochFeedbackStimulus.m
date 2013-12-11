@@ -3,35 +3,9 @@ configureIM();
 % make the target sequence
 tgtSeq=mkStimSeqRand(nSymbs,nSeq);
 
-% make the stimulus display
-% fig=gcf;
-% clf;
-% set(fig,'Name','Imagined Movement','color',[0 0 0],'menubar','none','toolbar','none','doublebuffer','on');
-% ax=axes('position',[0.025 0.025 .95 .95],'units','normalized','visible','off','box','off',...
-%         'xtick',[],'xticklabelmode','manual','ytick',[],'yticklabelmode','manual',...
-%         'color',[0 0 0],'DrawMode','fast','nextplot','replacechildren',...
-%         'xlim',[-1.5 1.5],'ylim',[-1.5 1.5],'Ydir','normal');
-% 
-% stimPos=[]; h=[];
-% stimRadius=.5;
-% theta=linspace(0,pi,nSymbs); stimPos=[cos(theta);sin(theta)];
-% for hi=1:nSymbs; 
-%   h(hi)=rectangle('curvature',[1 1],'position',[stimPos(:,hi)-stimRadius/2;stimRadius*[1;1]],...
-%                   'facecolor',bgColor); 
-% end;
-% % add symbol for the center of the screen
-% stimPos(:,nSymbs+1)=[0 0];
-% h(nSymbs+1)=rectangle('curvature',[1 1],'position',[stimPos(:,end)-stimRadius/4;stimRadius/2*[1;1]],...
-%                       'facecolor',bgColor); 
-% set(gca,'visible','off');
-% 
-% 
-% % play the stimulus
-% % reset the cue and fixation point to indicate trial has finished  
-% set(h(:),'facecolor',bgColor);
 sendEvent('stimulus.testing','start');
-% drawnow; 
-% pause(5); % N.B. pause so fig redraws
+sendEvent('DIRECTION_METER_SHOW');
+
 endTesting=false; dvs=[];
 for si=1:nSeq;
 
