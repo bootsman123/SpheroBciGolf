@@ -6,7 +6,7 @@ end;
 imSettings=true;
 
 %run ../utilities/initPaths;
-run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
+run '/Users/roland/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
 
 buffhost='localhost';
 buffport=1972;

@@ -13,43 +13,22 @@ ax=axes('position',[0.025 0.025 .95 .95],'units','normalized','visible','off','b
 
 stimPos=[]; h=[];
 stimRadius=.5;
-theta=linspace(0,pi,nSymbs); stimPos=[cos(theta);sin(theta)];
-for hi=1:nSymbs; 
-  h(hi)=rectangle('curvature',[1 1],'position',[stimPos(:,hi)-stimRadius/2;stimRadius*[1;1]],...
-                  'facecolor',bgColor); 
-end;
-% add symbol for the center of the screen
-stimPos(:,nSymbs+1)=[0 0];
-h(nSymbs+1)=rectangle('curvature',[1 1],'position',[stimPos(:,end)-stimRadius/4;stimRadius/2*[1;1]],...
-                      'facecolor',bgColor); 
-set(gca,'visible','off');
+theta=linspace(0,pi,nSymbs); 
+stimPos=[cos(theta);sin(theta)];
 
 
-% play the stimulus
-% reset the cue and fixation point to indicate trial has finished  
-set(h(:),'facecolor',bgColor);
+
 sendEvent('stimulus.testing','start');
-drawnow; pause(5); % N.B. pause so fig redraws
+pause(5); % N.B. pause so fig redraws
 
 for si=1:nSeq;
-
-  if ( ~ishandle(fig) ) break; end;
-  
   sleepSec(intertrialDuration);
-  % show the screen to alert the subject to trial start
-  set(h(:),'faceColor',bgColor);
-  set(h(end),'facecolor',fixColor); % red fixation indicates trial about to start/baseline
-  drawnow;% expose; % N.B. needs a full drawnow for some reason
+  % show the screen in the Java instance to alert the subject to trial start
   sendEvent('stimulus.baseline','start');
   sleepSec(baselineDuration);
   sendEvent('stimulus.baseline','end');
 
-  % show the target
-  fprintf('%d) tgt=%d : ',si,find(tgtSeq(:,si)>0));
-  set(h(tgtSeq(:,si)>0),'facecolor',tgtColor);
-  set(h(tgtSeq(:,si)<=0),'facecolor',bgColor);
-  set(h(end),'facecolor',tgtColor); % green fixation indicates trial running
-  drawnow;% expose; % N.B. needs a full drawnow for some reason
+  % show the target in our Java instance
   sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
   sendEvent('stimulus.trial','start');
   
@@ -57,7 +36,6 @@ for si=1:nSeq;
   status=buffer('wait_dat',[-1 -1 -1],buffhost,buffport); % get current state
   nevents=status.nevents; nsamples=status.nsamples;
   % initial fixation point position
-  fixPos = stimPos(:,end);
   trlStartTime=getwTime();
   timetogo = trialDuration;
   while (timetogo>0)
@@ -67,11 +45,15 @@ for si=1:nSeq;
     stime =getwTime();
     if ( status.nevents > nevents ) % new events to process
       events=[];
-      if (status.nevents>nevents) events=buffer('get_evt',[nevents status.nevents-1],buffhost,buffport); end;
-      mi    =matchEvents(events,{'stimulus.prediction'});
+      if (status.nevents>nevents) 
+          events=buffer('get_evt',[nevents status.nevents-1],buffhost,buffport); 
+      end;
+      mi= matchEvents(events,{'stimulus.prediction'});
       predevents=events(mi);
       % make a random testing event
-      if ( 0 ) predevents=struct('type','stimulus.prediction','sample',0,'value',ceil(rand()*nSymbs+eps)); end;
+      if ( 0 ) 
+          predevents=struct('type','stimulus.prediction','sample',0,'value',ceil(rand()*nSymbs+eps)); 
+      end;
       if ( ~isempty(predevents) ) 
         [ans,si]=sort([predevents.sample],'ascend'); % proc in *temporal* order
         for ei=1:numel(predevents);
@@ -91,21 +73,17 @@ for si=1:nSeq;
           end;
           
           % feedback information... simply move in direction detected by the BCI
-          dx = stimPos(:,1:end-1)*prob(:); % change in position is weighted by class probs
-          fixPos = fixPos + dx*moveScale;
-          set(h(end),'position',[fixPos-stimRadius/2;stimRadius/2*[1;1]]);
+         % dx = stimPos(:,1:end-1)*prob(:); % change in position is weighted by class probs
+         % fixPos = fixPos + dx*moveScale;
+         % set(h(end),'position',[fixPos-stimRadius/2;stimRadius/2*[1;1]]);
         end
-        drawnow; % update the display after all events processed
       end % prediction events to processa  
     end % if feedback events to process
     
   end % loop over epochs in the sequence
 
-  % reset the cue and fixation point to indicate trial has finished  
-  set(h(:),'facecolor',bgColor);
-  % also reset the position of the fixation point
-  set(h(end),'position',[stimPos(:,end)-stimRadius/4;stimRadius/2*[1;1]]);
-  drawnow;
+  % reset the cue and fixation point to indicate trial has finished, also reset the position of the fixation point
+  sendEvent('stimulus.trial','resetcue');
   sendEvent('stimulus.trial','end');
   
   ftime=getwTime();
@@ -113,5 +91,4 @@ for si=1:nSeq;
 end % loop over sequences in the experiment
 % end training marker
 sendEvent('stimulus.testing','end');
-text(mean(get(ax,'xlim')),mean(get(ax,'ylim')),{'That ends the testing phase.','Thanks for your patience'},'HorizontalAlignment','center','color',[0 1 0],'fontunits','normalized','FontSize',.1);
 pause(3);
