@@ -35,6 +35,8 @@ public class Application extends JFrame
     
     private Buffer buffer;
     
+    private Meter meter;
+    
     private CardLayout cardLayout;
     private JPanel cardPanel;
     
@@ -58,15 +60,18 @@ public class Application extends JFrame
             System.out.println("Unable to connect to the buffer: " + e.getMessage());
         }
         
+        this.meter = new Meter();
+        this.meter.setDirection(0.5 * Math.PI);
+        
         /*
         // Create panels.
         Webcam webcam = Webcam.getWebcams().get(1);
         webcam.setViewSize(webcam.getViewSizes()[webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(webcam);
         */
-        this.directionMeterPanel = new DirectionMeterPanel();
+        this.directionMeterPanel = new DirectionMeterPanel(this.meter);
         
-        this.powerMeterPanel = new PowerMeterPanel();
+        this.powerMeterPanel = new PowerMeterPanel(this.meter);
         
         //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
         
@@ -78,7 +83,7 @@ public class Application extends JFrame
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.DIRECTION_METER_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.POWER_METER_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
@@ -92,17 +97,22 @@ public class Application extends JFrame
         {
             try
             {
-                ApplicationEvent applicationEvent = ApplicationEvent.valueOf(event.getValue().toString());
+                ApplicationEvent applicationEvent = ApplicationEvent.valueOf(event.getType().toString());
                 
                 switch(applicationEvent)
                 {
                     case APPLICATION_EVENT_WEBCAM_SHOW:
                         cardLayout.show(cardPanel, Application.WEBCAM_PANEL);
+                        break;
+                        
+                    case APPLICATION_EVENT_DIRECTION_METER_VALUE:
+                        meter.setDirection(Double.parseDouble(event.getValue().toString()));
+                        break;
                 }
             }
             catch(IllegalArgumentException e)
             {
-                System.out.println(String.format("[Unknown buffer event received]: %s:%s", event.getValue().toString(), event.getType().toString()));
+                System.out.println(String.format("[Unknown buffer event received]: %s:%s", event.getType().toString(), event.getValue().toString()));
             }
         }
     }
