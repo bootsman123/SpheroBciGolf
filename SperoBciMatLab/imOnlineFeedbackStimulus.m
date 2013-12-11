@@ -22,13 +22,18 @@ sendEvent('stimulus.testing','start');
 pause(5); % N.B. pause so fig redraws
 
 for si=1:nSeq;
+  %% Initialise the sequence
+  SpheroCommand.angle = 0;
+  SpheroCommand.velocity = 0;
+  SpheroCommand.duration = 0;
+    
   sleepSec(intertrialDuration);
-  % show the screen in the Java instance to alert the subject to trial start
+  %% show the baseline screen in the Java program
   sendEvent('stimulus.baseline','start');
   sleepSec(baselineDuration);
   sendEvent('stimulus.baseline','end');
 
-  % show the target in our Java instance
+  %% show the target in our Java program
   sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
   sendEvent('stimulus.trial','start');
   
@@ -67,13 +72,20 @@ for si=1:nSeq;
               pred=[pred -pred];
             end
           end
-          prob = 1./(1+exp(-pred)); prob=prob./sum(prob); % convert from dv to normalised probability
+          prob = 1./(1+exp(-pred)); 
+          prob=prob./sum(prob); % convert from dv to normalised probability
           if ( verb>=0 ) 
-              fprintf('dv:');fprintf('%5.4f ',pred);fprintf('\t\tProb:');fprintf('%5.4f ',prob);fprintf('\n'); 
+              fprintf('dv:');
+              fprintf('%5.4f ',pred);
+              fprintf('\t\tProb:');
+              fprintf('%5.4f ',prob);
+              fprintf('\n'); 
           end;
           
           % feedback information... simply move in direction detected by the BCI
-         % dx = stimPos(:,1:end-1)*prob(:); % change in position is weighted by class probs
+          dx = stimPos(:,1:end-1)*prob(:); % change in position is weighted by class probs
+          fprintf('dx as feedback: %5.4f',dx);
+          
          % fixPos = fixPos + dx*moveScale;
          % set(h(end),'position',[fixPos-stimRadius/2;stimRadius/2*[1;1]]);
         end
@@ -81,8 +93,11 @@ for si=1:nSeq;
     end % if feedback events to process
     
   end % loop over epochs in the sequence
-
-  % reset the cue and fixation point to indicate trial has finished, also reset the position of the fixation point
+  
+  %% Send the values to the sphero
+  toSendString = [num2str(SpheroCommand.angle), ',' , num2str(SpheroCommand.velocity) , ',' , num2str(SpheroCommand.duration)]
+  sendEvent('golfer.shoot',toSendString);
+  %% reset the cue and fixation point to indicate trial has finished, also reset the position of the fixation point
   sendEvent('stimulus.trial','resetcue');
   sendEvent('stimulus.trial','end');
   
