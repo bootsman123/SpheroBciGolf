@@ -3,46 +3,17 @@ configureIM();
 % make the target sequence
 tgtSeq=mkStimSeqRand(nSymbs,nSeq);
 
-% make the stimulus
-%figure;
-% fig=gcf;
-% set(fig,'Name','Imagined Movement','color',[0 0 0],'menubar','none','toolbar','none','doublebuffer','on');
-% clf;
-% ax=axes('position',[0.025 0.025 .95 .95],'units','normalized','visible','off','box','off',...
-%         'xtick',[],'xticklabelmode','manual','ytick',[],'yticklabelmode','manual',...
-%         'color',[0 0 0],'DrawMode','fast','nextplot','replacechildren',...
-% %         'xlim',[-1.5 1.5],'ylim',[-1.5 1.5],'Ydir','normal');
-%
-% stimPos=[]; h=[];
-% stimRadius=.5;
-% theta=linspace(0,pi,nSymbs); stimPos=[cos(theta);sin(theta)];
-% for hi=1:nSymbs;
-%   h(hi)=rectangle('curvature',[1 1],'position',[stimPos(:,hi)-stimRadius/2;stimRadius*[1;1]],...
-%                   'facecolor',bgColor);
-% end;
-% add symbol for the center of the screen
-% stimPos(:,nSymbs+1)=[0 0];
-% h(nSymbs+1)=rectangle('curvature',[1 1],'position',[stimPos(:,nSymbs+1)-stimRadius/4;stimRadius/2*[1;1]],...
-%                       'facecolor',bgColor);
-% set(gca,'visible','off');
-%
-% % play the stimulus
-% % reset the cue and fixation point to indicate trial has finished
-% set(h(:),'facecolor',bgColor);
 sendEvent('stimulus.training','start');
-sendEvent('DIRECTION_METER_VALUE', pi/2);
+sendEvent('DIRECTION_METER_SHOW');
+sendEvent('DIRECTION_METER_SHOW');
 sendEvent('DIRECTION_METER_SHOW');
 
-% drawnow; pause(5); % N.B. pause so fig redraws
+pause(2); % Pause for a while to let Java draw
 
 for si=1:nSeq;
-    
-    %   if ( ~ishandle(fig) ) break; end;
-    
+        
     sleepSec(intertrialDuration);
-    %   % show the screen to alert the subject to trial start
-    %   set(h(end),'facecolor',fixColor); % red fixation indicates trial about to start/baseline
-    %   drawnow;% expose; % N.B. needs a full drawnow for some reason
+
     sendEvent('BASELINE_SHOW');
     sendEvent('stimulus.baseline','start');
     
@@ -57,18 +28,16 @@ for si=1:nSeq;
     %   set(h(tgtSeq(:,si)<=0),'facecolor',bgColor);
     %   set(h(end),'facecolor',[0 1 0]); % green fixation indicates trial running
     
-
     sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
-    sendEvent('DIRECTION_METER_VALUE', currentTarget);
     if(find(tgtSeq(:,si)>0) == 1)
-        sendEvent('DIRECTION_METER_VALUE', currentTarget);
+        sendEvent('DIRECTION_METER_CLOCKWISE');
     else
-        sendEvent('DIRECTION_METER_VALUE', pi);
+        sendEvent('DIRECTION_METER_COUNTER_CLOCKWISE');
     end
     sendEvent('stimulus.trial','start');
     sleepSec(trialDuration);
     
-    sendEvent('DIRECTION_METER_VALUE', pi/2);
+    sendEvent('DIRECTION_METER_RESET');
     sendEvent('stimulus.trial','end');
     
     ftime=getwTime();
