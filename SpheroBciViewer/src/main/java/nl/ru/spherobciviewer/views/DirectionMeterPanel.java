@@ -1,4 +1,4 @@
-package nl.ru.spherobciviewer;
+package nl.ru.spherobciviewer.views;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -11,6 +11,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import nl.ru.spherobciviewer.Meter;
+import nl.ru.spherobciviewer.MeterListener;
 
 /**
  * Direcion meter panel.

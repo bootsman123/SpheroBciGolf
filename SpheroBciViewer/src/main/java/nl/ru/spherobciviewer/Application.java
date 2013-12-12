@@ -1,5 +1,8 @@
 package nl.ru.spherobciviewer;
 
+import nl.ru.spherobciviewer.views.PlainPanel;
+import nl.ru.spherobciviewer.views.DirectionMeterPanel;
+import nl.ru.spherobciviewer.views.PowerMeterPanel;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.CardLayout;
@@ -10,14 +13,16 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import nl.fcdonders.fieldtrip.BufferEvent;
 import static nl.ru.spherobciviewer.ActionEvent.DIRECTION_METER_VALUE;
+import nl.ru.spherobciviewer.views.BaselinePanel;
 
 /**
- *
- * @author bootsman
+ * Application.
+ * @author Bas Bootsma
  */
 public class Application extends JFrame
 {
     public static final String PLAIN_PANEL = "plain-panel";
+    public static final String BASELINE_PANEL = "baseline-panel";
     public static final String WEBCAM_PANEL = "webcam-panel";
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
     public static final String POWER_METER_PANEL = "power-meter-panel";
@@ -30,6 +35,7 @@ public class Application extends JFrame
     private JPanel cardPanel;
     
     private PlainPanel plainPanel;
+    private BaselinePanel baselinePanel;
     private WebcamPanel webcamPanel;
     private DirectionMeterPanel directionMeterPanel;
     private PowerMeterPanel powerMeterPanel;
@@ -41,7 +47,7 @@ public class Application extends JFrame
     {
         try
         {
-            this.buffer = new Buffer("10.0.1.2", 1972);
+            this.buffer = new Buffer("localhost", 1972);
             this.buffer.addEventListener(new ApplicationBufferEventListener());
             this.buffer.execute();
             
@@ -57,6 +63,7 @@ public class Application extends JFrame
         
         // Create panels.
         this.plainPanel = new PlainPanel();
+        this.baselinePanel = new BaselinePanel();
         /*
         Webcam webcam = Webcam.getWebcams().get(1);
         webcam.setViewSize(webcam.getViewSizes()[webcam.getViewSizes().length - 1]);
@@ -69,14 +76,15 @@ public class Application extends JFrame
         
         // Create layout.
         this.cardLayout = new CardLayout();
-        this.cardPanel = new JPanel(cardLayout);
+        this.cardPanel = new JPanel(this.cardLayout);
         //this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
         this.cardPanel.add(this.plainPanel, Application.PLAIN_PANEL);
+        this.cardPanel.add(this.baselinePanel, Application.BASELINE_PANEL);
         this.cardPanel.add(this.directionMeterPanel, Application.DIRECTION_METER_PANEL);
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.DIRECTION_METER_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.BASELINE_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
