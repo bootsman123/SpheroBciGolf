@@ -2,7 +2,7 @@
 if ( exist('imConfig','var') && ~isempty(imConfig) ) return; end;
 imConfig=true;
 
-run ../utilities/initPaths;
+run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 
 buffhost='localhost';buffport=1972;
 global ft_buff; ft_buff=struct('host',buffhost,'port',buffport);

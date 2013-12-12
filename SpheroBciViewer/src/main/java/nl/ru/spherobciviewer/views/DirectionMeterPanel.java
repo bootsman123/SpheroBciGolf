@@ -1,4 +1,4 @@
-package nl.ru.spherobciviewer;
+package nl.ru.spherobciviewer.views;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -11,6 +11,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import nl.ru.spherobciviewer.Meter;
+import nl.ru.spherobciviewer.MeterListener;
 
 /**
  * Direcion meter panel.
@@ -20,7 +22,8 @@ public class DirectionMeterPanel extends JPanel
 {
     public static final Color ROTATION_FRAME_COLOR = Color.black;
     public static final double ROTATION_CIRCLE_SIZE_FACTOR = 0.9;
-    public static final int ROTATION_CIRCLE_WIDTH = 5;
+    public static final double ROTATION_CIRCLE_WIDTH_FACTOR = 0.005;
+    public static final double ROTATION_MARKER_SIZE_FACTOR = 0.02;
         
     public static final double ARROW_RATIO = 0.9;
     
@@ -80,13 +83,30 @@ public class DirectionMeterPanel extends JPanel
         
         // Rotation circle.
         double rotationCirclePreferredSize = DirectionMeterPanel.ROTATION_CIRCLE_SIZE_FACTOR * size;
+        double rotationCirclePreferredWidth = DirectionMeterPanel.ROTATION_CIRCLE_WIDTH_FACTOR * size;
         
         g2d.setColor(DirectionMeterPanel.ROTATION_FRAME_COLOR);
-        g2d.setStroke(new BasicStroke(DirectionMeterPanel.ROTATION_CIRCLE_WIDTH));
+        g2d.setStroke(new BasicStroke((int)rotationCirclePreferredWidth));
         g2d.draw(new Ellipse2D.Double((this.getWidth() - rotationCirclePreferredSize) / 2,
                                       (this.getHeight() - rotationCirclePreferredSize) / 2,
                                       rotationCirclePreferredSize,
                                       rotationCirclePreferredSize));
+        
+        // Draw markers.
+        double rotationCircleRadius = 0.5 * rotationCirclePreferredSize;
+        double rotationMarkerPreferredSize = PowerMeterPanel.ROTATION_MARKER_SIZE_FACTOR * size;
+        
+        int numberOfMarkers = 12;
+        double angleTotal = 2 * Math.PI;
+        double angleStep = angleTotal / numberOfMarkers;
+        
+        for(double angle = 0; angle < angleTotal; angle += angleStep)
+        {
+            g2d.fill(new Ellipse2D.Double((this.getWidth() - rotationMarkerPreferredSize) / 2 + rotationCircleRadius * Math.cos(angle),
+                                          (this.getHeight() - rotationMarkerPreferredSize) / 2 + rotationCircleRadius * Math.sin(-angle),
+                                          rotationMarkerPreferredSize,
+                                          rotationMarkerPreferredSize));
+        }
     }
     
     /**
