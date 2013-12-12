@@ -42,6 +42,14 @@ dv = zeros(nSymbs,1);
 while (timetogo>0)
   
   timetogo = trialDuration - (getwTime()-trlStartTime); % time left to run in this trial
+    
+  %% Initialise the command for the Sphero
+  SpheroCommand.angle = 0;
+  SpheroCommand.velocity = 100;
+  SpheroCommand.duration = 2500;
+    
+  
+  %% Get the angle
   % wait for events to process *or* end of trial
   status=buffer('wait_dat',[-1 nevents min(5000,timetogo*1000/4)],buffhost,buffport); 
   fprintf('.');
@@ -65,30 +73,65 @@ while (timetogo>0)
   end;
   if ( ~isempty(predevents) ) 
     [ans,si]=sort([predevents.sample],'ascend'); % proc in *temporal* order
+    print 'AMOUNT OF PREDICTIONS: ' 
+    numel(predevents)
     for ei=1:numel(predevents);
       ev=predevents(si(ei));% event to process
       pred=ev.value;
-      % now do something with the prediction....
-      if ( numel(pred)==1 )
-        if ( pred>0 && pred<=nSymbs && isinteger(pred) ) % predicted symbol, convert to dv
-          tmp=pred; pred=zeros(nSymbs,1); pred(tmp)=1;
-        else % binary problem
-          pred=[pred -pred];
-        end
+      if pred==0
+          Sphero.angle = Sphero.angle+30;
+      elseif pred==1
+          Sphero.angle = Sphero.angle-30;
       end
-      dv = expSmoothFactor*dv + pred(:);
-      prob = 1./(1+exp(-dv(:))); prob=prob./sum(prob); % convert from dv to normalised probability
-      if ( verb>=0 ) 
-        fprintf('%d) dv:',ev.sample);fprintf('%5.4f ',pred);fprintf('\t\tProb:');fprintf('%5.4f ',prob);fprintf('\n'); 
-      end;
-      
-      %% feedback information... simply move to location indicated by the BCI
-      fixPos = stimPos(:,1:end-1)*prob(:); % position is weighted by class probabilties
-      
+      Sphero.angle = mod(Sphero.angle,360);
     end
-    %% update the display after all events processed
   end % if prediction events to processa  
-end % loop over epochs in the sequence
+  
+  
+  %% Get the velocity
+  % wait for events to process *or* end of trial
+  status=buffer('wait_dat',[-1 nevents min(5000,timetogo*1000/4)],buffhost,buffport); 
+  fprintf('.');
+  stime =getwTime();
+  if ( status.nevents <= nevents ) % new events to process
+    fprintf('Timeout waiting for prediction events\n');
+    drawnow;
+    continue;
+  end
+  
+  events=[];
+  if (status.nevents>nevents) 
+      events=buffer('get_evt',[nevents status.nevents-1],buffhost,buffport); 
+  end;
+  nevents=status.nevents;
+  mi    =matchEvents(events,{'stimulus.prediction'});
+  predevents=events(mi);
+  % make a random testing event
+  if ( 0 ) 
+      predevents=struct('type','stimulus.prediction','sample',0,'value',ceil(rand()*nSymbs+eps)); 
+  end;
+  if ( ~isempty(predevents) ) 
+    [ans,si]=sort([predevents.sample],'ascend'); % proc in *temporal* order
+    print 'AMOUNT OF PREDICTIONS: ' 
+    numel(predevents)
+    for ei=1:numel(predevents);
+      ev=predevents(si(ei));% event to process
+      pred=ev.value;
+      if pred==0
+          Sphero.duration = Sphero.duration+30;
+      elseif pred==1
+          Sphero.duration = Sphero.duration-30;
+      end
+    end
+    
+  end % if prediction events to processa  
+  
+  %% Update the display after all events processed
+  sendEvent('SHOW_SPEED_METER');
+  %% Send the command to the sphero
+  toSendString = [num2str(SpheroCommand.angle), ',' , num2str(SpheroCommand.velocity) , ',' , num2str(SpheroCommand.duration)]
+  sendEvent('golfer.shoot',toSendString);
+end 
 
 % end training marker
 sendEvent('stimulus.testing','end');
