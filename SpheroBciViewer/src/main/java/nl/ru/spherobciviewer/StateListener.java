@@ -1,11 +1,12 @@
 package nl.ru.spherobciviewer;
 
 /**
- * Meter listener.
+ * State listener.
  * @author Bas Bootsma
  */
-public interface MeterListener
+public interface StateListener
 {
+    public void onTextChanged(String text);
     public void onDirectionChanged(double direction);
     public void onPowerChanged(int power);
 }

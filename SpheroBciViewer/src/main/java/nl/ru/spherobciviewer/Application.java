@@ -1,19 +1,26 @@
 package nl.ru.spherobciviewer;
 
-import nl.ru.spherobciviewer.views.PlainPanel;
-import nl.ru.spherobciviewer.views.DirectionMeterPanel;
-import nl.ru.spherobciviewer.views.PowerMeterPanel;
 import com.github.sarxos.webcam.Webcam;
+import nl.ru.spherobciviewer.buffer.Buffer;
+import nl.ru.spherobciviewer.buffer.BufferEventListener;
 import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import nl.fcdonders.fieldtrip.BufferEvent;
-import static nl.ru.spherobciviewer.ActionEvent.DIRECTION_METER_VALUE;
-import nl.ru.spherobciviewer.views.BaselinePanel;
+import nl.ru.spherobciviewer.views.MeterPanel;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.ConfigurationUtils;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * Application.
@@ -21,30 +28,30 @@ import nl.ru.spherobciviewer.views.BaselinePanel;
  */
 public class Application extends JFrame
 {
-    public static final String PLAIN_PANEL = "plain-panel";
-    public static final String BASELINE_PANEL = "baseline-panel";
     public static final String WEBCAM_PANEL = "webcam-panel";
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
     public static final String POWER_METER_PANEL = "power-meter-panel";
 
     private Buffer buffer;
+    private Webcam webcam;
     
-    private Meter meter;
+    private State state;
     
     private CardLayout cardLayout;
     private JPanel cardPanel;
     
-    private PlainPanel plainPanel;
-    private BaselinePanel baselinePanel;
     private WebcamPanel webcamPanel;
-    private DirectionMeterPanel directionMeterPanel;
-    private PowerMeterPanel powerMeterPanel;
+    private MeterPanel directionMeterPanel;
+    private MeterPanel powerMeterPanel;
     
     /**
      * Constructor.
      */
     public Application()
     {
+        this.addWindowListener(new ApplicationWindowListener());
+        
+        // Buffer.
         try
         {
             this.buffer = new Buffer("localhost", 1972);
@@ -58,33 +65,46 @@ public class Application extends JFrame
             System.out.printf("Unable to connect to the buffer: %s%s", e.getMessage(), System.getProperty("line.separator"));
         }
         
-        this.meter = new Meter();
-        this.meter.setDirection(0.5 * Math.PI);
-        
+        this.state = new State();
+        this.state.setDirection(0.5 * Math.PI);
+
         // Create panels.
-        this.plainPanel = new PlainPanel();
-        this.baselinePanel = new BaselinePanel();
-        /*
-        Webcam webcam = Webcam.getWebcams().get(1);
-        webcam.setViewSize(webcam.getViewSizes()[webcam.getViewSizes().length - 1]);
-        this.webcamPanel = new WebcamPanel(webcam);
-        */
-        this.directionMeterPanel = new DirectionMeterPanel(this.meter);
-        this.powerMeterPanel = new PowerMeterPanel(this.meter);
+        this.webcam = Webcam.getWebcams().get(1);
+        this.webcam.setViewSize(this.webcam.getViewSizes()[this.webcam.getViewSizes().length - 1]);
+        this.webcamPanel = new WebcamPanel(this.webcam);
+        this.webcamPanel.setFillArea(true);
+ 
+        try
+        {
+            Configuration directionMeterConfiguration = new PropertiesConfiguration(this.getClass().getResource("/properties/DirectionMeter.properties"));
+            this.directionMeterPanel = new MeterPanel(directionMeterConfiguration, this.state);
+        }
+        catch(ConfigurationException e)
+        {
+            System.out.println(String.format("Unable to load direction meter configuration: %s", e.getMessage()));
+        }
+        
+        try
+        {
+            Configuration powerMeterConfiguration = new PropertiesConfiguration(this.getClass().getResource("/properties/PowerMeter.properties"));
+            this.powerMeterPanel = new MeterPanel(powerMeterConfiguration, this.state);
+        }
+        catch(ConfigurationException e)
+        {
+            System.out.println(String.format("Unable to load power meter configuration: %s", e.getMessage()));
+        }
         
         //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
         
         // Create layout.
         this.cardLayout = new CardLayout();
         this.cardPanel = new JPanel(this.cardLayout);
-        //this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
-        this.cardPanel.add(this.plainPanel, Application.PLAIN_PANEL);
-        this.cardPanel.add(this.baselinePanel, Application.BASELINE_PANEL);
+        this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
         this.cardPanel.add(this.directionMeterPanel, Application.DIRECTION_METER_PANEL);
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.BASELINE_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.WEBCAM_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
@@ -102,6 +122,7 @@ public class Application extends JFrame
                 
                 switch(actionEvent)
                 {
+                    /*
                     case WEBCAM_SHOW:
                         cardLayout.show(cardPanel, Application.WEBCAM_PANEL);
                         break;
@@ -133,6 +154,7 @@ public class Application extends JFrame
                     case POWER_METER_VALUE:
                         meter.setPower(Integer.parseInt(event.getValue().toString()));
                         break;
+                        */
                 }
                 
                 System.out.printf("[Buffer event]: %s:%s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));
@@ -141,6 +163,40 @@ public class Application extends JFrame
             {
                 System.out.printf("[Unknown buffer event]: %s:%s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.seperator"));
             }
+        }
+    }
+
+    private class ApplicationWindowListener implements WindowListener
+    {
+        public void windowOpened(WindowEvent e)
+        {
+        }
+
+        public void windowClosing(WindowEvent e)
+        {
+        }
+
+        public void windowClosed(WindowEvent e)
+        {
+            webcam.close();
+        }
+
+        public void windowIconified(WindowEvent e)
+        {
+            webcamPanel.resume();
+        }
+
+        public void windowDeiconified(WindowEvent e)
+        {
+            webcamPanel.pause();
+        }
+
+        public void windowActivated(WindowEvent e)
+        {
+        }
+
+        public void windowDeactivated(WindowEvent e) 
+        {
         }
     }
     

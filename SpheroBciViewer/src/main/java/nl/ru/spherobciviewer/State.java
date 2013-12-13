@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Meter.
+ * State.
  * @author Bas Bootsma
  */
-public class Meter
+public class State
 {
     /**
      * In radians from 0 to 2 * Math.pi.
@@ -19,14 +19,14 @@ public class Meter
      */
     private int power;
     
-    private List<MeterListener> listeners;
+    private List<StateListener> listeners;
     
     /**
      * Constructor.
      */
-    public Meter()
+    public State()
     {
-        this.listeners = new ArrayList<MeterListener>();
+        this.listeners = new ArrayList<StateListener>();
         
         this.setDirection(0);
         this.setPower(0);
@@ -36,7 +36,7 @@ public class Meter
      * Add listener.
      * @param listener 
      */
-    public void addListener(MeterListener listener)
+    public void addListener(StateListener listener)
     {
         this.listeners.add(listener);
     }
@@ -45,7 +45,7 @@ public class Meter
      * Remove listener.
      * @param listener 
      */
-    public void removeListener(MeterListener listener)
+    public void removeListener(StateListener listener)
     {
         this.listeners.remove(listener);
     }
@@ -68,7 +68,7 @@ public class Meter
             this.direction -= 2 * Math.PI;
         }
         
-        for(MeterListener listener : this.listeners)
+        for(StateListener listener : this.listeners)
         {
             listener.onDirectionChanged(this.direction);
         }
@@ -91,7 +91,7 @@ public class Meter
     {
         this.power = power;
         
-        for(MeterListener listener : this.listeners)
+        for(StateListener listener : this.listeners)
         {
             listener.onPowerChanged(this.power);
         }

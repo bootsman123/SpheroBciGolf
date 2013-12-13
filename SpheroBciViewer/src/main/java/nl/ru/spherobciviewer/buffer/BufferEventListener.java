@@ -1,4 +1,4 @@
-package nl.ru.spherobciviewer;
+package nl.ru.spherobciviewer.buffer;
 
 import nl.fcdonders.fieldtrip.BufferEvent;
 
