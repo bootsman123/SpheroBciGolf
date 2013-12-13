@@ -12,9 +12,11 @@
 
 # OSX / *nix default autosave extension
 *.m~
+.DS_Store
 
 # Compiled MEX binaries (all platforms)
 *.mex*
 
 # Simulink Code Generation
 slprj/
+/SpheroBciViewer/target/
