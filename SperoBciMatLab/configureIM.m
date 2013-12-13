@@ -39,7 +39,12 @@ bgColor=[.5 .5 .5];
 fixColor=[1 0 0];
 tgtColor=[0 1 0];
 
-% Neurofeedback smoothing
+%% Neurofeedback smoothing
 trlen_ms=3000;
 trlen_ms_ol=trlen_ms;
 expSmoothFactor = log(2)/log(10); % smooth the last 10...
+
+%% Commands for the sphero
+SpheroCommand.angle = 0;
+SpheroCommand.velocity = 0;
+SpheroCommand.duration = 2500 ; % Time in milliseconds
