@@ -164,16 +164,17 @@ public class MeterPanel extends BasePanel
                                           markerSize));
             
             // Marker value.
-            Font font = new Font("Tahoma", Font.PLAIN, 16);
+            Font font = new Font(this.getConfiguration().getString("text.font"), Font.PLAIN, this.getConfiguration().getInt("text.size"));
             FontMetrics fontMetrics = this.getFontMetrics(font);
             
             double markerValue = marker * markerValueStep;
             Rectangle2D markerValueBounds = fontMetrics.getStringBounds(String.valueOf(markerValue), g);
             
             g2d.setFont(font);
+            g2d.setColor(Color.decode(this.getConfiguration().getString("text.color")));
             g2d.drawString(String.valueOf(markerValue),
                           (int)((this.getWidth() - markerValueBounds.getWidth()) / 2 + frameRadius * Math.cos(markerAngle) * 1.08),
-                          (int)((this.getHeight() + 0.5 * markerValueBounds.getHeight()) / 2 + frameRadius * Math.sin(-markerAngle) * 1.08));
+                          (int)((this.getHeight() - markerValueBounds.getHeight()) / 2 + fontMetrics.getAscent() + frameRadius * Math.sin(-markerAngle) * 1.08));
         }
     }
     

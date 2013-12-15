@@ -4,22 +4,19 @@ import com.github.sarxos.webcam.Webcam;
 import nl.ru.spherobciviewer.buffer.Buffer;
 import nl.ru.spherobciviewer.buffer.BufferEventListener;
 import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
-import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import nl.fcdonders.fieldtrip.BufferEvent;
 import nl.ru.spherobciviewer.views.MeterPanel;
+import nl.ru.spherobciviewer.views.TextPanel;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
@@ -28,6 +25,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class Application extends JFrame
 {
+    public static final String TEXT_PANEL = "text-panel";
     public static final String WEBCAM_PANEL = "webcam-panel";
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
     public static final String POWER_METER_PANEL = "power-meter-panel";
@@ -40,6 +38,7 @@ public class Application extends JFrame
     private CardLayout cardLayout;
     private JPanel cardPanel;
     
+    private TextPanel textPanel;
     private WebcamPanel webcamPanel;
     private MeterPanel directionMeterPanel;
     private MeterPanel powerMeterPanel;
@@ -66,14 +65,30 @@ public class Application extends JFrame
         }
         
         this.state = new State();
+        this.state.setText("Welcome to the experiment");
+        this.state.setPower(0);
         this.state.setDirection(0.5 * Math.PI);
 
         // Create panels.
+        // Text panel.
+        try
+        {
+            Configuration textConfiguration = new PropertiesConfiguration(this.getClass().getResource("/properties/Text.properties"));
+            this.textPanel = new TextPanel(textConfiguration, this.state);
+        }
+        catch(ConfigurationException e)
+        {
+            System.out.println(String.format("Unable to load direction meter configuration: %s", e.getMessage()));
+        }
+        
+        // Webcam panel.
+        //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
         this.webcam = Webcam.getWebcams().get(1);
         this.webcam.setViewSize(this.webcam.getViewSizes()[this.webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(this.webcam);
         this.webcamPanel.setFillArea(true);
  
+        // Direction meter panel.
         try
         {
             Configuration directionMeterConfiguration = new PropertiesConfiguration(this.getClass().getResource("/properties/DirectionMeter.properties"));
@@ -84,6 +99,7 @@ public class Application extends JFrame
             System.out.println(String.format("Unable to load direction meter configuration: %s", e.getMessage()));
         }
         
+        // Power meter panel.
         try
         {
             Configuration powerMeterConfiguration = new PropertiesConfiguration(this.getClass().getResource("/properties/PowerMeter.properties"));
@@ -94,17 +110,16 @@ public class Application extends JFrame
             System.out.println(String.format("Unable to load power meter configuration: %s", e.getMessage()));
         }
         
-        //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
-        
         // Create layout.
         this.cardLayout = new CardLayout();
         this.cardPanel = new JPanel(this.cardLayout);
-        this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
+        this.cardPanel.add(this.textPanel, Application.TEXT_PANEL);
+        //this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
         this.cardPanel.add(this.directionMeterPanel, Application.DIRECTION_METER_PANEL);
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.WEBCAM_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.POWER_METER_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);

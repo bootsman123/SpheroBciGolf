@@ -10,6 +10,11 @@ import java.util.List;
 public class State
 {
     /**
+     * Text to be displayed.
+     */
+    private String text;
+    
+    /**
      * In radians from 0 to 2 * Math.pi.
      */
     private double direction;
@@ -51,7 +56,30 @@ public class State
     }
     
     /**
-     * Set direction.
+     * Sets the text.
+     * @param text 
+     */
+    public void setText(String text)
+    {
+        this.text = text;
+        
+        for(StateListener listener : this.listeners)
+        {
+            listener.onTextChanged(this.text);
+        }
+    }
+    
+    /**
+     * Returns the text.
+     * @return 
+     */
+    public String getText()
+    {
+        return this.text;
+    }
+    
+    /**
+     * Sets the direction.
      * @param direction 
      */
     public void setDirection(double direction)
@@ -75,7 +103,7 @@ public class State
     }
     
     /**
-     * Return direction.
+     * Returns the direction.
      * @return 
      */
     public double getDirection()
@@ -84,7 +112,7 @@ public class State
     }
     
     /**
-     * Set power.
+     * Sets the power.
      * @param power 
      */
     public void setPower(int power)
@@ -98,7 +126,7 @@ public class State
     }
     
     /**
-     * Return the power.
+     * Returns the power.
      * @return 
      */
     public int getPower()
