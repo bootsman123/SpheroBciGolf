@@ -4,16 +4,21 @@ configureIM();
 tgtSeq=mkStimSeqRand(nSymbs,nSeq);
 
 sendEvent('stimulus.testing','start');
-sendEvent('DIRECTION_METER_VALUE', pi/2);
+sendEvent('TEXT_VALUE',['Congratulations, you succesfully fullfilled the training phase! '...
+    'Now, you have to imagine some movements again. However, this time we will ' ... 
+   ' present to you our prediction of the movement you imagined.']);
+sendEvent('TEXT_SHOW');
+
+pause(10); % Pause for a while to let Java draw
+sendEvent('TEXT_HIDE');
+sendEvent('DIRECTION_METER_RESET');
 sendEvent('DIRECTION_METER_SHOW');
 
 endTesting=false; dvs=[];
 for si=1:nSeq;  
     sleepSec(intertrialDuration);
-    sendEvent('BASELINE_SHOW');
     sendEvent('stimulus.baseline','start');
     sleepSec(baselineDuration);
-    sendEvent('BASELINE_HIDE');
     sendEvent('stimulus.baseline','end');
     
     % show the target
@@ -21,9 +26,9 @@ for si=1:nSeq;
     
     sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
     if(find(tgtSeq(:,si)>0) == 1)
-        sendEvent('DIRECTION_METER_VALUE', 0);
+        sendEvent('DIRECTION_METER_CLOCKWISE');
     else
-        sendEvent('DIRECTION_METER_VALUE', pi);
+        sendEvent('DIRECTION_METER_COUNTER_CLOCKWISE');
     end
     sendEvent('stimulus.trial','start');
     
