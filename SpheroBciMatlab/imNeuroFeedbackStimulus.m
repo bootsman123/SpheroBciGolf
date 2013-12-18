@@ -22,12 +22,14 @@ set(gca,'visible','off');
 % play the stimulus
 %% reset the cue and fixation point to indicate trial has finished  
 sendEvent('stimulus.testing','start');
+sendEvent('BASELINE_SHOW');
 
   
 %% show the screen to alert the subject to trial start
 sendEvent('stimulus.baseline','start');
 sleepSec(baselineDuration);
 sendEvent('stimulus.baseline','end');
+sendEvent('BASELINE_HIDE');
 %% Reset the figure
 
 % for the trial duration update the fixatation point in response to prediction events
@@ -80,14 +82,17 @@ while (timetogo>0)
       pred=ev.value;
       if pred==0
           Sphero.angle = Sphero.angle+30;
+          
       elseif pred==1
           Sphero.angle = Sphero.angle-30;
       end
       Sphero.angle = mod(Sphero.angle,360);
+      
+      sendEvent('DIRECTION_METER_VALUE', Sphero.angle*(pi/180));
     end
   end % if prediction events to processa  
-  
-  
+  sendEvent('DIRECTION_METER_RESET');
+  sendEvent('DIRECTION_METER_HIDE');
   %% Get the velocity
   % wait for events to process *or* end of trial
   status=buffer('wait_dat',[-1 nevents min(5000,timetogo*1000/4)],buffhost,buffport); 
@@ -99,6 +104,8 @@ while (timetogo>0)
     continue;
   end
   
+  sendEvent('POWER_METER_RESET');
+  sendEvent('POWER_METER_SHOW');
   events=[];
   if (status.nevents>nevents) 
       events=buffer('get_evt',[nevents status.nevents-1],buffhost,buffport); 
@@ -122,12 +129,14 @@ while (timetogo>0)
       elseif pred==1
           Sphero.duration = Sphero.duration-30;
       end
+      Sphero.duration = max(min(MAXIMUM_DURATION, Sphero.duration),MINIMUM_DURATION);
+      sendEvent('POWER_METER_VALUE', (Sphero.duration - MINIMUM_DURATION)/MAXIMUM_DURATION);
     end
     
   end % if prediction events to processa  
   
   %% Update the display after all events processed
-  sendEvent('SHOW_SPEED_METER');
+  sendEvent('POWER_METER_SHOW');
   %% Send the command to the sphero
   toSendString = [num2str(SpheroCommand.angle), ',' , num2str(SpheroCommand.velocity) , ',' , num2str(SpheroCommand.duration)]
   sendEvent('golfer.shoot',toSendString);

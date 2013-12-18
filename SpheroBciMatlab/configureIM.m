@@ -48,3 +48,7 @@ expSmoothFactor = log(2)/log(10); % smooth the last 10...
 SpheroCommand.angle = 0;
 SpheroCommand.velocity = 0;
 SpheroCommand.duration = 2500 ; % Time in milliseconds
+
+MAXIMUM_DURATION = 5000;
+MINIMUM_DURATION = 500;
+
