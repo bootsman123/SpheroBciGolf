@@ -77,15 +77,15 @@ for si=1:nSeq;
     % predicaion is made, now display the prediction
     % TODO: maybe we need to give this feedback another color
     sendEvent('stimulus.predTgt',predTgt);
+    sendEvent('DIRECTION_METER_RESET');
     if(predTgt == 1)
         sendEvent('DIRECTION_METER_VALUE', 0);
     else
         sendEvent('DIRECTION_METER_VALUE', pi);
     end
-    
     sleepSec(feedbackDuration);
     
-    sendEvent('DIRECTION_METER_VALUE', pi/2);
+    sendEvent('DIRECTION_METER_RESET');
     sendEvent('stimulus.trial','end');
     
     ftime=getwTime();
@@ -94,5 +94,10 @@ end % loop over sequences in the experiment
 % end training marker
 sendEvent('DIRECTION_METER_HIDE');
 sendEvent('stimulus.testing','end');
-text(mean(get(ax,'xlim')),mean(get(ax,'ylim')),{'That ends the testing phase.','Thanks for your patience'},'HorizontalAlignment','center','color',[0 1 0],'fontunits','normalized','FontSize',.1);
-pause(3);
+
+% thanks message
+sendEvent('TEXT_VALUE',['That ends the feedback phase. ' ... 
+   'Thanks for your patience']);
+sendEvent('TEXT_SHOW');
+pause(5);
+sendEvent('TEXT_HIDE');

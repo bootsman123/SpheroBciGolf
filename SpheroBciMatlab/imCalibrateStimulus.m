@@ -47,3 +47,4 @@ sendEvent('TEXT_VALUE',['That ends the training phase. ' ...
    'Thanks for your patience']);
 sendEvent('TEXT_SHOW');
 pause(5);
+sendEvent('TEXT_HIDE');
