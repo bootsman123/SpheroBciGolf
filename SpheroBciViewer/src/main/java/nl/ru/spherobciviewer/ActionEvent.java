@@ -25,4 +25,3 @@ public enum ActionEvent
     TEXT_HIDE,
     TEXT_RESET,
     TEXT_VALUE
-};
