@@ -80,13 +80,15 @@ while (timetogo>0)
       pred=ev.value;
       if pred==0
           Sphero.angle = Sphero.angle+30;
+          sendEvent('DIRECTION_METER_CLOCKWISE');
       elseif pred==1
           Sphero.angle = Sphero.angle-30;
+          sendEvent('DIRECTION_METER_COUNTER_CLOCKWISE');
       end
       Sphero.angle = mod(Sphero.angle,360);
     end
   end % if prediction events to processa  
-  
+  sendEvent('DIRECTION_METER_RESET');
   
   %% Get the velocity
   % wait for events to process *or* end of trial
