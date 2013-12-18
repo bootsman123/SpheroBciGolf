@@ -19,7 +19,7 @@ import nl.ru.spherobciviewer.StateListener;
 import org.apache.commons.configuration.Configuration;
 
 /**
- * Abstract meter panel.
+ * Meter panel.
  * @author Bas Bootsma
  */
 public class MeterPanel extends BasePanel

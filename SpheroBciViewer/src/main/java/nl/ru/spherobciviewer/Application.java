@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import nl.fcdonders.fieldtrip.BufferEvent;
 import nl.ru.spherobciviewer.views.MeterPanel;
+import nl.ru.spherobciviewer.views.PlainPanel;
 import nl.ru.spherobciviewer.views.TextPanel;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -25,6 +26,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class Application extends JFrame
 {
+    public static final String PLAIN_PANEL = "plain-panel";
     public static final String TEXT_PANEL = "text-panel";
     public static final String WEBCAM_PANEL = "webcam-panel";
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
@@ -38,6 +40,7 @@ public class Application extends JFrame
     private CardLayout cardLayout;
     private JPanel cardPanel;
     
+    private PlainPanel plainPanel;
     private TextPanel textPanel;
     private WebcamPanel webcamPanel;
     private MeterPanel directionMeterPanel;
@@ -65,11 +68,13 @@ public class Application extends JFrame
         }
         
         this.state = new State();
+        this.state.reset();
         this.state.setText("Welcome to the experiment");
-        this.state.setPower(0);
-        this.state.setDirection(0.5 * Math.PI);
 
         // Create panels.
+        // Plain panel.
+        this.plainPanel = new PlainPanel(null, this.state);
+        
         // Text panel.
         try
         {
@@ -113,13 +118,14 @@ public class Application extends JFrame
         // Create layout.
         this.cardLayout = new CardLayout();
         this.cardPanel = new JPanel(this.cardLayout);
+        this.cardPanel.add(this.plainPanel, Application.PLAIN_PANEL);
         this.cardPanel.add(this.textPanel, Application.TEXT_PANEL);
-        //this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
+        this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
         this.cardPanel.add(this.directionMeterPanel, Application.DIRECTION_METER_PANEL);
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.POWER_METER_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.PLAIN_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
@@ -137,7 +143,6 @@ public class Application extends JFrame
                 
                 switch(actionEvent)
                 {
-                    /*
                     case WEBCAM_SHOW:
                         cardLayout.show(cardPanel, Application.WEBCAM_PANEL);
                         break;
@@ -154,8 +159,12 @@ public class Application extends JFrame
                         cardLayout.show(cardPanel, Application.PLAIN_PANEL);
                         break;
                         
+                    case DIRECTION_METER_RESET:
+                        state.reset();
+                        break;
+                        
                     case DIRECTION_METER_VALUE:
-                        meter.setDirection(Double.parseDouble(event.getValue().toString()));
+                        state.setDirection(Double.parseDouble(event.getValue().toString()));
                         break;
                         
                     case POWER_METER_SHOW:
@@ -166,10 +175,29 @@ public class Application extends JFrame
                         cardLayout.show(cardPanel, Application.PLAIN_PANEL);
                         break;
                         
-                    case POWER_METER_VALUE:
-                        meter.setPower(Integer.parseInt(event.getValue().toString()));
+                    case POWER_METER_RESET:
+                        state.reset();
                         break;
-                        */
+                        
+                    case POWER_METER_VALUE:
+                        state.setPower(Integer.parseInt(event.getValue().toString()));
+                        break;
+                        
+                    case TEXT_SHOW:
+                        cardLayout.show(cardPanel, Application.TEXT_PANEL);
+                        break;
+                        
+                    case TEXT_HIDE:
+                        cardLayout.show(cardPanel, Application.PLAIN_PANEL);
+                        break;
+                        
+                    case TEXT_RESET:
+                        state.reset();
+                        break;
+                        
+                    case TEXT_VALUE:
+                        state.setText(event.getValue().toString());
+                        break;
                 }
                 
                 System.out.printf("[Buffer event]: %s:%s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));

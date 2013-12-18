@@ -10,6 +10,13 @@ import java.util.List;
 public class State
 {
     /**
+     * Default values.
+     */
+    public static final String DEFAULT_TEXT = "";
+    public static final double DEFAULT_DIRECTION = 0.5 * Math.PI;
+    public static final int DEFAULT_POWER = 0;
+    
+    /**
      * Text to be displayed.
      */
     private String text;
@@ -32,9 +39,13 @@ public class State
     public State()
     {
         this.listeners = new ArrayList<StateListener>();
-        
-        this.setDirection(0);
-        this.setPower(0);
+    }
+    
+    public void reset()
+    {
+        this.setText(State.DEFAULT_TEXT);
+        this.setDirection(State.DEFAULT_DIRECTION);
+        this.setPower(State.DEFAULT_POWER);
     }
     
     /**

@@ -23,5 +23,6 @@ public enum ActionEvent
     BASELINE_HIDE,          // Not supported.
     TEXT_SHOW,
     TEXT_HIDE,
+    TEXT_RESET,
     TEXT_VALUE
 };
