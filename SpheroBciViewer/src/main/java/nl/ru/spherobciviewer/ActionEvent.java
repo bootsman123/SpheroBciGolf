@@ -12,16 +12,16 @@ public enum ActionEvent
     DIRECTION_METER_SHOW,
     DIRECTION_METER_HIDE,
     DIRECTION_METER_RESET,
-    DIRECTION_METER_VALUE,
-    DIRECTION_METER_CLOCKWISE,
-    DIRECTION_METER_COUNTER_CLOCKWISE,
+    DIRECTION_METER_VALUE,                      // 0 up till 2*pi
+    DIRECTION_METER_CLOCKWISE,                  // Not supported (yet).
+    DIRECTION_METER_COUNTER_CLOCKWISE,          // Not supported (yet).
     POWER_METER_SHOW,
     POWER_METER_RESET,
     POWER_METER_HIDE,
-    POWER_METER_VALUE,
-    BASELINE_SHOW,          // Not supported.
-    BASELINE_HIDE,          // Not supported.
-    TEXT_SHOW,
+    POWER_METER_VALUE,                          // 0 up to 1 
+    BASELINE_SHOW,                              // Not supported.
+    BASELINE_HIDE,                              // Not supported.
+    TEXT_SHOW,                                  // Text frame pops up
     TEXT_HIDE,
     TEXT_RESET,
     TEXT_VALUE
