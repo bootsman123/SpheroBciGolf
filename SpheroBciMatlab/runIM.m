@@ -32,11 +32,7 @@ while (ishandle(contFig))
     sendEvent('subject',info.subject);
     sendEvent(phaseToRun,'start');
     onSeq=nSeq; nSeq=4; % override sequence number
-    try
-      imCalibrateStimulus();
-    catch
-      le=lasterror;fprintf('ERROR Caught:\n %s\n%s\n',le.identifer,le.message);
-    end
+    imCalibrateStimulus();
     sendEvent(phaseToRun,'end');
     nSeq=onSeq;
     
@@ -45,12 +41,7 @@ while (ishandle(contFig))
     sendEvent('subject',info.subject);
     sendEvent('startPhase.cmd',phaseToRun)
     sendEvent(phaseToRun,'start');
-    try
-      imCalibrateStimulus();
-    catch
-      le=lasterror;fprintf('ERROR Caught:\n %s\n%s\n',le.identifer,le.message);
-      sendEvent('stimulus.training','end');    
-    end
+    imCalibrateStimulus();
     sendEvent(phaseToRun,'end');
 
    %---------------------------------------------------------------------------
