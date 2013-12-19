@@ -176,11 +176,15 @@ public abstract class MeterPanel extends BasePanel
         
         // Draw markers.
         double markerSize = this.getConfiguration().getDouble("marker.size") * size;
+        double markerOffset = this.getConfiguration().getDouble("marker.offset");
         int markerCount = (Math.abs(Math.toRadians(this.getConfiguration().getInt("frame.angle.end") - this.getConfiguration().getInt("frame.angle.start")) - 2 * Math.PI) <= MeterPanel.EPSILON) ? this.getConfiguration().getInt("marker.count") : this.getConfiguration().getInt("marker.count") - 1;
 
         double markerAngleStep = (Math.toRadians(this.getConfiguration().getInt("frame.angle.end")) - Math.toRadians(this.getConfiguration().getInt("frame.angle.start"))) / markerCount;
-        double markerValueStep = (double)(this.getConfiguration().getInt("marker.value.max") - this.getConfiguration().getInt("marker.value.min")) / markerCount;
         
+        int markerValueStart = this.getConfiguration().getInt("marker.value.start");
+        int markerValueEnd = this.getConfiguration().getInt("marker.value.end");
+        double markerValueStep = (double)Math.abs(markerValueStart - markerValueEnd) / markerCount;
+
         for(int marker = 0; marker < this.getConfiguration().getInt("marker.count"); marker++)
         {
             // Marker.
@@ -194,14 +198,14 @@ public abstract class MeterPanel extends BasePanel
             Font font = new Font(this.getConfiguration().getString("text.font"), Font.PLAIN, this.getConfiguration().getInt("text.size"));
             FontMetrics fontMetrics = this.getFontMetrics(font);
             
-            double markerValue = marker * markerValueStep;
+            double markerValue = (markerValueStart > markerValueEnd)? markerValueStart - marker * markerValueStep : marker * markerValueStep;
             Rectangle2D markerValueBounds = fontMetrics.getStringBounds(String.valueOf(markerValue), g);
             
             g2d.setFont(font);
             g2d.setColor(Color.decode(this.getConfiguration().getString("text.color")));
             g2d.drawString(String.valueOf(markerValue),
-                          (int)((this.getWidth() - markerValueBounds.getWidth()) / 2 + frameRadius * Math.cos(markerAngle) * 1.08),
-                          (int)((this.getHeight() - markerValueBounds.getHeight()) / 2 + fontMetrics.getAscent() + frameRadius * Math.sin(-markerAngle) * 1.08));
+                          (int)((this.getWidth() - markerValueBounds.getWidth()) / 2 + frameRadius * Math.cos(markerAngle) * (1 + markerOffset)),
+                          (int)((this.getHeight() - markerValueBounds.getHeight()) / 2 + fontMetrics.getAscent() + frameRadius * Math.sin(-markerAngle) * (1 + markerOffset)));
         }
     }
 
