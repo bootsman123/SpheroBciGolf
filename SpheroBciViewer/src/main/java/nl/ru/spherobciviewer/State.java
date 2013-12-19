@@ -31,6 +31,9 @@ public class State
      */
     private int power;
     
+    /**
+     * List of listeners.
+     */
     private List<StateListener> listeners;
     
     /**
@@ -41,6 +44,9 @@ public class State
         this.listeners = new ArrayList<StateListener>();
     }
     
+    /**
+     * Reset to default values.
+     */
     public void reset()
     {
         this.setText(State.DEFAULT_TEXT);

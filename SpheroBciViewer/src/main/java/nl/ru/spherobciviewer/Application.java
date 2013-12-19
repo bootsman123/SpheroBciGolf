@@ -13,8 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import nl.fcdonders.fieldtrip.BufferEvent;
-import nl.ru.spherobciviewer.views.MeterPanel;
+import nl.ru.spherobciviewer.views.DirectionMeterPanel;
 import nl.ru.spherobciviewer.views.PlainPanel;
+import nl.ru.spherobciviewer.views.PowerMeterPanel;
 import nl.ru.spherobciviewer.views.TextPanel;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -43,8 +44,8 @@ public class Application extends JFrame
     private PlainPanel plainPanel;
     private TextPanel textPanel;
     private WebcamPanel webcamPanel;
-    private MeterPanel directionMeterPanel;
-    private MeterPanel powerMeterPanel;
+    private DirectionMeterPanel directionMeterPanel;
+    private PowerMeterPanel powerMeterPanel;
     
     /**
      * Constructor.
@@ -70,6 +71,7 @@ public class Application extends JFrame
         this.state = new State();
         this.state.reset();
         this.state.setText("Welcome to the experiment");
+        this.state.setPower(50);
 
         // Create panels.
         // Plain panel.
@@ -97,7 +99,7 @@ public class Application extends JFrame
         try
         {
             Configuration directionMeterConfiguration = new PropertiesConfiguration(this.getClass().getResource("/properties/DirectionMeter.properties"));
-            this.directionMeterPanel = new MeterPanel(directionMeterConfiguration, this.state);
+            this.directionMeterPanel = new DirectionMeterPanel(directionMeterConfiguration, this.state);
         }
         catch(ConfigurationException e)
         {
@@ -108,7 +110,7 @@ public class Application extends JFrame
         try
         {
             Configuration powerMeterConfiguration = new PropertiesConfiguration(this.getClass().getResource("/properties/PowerMeter.properties"));
-            this.powerMeterPanel = new MeterPanel(powerMeterConfiguration, this.state);
+            this.powerMeterPanel = new PowerMeterPanel(powerMeterConfiguration, this.state);
         }
         catch(ConfigurationException e)
         {
@@ -125,7 +127,7 @@ public class Application extends JFrame
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.PLAIN_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.POWER_METER_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);

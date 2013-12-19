@@ -22,7 +22,7 @@ import org.apache.commons.configuration.Configuration;
  * Meter panel.
  * @author Bas Bootsma
  */
-public class MeterPanel extends BasePanel
+public abstract class MeterPanel extends BasePanel
 {
     public static final double EPSILON = 0.01;
     
@@ -96,8 +96,15 @@ public class MeterPanel extends BasePanel
      * Paint arrow.
      * @param g
      */
-    protected final void paintArrow(Graphics g)
-    {
+    protected abstract void paintArrow(Graphics g);
+    
+    /**
+     * Paints an arrow in a given direction (from 0 to 2*pi).
+     * @param g
+     * @param direction 
+     */
+    protected void paintArrow(Graphics g, double direction)
+    {        
         Graphics2D g2d = (Graphics2D)g;
         int size = (this.getWidth() > this.getHeight()) ? this.getHeight() : this.getWidth();
         
@@ -107,15 +114,15 @@ public class MeterPanel extends BasePanel
         double imagePreferredSize = this.getConfiguration().getDouble("arrow.size") * size;
         double imageScaleFactor = (imageWidth > imageHeight) ? imagePreferredSize / imageWidth : imagePreferredSize / imageHeight;
            
-        double rotationSin = Math.abs(Math.sin(this.getState().getDirection()));
-        double rotationCos = Math.abs(Math.cos(this.getState().getDirection()));
+        double rotationSin = Math.abs(Math.sin(direction));
+        double rotationCos = Math.abs(Math.cos(direction));
         int imageNewWidth = (int)Math.floor(imageWidth * rotationCos + imageHeight * rotationSin);
         int imageNewHeight = (int)Math.floor(imageHeight * rotationCos + imageWidth * rotationSin);
         
         AffineTransform transform = new AffineTransform();
         transform.scale(imageScaleFactor, imageScaleFactor);
         transform.translate((imageNewWidth - imageWidth) / 2, (imageNewHeight - imageHeight) / 2);
-        transform.rotate(this.getState().getDirection(), imageWidth / 2, imageHeight / 2);
+        transform.rotate(direction, imageWidth / 2, imageHeight / 2);
         
         AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
         BufferedImage image = operation.filter(this.getImageArrow(), null);
