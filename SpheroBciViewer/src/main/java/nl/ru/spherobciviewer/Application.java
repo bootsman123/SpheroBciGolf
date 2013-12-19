@@ -166,6 +166,9 @@ public class Application extends JFrame
                         state.reset();
                         break;
                         
+                    case DIRECTION_METER_ROTATION:
+                        state.setRotation(State.Rotation.valueOf(event.getValue().toString()));
+                        
                     case DIRECTION_METER_VALUE:
                         state.setDirection(Double.parseDouble(event.getValue().toString()));
                         break;
