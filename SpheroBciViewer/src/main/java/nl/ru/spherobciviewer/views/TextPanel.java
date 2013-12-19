@@ -36,7 +36,7 @@ public class TextPanel extends BasePanel
             {
             }
 
-            public void onPowerChanged(int power)
+            public void onPowerChanged(double power)
             {
             }
         });

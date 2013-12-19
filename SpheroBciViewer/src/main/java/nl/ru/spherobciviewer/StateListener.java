@@ -8,5 +8,5 @@ public interface StateListener
 {
     public void onTextChanged(String text);
     public void onDirectionChanged(double direction);
-    public void onPowerChanged(int power);
+    public void onPowerChanged(double power);
 }

@@ -26,9 +26,9 @@ public class PowerMeterPanel extends MeterPanel
         double angleMin = Math.toRadians(this.getConfiguration().getInt("frame.angle.start"));
         double angleTotal = (Math.toRadians(this.getConfiguration().getInt("frame.angle.end")) - Math.toRadians(this.getConfiguration().getInt("frame.angle.start")));
         
-        int power = this.getState().getPower();
-        double direction = (double)power * angleTotal - angleMin;
+        double power = this.getState().getPower();
+        double direction = power * angleTotal - angleMin;
         
-        this.paintArrow(g, direction);
+        this.paintArrow(g, -direction); // Note the minus.
     }
 }

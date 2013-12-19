@@ -21,7 +21,7 @@ public class State
      */
     public static final String DEFAULT_TEXT = "";
     public static final double DEFAULT_DIRECTION = 0.5 * Math.PI;
-    public static final int DEFAULT_POWER = 0;
+    public static final double DEFAULT_POWER = 0.0;
     public static final Rotation DEFAULT_ROTATION = Rotation.NONE;
     
     /**
@@ -35,9 +35,9 @@ public class State
     private double direction;
     
     /**
-     * From 0 to 100.
+     * From 0 to 1.
      */
-    private int power;
+    private double power;
     
     /**
      * Rotation to be shown. 
@@ -146,7 +146,7 @@ public class State
      * Sets the power.
      * @param power 
      */
-    public void setPower(int power)
+    public void setPower(double power)
     {
         this.power = power;
         
@@ -160,7 +160,7 @@ public class State
      * Returns the power.
      * @return 
      */
-    public int getPower()
+    public double getPower()
     {
         return this.power;
     }

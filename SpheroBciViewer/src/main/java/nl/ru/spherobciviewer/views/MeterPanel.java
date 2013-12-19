@@ -49,7 +49,7 @@ public abstract class MeterPanel extends BasePanel
                 repaint();
             }
 
-            public void onPowerChanged(int power)
+            public void onPowerChanged(double power)
             {
                 repaint();
             }
@@ -179,7 +179,7 @@ public abstract class MeterPanel extends BasePanel
         int markerCount = (Math.abs(Math.toRadians(this.getConfiguration().getInt("frame.angle.end") - this.getConfiguration().getInt("frame.angle.start")) - 2 * Math.PI) <= MeterPanel.EPSILON) ? this.getConfiguration().getInt("marker.count") : this.getConfiguration().getInt("marker.count") - 1;
 
         double markerAngleStep = (Math.toRadians(this.getConfiguration().getInt("frame.angle.end")) - Math.toRadians(this.getConfiguration().getInt("frame.angle.start"))) / markerCount;
-        double markerValueStep = (this.getConfiguration().getInt("marker.value.max") - this.getConfiguration().getInt("marker.value.min")) / markerCount;
+        double markerValueStep = (double)(this.getConfiguration().getInt("marker.value.max") - this.getConfiguration().getInt("marker.value.min")) / markerCount;
         
         for(int marker = 0; marker < this.getConfiguration().getInt("marker.count"); marker++)
         {
@@ -220,20 +220,21 @@ public abstract class MeterPanel extends BasePanel
         int imageHeight = image.getHeight();
         double imagePreferredSize = this.getConfiguration().getDouble("arrow-rotated.size") * size;
         double imageScaleFactor = (imageWidth > imageHeight) ? imagePreferredSize / imageWidth : imagePreferredSize / imageHeight;
+        int imageNewWidth = (int)Math.floor(imageWidth * imageScaleFactor);
+        int imageNewHeight = (int)Math.floor(imageHeight * imageScaleFactor);
         
         // Determine offset.
         double offset = this.getConfiguration().getDouble("arrow-rotated.offset");
-        double imageOffset = (this.getState().getRotation() == State.Rotation.COUNTER_CLOCKWISE) ? 1 - offset : 1 + offset; 
+        double imageOffset = (this.getState().getRotation() == State.Rotation.COUNTER_CLOCKWISE) ? -imageNewWidth - offset * size : offset * size;
 
         AffineTransform transform = new AffineTransform();
         transform.scale(imageScaleFactor, imageScaleFactor);
-        transform.translate(imageWidth / 2, imageHeight / 2);
         
         AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
         image = operation.filter(image, null);
 
         g2d.drawImage(image,
-                     (int)((this.getWidth() - image.getWidth()) / 2 * imageOffset),
+                     (int)(this.getWidth() / 2  + imageOffset),
                      (int)((this.getHeight() - image.getHeight()) / 2),
                      null);
     }
