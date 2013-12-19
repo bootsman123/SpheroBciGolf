@@ -90,7 +90,7 @@ public class Application extends JFrame
         
         // Webcam panel.
         //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
-        this.webcam = Webcam.getWebcams().get(1);
+        this.webcam = Webcam.getWebcams().get(0);
         this.webcam.setViewSize(this.webcam.getViewSizes()[this.webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(this.webcam);
         this.webcamPanel.setFillArea(true);

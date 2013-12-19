@@ -9,12 +9,20 @@ import java.util.List;
  */
 public class State
 {
+    public enum Rotation
+    {
+        NONE,
+        COUNTER_CLOCKWISE,
+        CLOCKWISE
+    }
+    
     /**
      * Default values.
      */
     public static final String DEFAULT_TEXT = "";
     public static final double DEFAULT_DIRECTION = 0.5 * Math.PI;
     public static final int DEFAULT_POWER = 0;
+    public static final Rotation DEFAULT_ROTATION = Rotation.NONE;
     
     /**
      * Text to be displayed.
@@ -30,6 +38,11 @@ public class State
      * From 0 to 100.
      */
     private int power;
+    
+    /**
+     * Rotation to be shown. 
+     */
+    private Rotation rotation;
     
     /**
      * List of listeners.
@@ -52,6 +65,7 @@ public class State
         this.setText(State.DEFAULT_TEXT);
         this.setDirection(State.DEFAULT_DIRECTION);
         this.setPower(State.DEFAULT_POWER);
+        this.setRotation(State.DEFAULT_ROTATION);
     }
     
     /**
@@ -149,5 +163,23 @@ public class State
     public int getPower()
     {
         return this.power;
+    }
+    
+    /**
+     * Sets the rotation.
+     * @param rotation 
+     */
+    public void setRotation(Rotation rotation)
+    {
+        this.rotation = rotation;
+    }
+    
+    /**
+     * Returns the rotation.
+     * @return 
+     */
+    public Rotation getRotation()
+    {
+        return this.rotation;
     }
 }
