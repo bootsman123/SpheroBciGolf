@@ -27,7 +27,8 @@ public abstract class MeterPanel extends BasePanel
     public static final double EPSILON = 0.01;
     
     private BufferedImage imageArrow;
-    private BufferedImage imageArrowCurved;
+    private BufferedImage imageArrowRotatedCounterClockwise;
+    private BufferedImage imageArrowRotatedClockwise;
     
     /**
      * Constructor.
@@ -57,7 +58,8 @@ public abstract class MeterPanel extends BasePanel
         try
         {
             this.imageArrow = ImageIO.read(this.getClass().getResourceAsStream(this.getConfiguration().getString("arrow.image")));
-            this.imageArrowCurved = ImageIO.read(this.getClass().getResourceAsStream(this.getConfiguration().getString("arrow-curved.image")));
+            this.imageArrowRotatedCounterClockwise = ImageIO.read(this.getClass().getResourceAsStream(this.getConfiguration().getString("arrow-rotated.counter-clockwise.image")));
+            this.imageArrowRotatedClockwise = ImageIO.read(this.getClass().getResourceAsStream(this.getConfiguration().getString("arrow-rotated.clockwise.image")));
         }
         catch(IOException e)
         {
@@ -75,12 +77,21 @@ public abstract class MeterPanel extends BasePanel
     }
     
     /**
-     * Returns the image arrow curved.
+     * Returns the image arrow rotated counter clockwise.
      * @return 
      */
-    public BufferedImage getImageArrowCurved()
+    public BufferedImage getImageArrowRotatedCounterClockwise()
     {
-        return this.imageArrowCurved;
+        return this.imageArrowRotatedCounterClockwise;
+    }
+    
+    /**
+     * Returns the image arrow rotated clockwise.
+     * @param
+     */
+    public BufferedImage getImageArrowRotatedClockwise()
+    {
+        return this.imageArrowRotatedClockwise;
     }
     
     @Override
@@ -90,6 +101,11 @@ public abstract class MeterPanel extends BasePanel
         
         this.paintFrame(g);
         this.paintArrow(g);
+        
+        if(this.getState().getRotation() != State.Rotation.NONE)
+        {
+            this.paintArrowRotated(g);
+        }
     }
     
     /**
@@ -109,8 +125,9 @@ public abstract class MeterPanel extends BasePanel
         int size = (this.getWidth() > this.getHeight()) ? this.getHeight() : this.getWidth();
         
         // Arrow.
-        int imageWidth = this.getImageArrow().getWidth();
-        int imageHeight = this.getImageArrow().getHeight();
+        BufferedImage image = this.getImageArrow();
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
         double imagePreferredSize = this.getConfiguration().getDouble("arrow.size") * size;
         double imageScaleFactor = (imageWidth > imageHeight) ? imagePreferredSize / imageWidth : imagePreferredSize / imageHeight;
            
@@ -125,9 +142,12 @@ public abstract class MeterPanel extends BasePanel
         transform.rotate(direction, imageWidth / 2, imageHeight / 2);
         
         AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
-        BufferedImage image = operation.filter(this.getImageArrow(), null);
+        image = operation.filter(image, null);
 
-        g2d.drawImage(image, (int)((this.getWidth() - image.getWidth()) / 2), (int)((this.getHeight() - image.getHeight()) / 2), null);
+        g2d.drawImage(image,
+                     (int)((this.getWidth() - image.getWidth()) / 2),
+                     (int)((this.getHeight() - image.getHeight()) / 2),
+                     null);
     }
     
     /**
@@ -184,23 +204,39 @@ public abstract class MeterPanel extends BasePanel
                           (int)((this.getHeight() - markerValueBounds.getHeight()) / 2 + fontMetrics.getAscent() + frameRadius * Math.sin(-markerAngle) * 1.08));
         }
     }
-    
-    /*
-     *         int numberOfMarkers = 12;
-        double angleTotal = 2 * Math.PI;
-        double angleStep = angleTotal / numberOfMarkers;
-        
-        for(double angle = 0; angle < angleTotal; angle += angleStep)
-        {
-            g2d.fill(new Ellipse2D.Double((this.getWidth() - rotationMarkerPreferredSize) / 2 + rotationCircleRadius * Math.cos(angle),
-                                          (this.getHeight() - rotationMarkerPreferredSize) / 2 + rotationCircleRadius * Math.sin(-angle),
-                                          rotationMarkerPreferredSize,
-                                          rotationMarkerPreferredSize));
-        }
+
+    /**
+     * Draw arrow curved.
+     * @param g 
      */
-    
-    
-    
+    protected final void paintArrowRotated(Graphics g)
+    {
+        Graphics2D g2d = (Graphics2D)g;
+        int size = (this.getWidth() > this.getHeight()) ? this.getHeight() : this.getWidth();
+        
+        // Arrow rotated.
+        BufferedImage image = (this.getState().getRotation() == State.Rotation.COUNTER_CLOCKWISE) ? this.getImageArrowRotatedCounterClockwise() : this.getImageArrowRotatedClockwise();
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        double imagePreferredSize = this.getConfiguration().getDouble("arrow-rotated.size") * size;
+        double imageScaleFactor = (imageWidth > imageHeight) ? imagePreferredSize / imageWidth : imagePreferredSize / imageHeight;
+        
+        // Determine offset.
+        double offset = this.getConfiguration().getDouble("arrow-rotated.offset");
+        double imageOffset = (this.getState().getRotation() == State.Rotation.COUNTER_CLOCKWISE) ? 1 - offset : 1 + offset; 
+
+        AffineTransform transform = new AffineTransform();
+        transform.scale(imageScaleFactor, imageScaleFactor);
+        transform.translate(imageWidth / 2, imageHeight / 2);
+        
+        AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+        image = operation.filter(image, null);
+
+        g2d.drawImage(image,
+                     (int)((this.getWidth() - image.getWidth()) / 2 * imageOffset),
+                     (int)((this.getHeight() - image.getHeight()) / 2),
+                     null);
+    }
     
     
     /*

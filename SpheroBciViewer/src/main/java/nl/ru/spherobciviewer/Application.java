@@ -72,6 +72,7 @@ public class Application extends JFrame
         this.state.reset();
         this.state.setText("Welcome to the experiment");
         this.state.setPower(50);
+        this.state.setRotation(State.Rotation.COUNTER_CLOCKWISE);
 
         // Create panels.
         // Plain panel.
@@ -90,7 +91,7 @@ public class Application extends JFrame
         
         // Webcam panel.
         //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
-        this.webcam = Webcam.getWebcams().get(1);
+        this.webcam = Webcam.getWebcams().get(0);
         this.webcam.setViewSize(this.webcam.getViewSizes()[this.webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(this.webcam);
         this.webcamPanel.setFillArea(true);
@@ -127,7 +128,7 @@ public class Application extends JFrame
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.POWER_METER_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.DIRECTION_METER_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
@@ -164,6 +165,9 @@ public class Application extends JFrame
                     case DIRECTION_METER_RESET:
                         state.reset();
                         break;
+                        
+                    case DIRECTION_METER_ROTATION:
+                        state.setRotation(State.Rotation.valueOf(event.getValue().toString()));
                         
                     case DIRECTION_METER_VALUE:
                         state.setDirection(Double.parseDouble(event.getValue().toString()));

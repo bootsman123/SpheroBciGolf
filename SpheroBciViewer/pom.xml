@@ -15,6 +15,7 @@
     </properties>
 
     <dependencies>
+        <!-- Look into: http://www.thebuzzmedia.com/software/imgscalr-java-image-scaling-library/ -->
         <dependency>
             <groupId>com.github.sarxos</groupId>
             <artifactId>webcam-capture</artifactId>
