@@ -7,12 +7,12 @@ sendEvent('stimulus.testing','start');
 sendEvent('TEXT_VALUE',['Congratulations, you succesfully fullfilled the training phase! '...
     'Now, you have to imagine some movements again. However, this time we will ' ... 
    ' present to you our prediction of the movement you imagined.']);
-sendEvent('TEXT_SHOW');
+sendEvent('TEXT_SHOW',0);
 
 pause(10); % Pause for a while to let Java draw
-sendEvent('TEXT_HIDE');
-sendEvent('DIRECTION_METER_RESET');
-sendEvent('DIRECTION_METER_SHOW');
+sendEvent('TEXT_HIDE',0);
+sendEvent('DIRECTION_METER_RESET',0);
+sendEvent('DIRECTION_METER_SHOW',0);
 
 endTesting=false; dvs=[];
 for si=1:nSeq;  
@@ -26,9 +26,9 @@ for si=1:nSeq;
     
     sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
     if(find(tgtSeq(:,si)>0) == 1)
-        sendEvent('DIRECTION_METER_CLOCKWISE');
+        sendEvent('DIRECTION_METER_CLOCKWISE',0);
     else
-        sendEvent('DIRECTION_METER_COUNTER_CLOCKWISE');
+        sendEvent('DIRECTION_METER_COUNTER_CLOCKWISE',0);
     end
     sendEvent('stimulus.trial','start');
     
@@ -77,7 +77,7 @@ for si=1:nSeq;
     % predicaion is made, now display the prediction
     % TODO: maybe we need to give this feedback another color
     sendEvent('stimulus.predTgt',predTgt);
-    sendEvent('DIRECTION_METER_RESET');
+    sendEvent('DIRECTION_METER_RESET',0);
     if(predTgt == 1)
         sendEvent('DIRECTION_METER_VALUE', 0);
     else
@@ -85,19 +85,19 @@ for si=1:nSeq;
     end
     sleepSec(feedbackDuration);
     
-    sendEvent('DIRECTION_METER_RESET');
+    sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');
     
     ftime=getwTime();
     fprintf('\n');
 end % loop over sequences in the experiment
 % end training marker
-sendEvent('DIRECTION_METER_HIDE');
+sendEvent('DIRECTION_METER_HIDE',0);
 sendEvent('stimulus.testing','end');
 
 % thanks message
 sendEvent('TEXT_VALUE',['That ends the feedback phase. ' ... 
    'Thanks for your patience']);
-sendEvent('TEXT_SHOW');
+sendEvent('TEXT_SHOW',0);
 pause(5);
-sendEvent('TEXT_HIDE');
+sendEvent('TEXT_HIDE',0);
