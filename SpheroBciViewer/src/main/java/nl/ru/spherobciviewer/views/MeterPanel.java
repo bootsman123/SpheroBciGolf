@@ -227,6 +227,7 @@ public abstract class MeterPanel extends BasePanel
 
         AffineTransform transform = new AffineTransform();
         transform.scale(imageScaleFactor, imageScaleFactor);
+        transform.translate(imageWidth / 2, imageHeight / 2);
         
         AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
         image = operation.filter(image, null);

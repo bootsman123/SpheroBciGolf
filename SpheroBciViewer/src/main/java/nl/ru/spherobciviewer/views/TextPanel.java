@@ -57,8 +57,6 @@ public class TextPanel extends BasePanel
 
         g2d.setFont(font);
         g2d.setColor(Color.decode(this.getConfiguration().getString("text.color")));
-
-        g2d.setFont(font);
         g2d.drawString(this.getState().getText(),
                       (int)((this.getWidth() - textBounds.getWidth()) / 2),
                       (int)((this.getHeight() - textBounds.getHeight()) / 2));
