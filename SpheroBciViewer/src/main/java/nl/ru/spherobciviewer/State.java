@@ -172,6 +172,11 @@ public class State
     public void setRotation(Rotation rotation)
     {
         this.rotation = rotation;
+        
+        for(StateListener listener : this.listeners)
+        {
+            listener.onRotationChanged(this.rotation);
+        }
     }
     
     /**

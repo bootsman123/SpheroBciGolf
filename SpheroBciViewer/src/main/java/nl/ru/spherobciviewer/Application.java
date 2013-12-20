@@ -20,6 +20,7 @@ import nl.ru.spherobciviewer.views.TextPanel;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * Application.
@@ -57,7 +58,7 @@ public class Application extends JFrame
         // Buffer.
         try
         {
-            this.buffer = new Buffer("localhost", 1972);
+            this.buffer = new Buffer("145.116.173.45", 1972); //145.116.173.45
             this.buffer.addEventListener(new ApplicationBufferEventListener());
             this.buffer.execute();
             
@@ -70,7 +71,7 @@ public class Application extends JFrame
         
         this.state = new State();
         this.state.reset();
-        this.state.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+        this.state.setText("Welcome to the Sphero Golf experiment.");
 
         // Create panels.
         // Plain panel.
@@ -89,7 +90,7 @@ public class Application extends JFrame
         
         // Webcam panel.
         //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
-        this.webcam = Webcam.getWebcams().get(0);
+        this.webcam = Webcam.getWebcams().get(1);
         this.webcam.setViewSize(this.webcam.getViewSizes()[this.webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(this.webcam);
         this.webcamPanel.setFillArea(true);
@@ -166,6 +167,7 @@ public class Application extends JFrame
                         
                     case DIRECTION_METER_ROTATION:
                         state.setRotation(State.Rotation.valueOf(event.getValue().toString()));
+                        break;
                         
                     case DIRECTION_METER_VALUE:
                         state.setDirection(Double.parseDouble(event.getValue().toString()));
@@ -200,15 +202,15 @@ public class Application extends JFrame
                         break;
                         
                     case TEXT_VALUE:
-                        state.setText(event.getValue().toString());
+                        state.setText(StringEscapeUtils.unescapeJava(event.getValue().toString()));
                         break;
                 }
                 
-                System.out.printf("[Buffer event]: %s:%s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));
+                System.out.printf("[Buffer event]: %s: %s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));
             }
             catch(IllegalArgumentException e)
             {
-                System.out.printf("[Unknown buffer event]: %s:%s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.seperator"));
+                System.out.printf("[Unknown buffer event]: %s: %s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));
             }
         }
     }

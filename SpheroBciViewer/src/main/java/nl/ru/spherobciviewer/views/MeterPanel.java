@@ -53,6 +53,11 @@ public abstract class MeterPanel extends BasePanel
             {
                 repaint();
             }
+
+            public void onRotationChanged(State.Rotation rotation)
+            {
+                repaint();
+            }
         });
         
         try

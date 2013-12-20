@@ -61,7 +61,6 @@ public class Buffer extends SwingWorker<Void, BufferEvent>
                 
                 for(BufferEvent event : events)
                 {
-                    // Check if the event is useful?
                     this.publish(event);
                 }
                 

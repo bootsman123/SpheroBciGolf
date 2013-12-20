@@ -39,6 +39,10 @@ public class TextPanel extends BasePanel
             public void onPowerChanged(double power)
             {
             }
+
+            public void onRotationChanged(State.Rotation rotation)
+            {
+            }
         });
     }
     
@@ -52,13 +56,33 @@ public class TextPanel extends BasePanel
         // Draw text.
         Font font = new Font(this.getConfiguration().getString("text.font"), Font.PLAIN, this.getConfiguration().getInt("text.size"));
         FontMetrics fontMetrics = this.getFontMetrics(font);
-
-        Rectangle2D textBounds = fontMetrics.getStringBounds(this.getState().getText(), g);
+        
+        // Split the text into multiple lines.
+        String lines[] = this.getState().getText().split("[\r\n]+");
+        
+        // Compute total height.
+        double heightTotal = 0;
+        
+        for(String line : lines)
+        {
+            Rectangle2D lineBounds = fontMetrics.getStringBounds(line, g);
+            heightTotal += lineBounds.getHeight();
+        }
 
         g2d.setFont(font);
         g2d.setColor(Color.decode(this.getConfiguration().getString("text.color")));
-        g2d.drawString(this.getState().getText(),
-                      (int)((this.getWidth() - textBounds.getWidth()) / 2),
-                      (int)((this.getHeight() - textBounds.getHeight()) / 2));
+        
+        // Draw all lines.
+        double heightOffset = 0;
+        
+        for(String line : lines)
+        {
+            Rectangle2D lineBounds = fontMetrics.getStringBounds(line, g);
+            heightOffset += lineBounds.getHeight();
+            
+            g2d.drawString(line,
+                          (int)((this.getWidth() - lineBounds.getWidth()) / 2),
+                          (int)((this.getHeight() - heightTotal) / 2 + heightOffset));
+        }
     }
 }
