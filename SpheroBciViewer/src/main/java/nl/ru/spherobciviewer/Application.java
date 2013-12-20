@@ -70,8 +70,7 @@ public class Application extends JFrame
         
         this.state = new State();
         this.state.reset();
-        this.state.setText("Welcome to the experiment");
-        this.state.setPower(0.25);
+        this.state.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
 
         // Create panels.
         // Plain panel.
@@ -127,7 +126,7 @@ public class Application extends JFrame
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.POWER_METER_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.PLAIN_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
