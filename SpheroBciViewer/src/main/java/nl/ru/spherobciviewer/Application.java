@@ -58,7 +58,7 @@ public class Application extends JFrame
         // Buffer.
         try
         {
-            this.buffer = new Buffer("145.116.173.45", 1972); //145.116.173.45
+            this.buffer = new Buffer("localhost", 1972); //145.116.173.45
             this.buffer.addEventListener(new ApplicationBufferEventListener());
             this.buffer.execute();
             
@@ -127,7 +127,7 @@ public class Application extends JFrame
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.PLAIN_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.DIRECTION_METER_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
