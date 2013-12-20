@@ -26,9 +26,9 @@ for si=1:nSeq;
     
     sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
     if(find(tgtSeq(:,si)>0) == 1)
-        sendEvent('DIRECTION_METER_CLOCKWISE',0);
+        sendEvent('DIRECTION_METER_ROTATION','CLOCKWISE');
     else
-        sendEvent('DIRECTION_METER_COUNTER_CLOCKWISE',0);
+        sendEvent('DIRECTION_METER_ROTATION','COUNTER_CLOCKWISE');
     end
     sendEvent('stimulus.trial','start');
     
@@ -70,7 +70,11 @@ for si=1:nSeq;
     % give the feedback on the predicted class
     dv = sum(dvs,2); prob=1./(1+exp(-dv)); prob=prob./sum(prob);
     if ( verb>=0 )
-        fprintf('dv:');fprintf('%5.4f ',pred);fprintf('\t\tProb:');fprintf('%5.4f ',prob);fprintf('\n');
+        fprintf('dv:');
+        fprintf('%5.4f ',pred);
+        fprintf('\t\tProb:');
+        fprintf('%5.4f ',prob);
+        fprintf('\n');
     end;
     [ans,predTgt]=max(dv); % prediction is max classifier output
     

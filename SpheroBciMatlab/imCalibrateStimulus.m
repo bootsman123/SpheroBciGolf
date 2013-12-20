@@ -25,9 +25,9 @@ for si=1:nSeq;
 
     sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
     if(find(tgtSeq(:,si)>0) == 1)
-        sendEvent('DIRECTION_METER_CLOCKWISE',0);
+        sendEvent('DIRECTION_METER_ROTATION','CLOCKWISE');
     else
-        sendEvent('DIRECTION_METER_COUNTER_CLOCKWISE',0);
+        sendEvent('DIRECTION_METER_ROTATION','COUNTER_CLOCKWISE');
     end
     sendEvent('stimulus.trial','start');
     sleepSec(trialDuration);

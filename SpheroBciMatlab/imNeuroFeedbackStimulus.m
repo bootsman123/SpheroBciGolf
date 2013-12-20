@@ -47,11 +47,15 @@ sendEvent('stimulus.baseline','end');
 status=buffer('wait_dat',[-1 -1 -1],buffhost,buffport); % get current state
 nevents=status.nevents; nsamples=status.nsamples;
 % initial fixation point position
-fixPos = stimPos(:,end);
+%fixPos = stimPos(:,end);
 trlStartTime=getwTime();
 trialDuration = 60*60; % 1hr...
 timetogo=trialDuration;
 dv = zeros(nSymbs,1);
+  % Initialise the command for the Sphero
+  SpheroCommand.angle = 0;
+  SpheroCommand.velocity = 100;
+  SpheroCommand.duration = 2500;
 while (timetogo>0)
 %   if ( ~ishandle(fig) ) break; end;
   timetogo = trialDuration - (getwTime()-trlStartTime); % time left to run in this trial
@@ -64,11 +68,6 @@ while (timetogo>0)
 %     drawnow;
     continue;
   end
-  
-  % Initialise the command for the Sphero
-  SpheroCommand.angle = 0;
-  SpheroCommand.velocity = 100;
-  SpheroCommand.duration = 2500;
   
   events=[];
   if (status.nevents>nevents) 
@@ -88,25 +87,38 @@ while (timetogo>0)
       pred=ev.value;
       % now do something with the prediction....
       if ( numel(pred)==1 )
-        if pred==0
-          SpheroCommand.angle = SpheroCommand.angle+30;  
-        elseif pred==1
-          SpheroCommand.angle = SpheroCommand.angle-30;
+        if ( pred>0 && pred<=nSymbs && isinteger(pred) ) % predicted symbol, convert to dv
+          tmp=pred; pred=zeros(nSymbs,1); pred(tmp)=1;
+        else % binary problem
+          pred=[pred -pred];
         end
       end
+      
       dv = expSmoothFactor*dv + pred(:);
       prob = 1./(1+exp(-dv(:))); 
       prob=prob./sum(prob); % convert from dv to normalised probability
       if ( verb>=0 ) 
-        fprintf('%d) dv:',ev.sample);fprintf('%5.4f ',pred);fprintf('\t\tProb:');fprintf('%5.4f ',prob);fprintf('\n'); 
+        fprintf('%d) dv:',ev.sample);
+        fprintf('%5.4f ',pred);
+        fprintf('\t\tProb:');
+        fprintf('%5.4f ',prob);
+        fprintf('\n'); 
       end;
       
-      % feedback information... simply move to location indicated by the BCI
-      SpheroCommand.angle = mod(SpheroCommand.angle,360);  
-      sendEvent('DIRECTION_METER_VALUE', SpheroCommand.angle*(pi/180));
+      [ans,predTgt]=max(pred);
+      if predTgt==1
+          SpheroCommand.angle = SpheroCommand.angle+30;  
+      elseif predTgt==2
+          SpheroCommand.angle = SpheroCommand.angle-30;
+      end
       
 %       fixPos = stimPos(:,1:end-1)*prob(:); % position is weighted by class probabilties
 %       set(h(end),'position',[fixPos-stimRadius/2;stimRadius/2*[1;1]]);
+      
+      SpheroCommand.angle = mod(SpheroCommand.angle,360);  
+      sendEvent('DIRECTION_METER_VALUE', SpheroCommand.angle*(pi/180));
+      fprintf('New direction value: %d \n', SpheroCommand.angle*(pi/180));
+      
     end
 %     drawnow; % update the display after all events processed
   end % if prediction events to processa  
