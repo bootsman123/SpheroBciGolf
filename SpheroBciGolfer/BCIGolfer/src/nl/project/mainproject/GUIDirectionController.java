@@ -52,6 +52,9 @@ public class GUIDirectionController extends JPanel implements MouseMotionListene
 		int duration = (int) (maxDuration*percent);
 		System.out.println("angle: " + angle + " duration: " + duration + " percent: " + percent);
 		model.setVelocity(100);
+		/**
+		 * Possibly edit this to move the baseline of the Sphero. 
+		 */
 		model.setDuration(duration);
 		model.executeCommandOnSphero();
 		repaint();

@@ -44,7 +44,7 @@ while (timeLeft>0)
     moveDirection = epochOnline('DIRECTION');
     SpheroCommand.angle = mod(moveDirection*30,360); % TODO: calculate the amount of degrees per step  
     movePower = epochOnline('POWER');
-    SpheroCommand.duration = SpheroCommand.duration+movePower*30;
+    SpheroCommand.duration = SpheroCommand.duration+movePower*300;
     SpheroCommand.duration = max(min(MAXIMUM_DURATION, Sphero.duration),MINIMUM_DURATION);
     sendEvent('TEXT_VALUE','Now, it is time to let the Sphero move.');
     sendEvent('TEXT_SHOW',0);
