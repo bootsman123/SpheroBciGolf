@@ -45,10 +45,6 @@ trlen_ms_ol=trlen_ms;
 expSmoothFactor = log(2)/log(10); % smooth the last 10...
 
 %% Commands for the sphero
-SpheroCommand.angle = 0;
-SpheroCommand.velocity = 0;
-SpheroCommand.duration = 2500 ; % Time in milliseconds
-
-MAXIMUM_DURATION = 5000;
-MINIMUM_DURATION = 500;
+Sphero.power = 0.5;
+Sphero.direction = 0.5*pi;
 
