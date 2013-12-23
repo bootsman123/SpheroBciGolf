@@ -5,13 +5,14 @@
 %  (startPhase.cmd,calibrate)  -- start calibration phase processing (i.e. cat data)
 %  (startPhase.cmd,testing)    -- start test phase, i.e. on-line prediction generation
 %  (startPhase.cmd,exit)       -- stop everything
-configureIM;
+settings();
 
 if ( ~exist('capFile','var') ) capFile='1010'; end; %'cap_tmsi_mobita_num'; 
 if ( ~isempty(strfind(capFile,'tmsi')) ) thresh=[.0 .1 .2 5]; badchThresh=1e-4; overridechnms=1;
 else                                     thresh=[.5 3];  badchThresh=.5;   overridechnms=0;
 end
-datestr = datevec(now); datestr = sprintf('%02d%02d%02d',datestr(1)-2000,datestr(2:3));
+datestr = datevec(now);
+datestr = sprintf('%02d%02d%02d',datestr(1)-2000,datestr(2:3));
 dname='training_data';
 cname='clsfr';
 testname='testing_data';
@@ -21,10 +22,12 @@ subject='test';
 
 % main loop waiting for commands and then executing them
 state=struct('pending',[],'nevents',[],'nsamples',[],'hdr',hdr); 
-phaseToRun=[]; clsSubj=[]; trainSubj=[];
-while ( true )
+phaseToRun=[];
+clsSubj=[];
+trainSubj=[];
 
-  if ( ~isempty(phaseToRun) ) state=[]; end
+while(true)
+  if( ~isempty(phaseToRun) ) state=[]; end
   drawnow;
   
   % wait for a phase control event

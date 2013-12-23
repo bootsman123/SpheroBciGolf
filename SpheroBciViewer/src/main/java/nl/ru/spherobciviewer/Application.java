@@ -6,11 +6,17 @@ import nl.ru.spherobciviewer.buffer.BufferEventListener;
 import com.github.sarxos.webcam.WebcamPanel;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import nl.fcdonders.fieldtrip.BufferEvent;
 import nl.ru.spherobciviewer.views.DirectionMeterPanel;
@@ -90,7 +96,7 @@ public class Application extends JFrame
         
         // Webcam panel.
         //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
-        this.webcam = Webcam.getWebcams().get(1);
+        this.webcam = Webcam.getWebcams().get(0);
         this.webcam.setViewSize(this.webcam.getViewSizes()[this.webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(this.webcam);
         this.webcamPanel.setFillArea(true);
@@ -117,9 +123,42 @@ public class Application extends JFrame
             System.out.println(String.format("Unable to load power meter configuration: %s", e.getMessage()));
         }
         
+        Action onLeftArrowPressed = new AbstractAction()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent event)
+            {
+                try
+                {
+                    buffer.sendEvents(new BufferEvent("key.pressed", "left-arrow", -1));
+                }
+                catch(IOException e)
+                {
+                }
+            }
+        };
+        
+        Action onRightArrowPressed = new AbstractAction()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent event)
+            {                
+                try
+                {
+                    buffer.sendEvents(new BufferEvent("key.pressed", "right-arrow", -1));
+                }
+                catch(IOException e)
+                {
+                }
+            }
+        };
+        
         // Create layout.
         this.cardLayout = new CardLayout();
         this.cardPanel = new JPanel(this.cardLayout);
+        this.cardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "LEFT_ARROW");
+        this.cardPanel.getActionMap().put("LEFT_ARROW", onLeftArrowPressed);
+        this.cardPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"), "RIGHT_ARROW");
+        this.cardPanel.getActionMap().put("RIGHT_ARROW", onRightArrowPressed);
+        
         this.cardPanel.add(this.plainPanel, Application.PLAIN_PANEL);
         this.cardPanel.add(this.textPanel, Application.TEXT_PANEL);
         this.cardPanel.add(this.webcamPanel, Application.WEBCAM_PANEL);
@@ -135,6 +174,10 @@ public class Application extends JFrame
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
+    /**
+     * Application buffer event listener.
+     * @author Bas Bootsma
+     */
     private class ApplicationBufferEventListener implements BufferEventListener
     {
         public void onReceived(BufferEvent event)
@@ -215,6 +258,10 @@ public class Application extends JFrame
         }
     }
 
+    /**
+     * Application window listener.
+     * @author Bas Bootsma
+     */
     private class ApplicationWindowListener implements WindowListener
     {
         public void windowOpened(WindowEvent e)
@@ -245,6 +292,26 @@ public class Application extends JFrame
         }
 
         public void windowDeactivated(WindowEvent e) 
+        {
+        }
+    }
+    
+    /**
+     * Application key listener.
+     * @author Bas Bootsma
+     */
+    private class ApplicationKeyListener implements KeyListener
+    {
+        public void keyTyped(KeyEvent e)
+        {
+            System.out.println("[Key types]: " + e.getKeyCode());
+        }
+
+        public void keyPressed(KeyEvent e)
+        {
+        }
+
+        public void keyReleased(KeyEvent e)
         {
         }
     }
