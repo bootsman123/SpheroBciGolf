@@ -16,24 +16,15 @@ gameStartTime=getwTime();
 gameDuration = 60*60;
 timeLeft=gameDuration;
 
-% TODO: Implement Sphero move
-% Pseudocode:
-% while (game_is_playing)
-%     Now perform an move, a move has the following sequence:
-%     - Show webcam, reset direction, reset dv array, etc.
-%     - Set direction (another while loop: for about 10 seconds the user can imagine moves)
-%     - Set power (another while loop: for about 10 seconds the user can imagine moves)
-%     - Perform move, show move on webcam
-% end
-
+%% Run the game
 while (timeLeft>0)
 	timeLeft = gameDuration - (getwTime() - gameStartTime);
   
-	%% Initialise the Sphero command
-    SpheroCommand.angle = 0;
-    SpheroCommand.velocity = 100;
-    SpheroCommand.duration = 2500;
+	%% Initialise the Sphero command   
+    Sphero.power = 0.5;
+    Sphero.direction = 0.5*pi;
   
+    %% Let the user plan a move
     sendEvent('TEXT_VALUE','Take a look at the golf course and plan your next move.');
     sendEvent('TEXT_SHOW',0);
     pause(2); 
@@ -41,25 +32,30 @@ while (timeLeft>0)
     sendEvent('WEBCAM_SHOW',0);
     pause(5); 
     sendEvent('WEBCAM_HIDE',0);
-    moveDirection = epochOnline('DIRECTION');
-    SpheroCommand.angle = mod(moveDirection*30,360); % TODO: calculate the amount of degrees per step  
-    movePower = epochOnline('POWER');
-    SpheroCommand.duration = SpheroCommand.duration+movePower*30;
-    SpheroCommand.duration = max(min(MAXIMUM_DURATION, Sphero.duration),MINIMUM_DURATION);
+    
+    %% Let the user imagine the direction and power of the move
+    epochType = 'DIRECTION';
+    epochOnline();
+    epochType = 'POWER';
+    epochOnline();
+    
+    %% Let the Spehere perform the move
     sendEvent('TEXT_VALUE','Now, it is time to let the Sphero move.');
     sendEvent('TEXT_SHOW',0);
     pause(2); 
     sendEvent('TEXT_HIDE',0);
     sendEvent('WEBCAM_SHOW',0);
+    sendEvent('GOLFER_DIRECTION_VALUE',radtodeg(Sphero.direction));
+    sendEvent('GOLFER_POWER_VALUE',Sphero.power);
     pause(1);
-    sendEvent('golfer.shoot',[num2str(SpheroCommand.angle) ',' num2str(SpheroCommand.velocity) ',' num2str(SpheroCommand.duration)]);
+    sendEvent('GOLFER_SHOOT',0);
     pause(5); 
     sendEvent('WEBCAM_HIDE',0);
-end % loop over epochs in the sequence
+end 
 
 sendEvent('stimulus.training','end');
 
-%% thanks message
+%% Thanks message
 sendEvent('TEXT_VALUE',['That ends the game phase. ' ... 
    'Thanks for your patience']);
 sendEvent('TEXT_SHOW',0);

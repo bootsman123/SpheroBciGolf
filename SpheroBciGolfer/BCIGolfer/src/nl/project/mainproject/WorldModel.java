@@ -15,7 +15,7 @@ public class WorldModel extends Observable {
 	
 	public WorldModel(){
 		heading = 0; 
-		velocity = 0;
+		velocity = 100;
 		duration = 0;
 		shouldStartRolling = false;
 		shouldChangeColor = false;
@@ -46,6 +46,7 @@ public class WorldModel extends Observable {
         notifyObservers();
 	}
 	public void executeCommandOnSphero(){
+		System.out.println("WorldModel: executing command on Sphero with heading: " + heading + " velocity: " + velocity + " duration: " + duration);
 		this.shouldStartRolling = true;
 		setChanged();
         notifyObservers();
