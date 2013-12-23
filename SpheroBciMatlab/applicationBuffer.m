@@ -3,13 +3,13 @@ initialize();
 %% Wait until the buffer is ready.
 header = [];
 while(isempty(header) || ~isstruct(header) || (header.nchans==0))
-  try 
-    header = buffer('get_header', [], Settings.buffer.host, Settings.buffer.port); 
-  catch
-    header = [];
-    Logger.debug('buffer', 'Invalid header data...');
-  end
-  pause(1);
+    try 
+        header = buffer('get_hdr', [], Settings.buffer.host, Settings.buffer.port); 
+    catch
+        header = [];
+        Logger.debug('buffer', 'Invalid header data...');
+    end
+    pause(1);
 end
 
 %% Main loop.
