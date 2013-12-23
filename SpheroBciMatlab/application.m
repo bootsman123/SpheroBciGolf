@@ -22,14 +22,12 @@ while(ishandle(Gui.figure))
             sendEvent('subject', Gui.data.subject);
             sendEvent('startPhase.cmd', Gui.data.phase);
             buffer_waitData(Settings.buffer.host, Settings.buffer.port, [], 'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
-            break;
 
         %% EEG viewer.
         case 'eegViewer'
             sendEvent('subject', Gui.data.subject);
             sendEvent('startPhase.cmd', Gui.data.phase);
             buffer_waitData(Settings.buffer.host, Settings.buffer.port, [],'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
-            break;        
             
         %% Training.
         case 'training'
@@ -44,7 +42,6 @@ while(ishandle(Gui.figure))
             sendEvent('subject', Gui.data.subject);
             sendEvent('startPhase.cmd', Gui.data.phase);
             buffer_waitData(Settings.buffer.host, Settings.buffer.port, [], 'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
-            break;
 
         %% Feedback.
         case 'feedback';
@@ -53,7 +50,6 @@ while(ishandle(Gui.figure))
             sendEvent(Gui.data.phase,'start');
             phaseFeedback();
             sendEvent(Gui.data.phase,'end');
-            break;
    
         %% Feedback.
         case 'testing';
@@ -62,23 +58,18 @@ while(ishandle(Gui.figure))
             sendEvent(Gui.data.phase,'start');
             phaseTesting();
             sendEvent(Gui.data.phase,'end');
-            break;
-    end;
-  
-    %{
-    Gui.data.phasesCompleted = {Gui.data.phasesCompleted{:} Gui.data.phase};
-    if ( ~ishandle(Gui.figure) ) 
-        oGui.data = Gui.data;
+    end
+
+    if(~ishandle(Gui.figure)) 
+        oldGuiData = Gui.data;
         Gui.figure = gui();
         Gui.data = guidata(Gui.figure);
 
-        Gui.data.phasesCompleted = oGui.data.phasesCompleted;
-        Gui.data.phase = oGui.data.phase;
-        Gui.data.subject = oGui.data.subject;
-        set(Gui.data.subjectName, 'String', Gui.data.subject);
+        Gui.data.phase = oldGuiData.phase;
+        Gui.data.subject = oldGuiData.subject;
+        set(Gui.data.subject, 'String', Gui.data.subject); % TODO: Look into this...
         guidata(Gui.figure, Gui.data);
-    end;
-    %}
-end;
+    end
+end
 
 sendEvent('startPhase.cmd', 'exit');

@@ -17,7 +17,7 @@ Settings.buffer.port = 1972;
 %% Logger.
 Settings.logger.file = sprintf('%s.%s', date, 'log');
 Settings.logger.commandWindowLevel = log4m.ALL;
-Settings.logger.logLevel = log4m.DEBUG;
+Settings.logger.logLevel = log4m.ALL;
 
 Settings.cap.file = 'cap_tmsi_mobita_im'; % 1010
 Settings.cap.noiseThresholds = [0.5 3]; % [0.0 0.1 0.2 5]

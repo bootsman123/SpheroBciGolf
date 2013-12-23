@@ -1,11 +1,16 @@
-QuickStart
-----------
+= Quickstart =
+1. 	Start a buffer (run: dataAcq/startBuffer.bat or dataAcq/startBuffer.sh)
+(Optional: Start a simulated data source (run: dataAcq/startSignalProxy.bat or dataAcq/startSignalProxy.sh)
+2.	Start application (run: SpheroBciMatlab/application.bat or SpheroBciMatlab/application.sh)
+3.	- Type in the subjects name;
+	- Run 'Cap Fitting' and verify using 'EEG Viewer';
+	
+	
+	
+	
+	......................
 
-To run the imaginedMovement demo:
-1) Start a buffer by running: dataAcq/startBuffer.bat or buffer/startBuffer.sh
-(optional) 1.1) Start a simulated data source (if you don't have an measurement system connected) by running: dataAcq/startSignalProxy.bat or .sh
-2) Start the Matlab based signal processing proces by running: imaginedMovement/startSigProcBuffer.bat or .sh
-3) Start the Matlab based experiment control & stimulus presentation system by running : imaginedMovement/runIM.bat or runGame.sh
+
 4) Type in the subject name to the experiment control window, and then run through each of the experiment phases: 
    CapFitting -- check electrode connection quality of the cap.  This will show a topographic plot of the head with the electrodes colored from red=bad to green=good.  Add additional gel or rub the electrodes until all are green.
    EEG      -- real-time EEG viewer to check electrode connection quality.  This shows a topographic arrangement of the electrodes with the current (filtered) signal in each electrode.  If you have a well connected set of electrodes you should be able to see eye-blinks in the most frontal electrodes, and muscle artifacts (such as jaw clenching) in all electrodes.

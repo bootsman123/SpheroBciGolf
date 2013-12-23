@@ -43,20 +43,19 @@ while(true)
 	for index = 1:numel(events)
 		if(strcmp(events(index).type, 'subject'))
 			subject = events(index).value;
-			Logger.debug('applicationBuffer', sprintf('Received subject: %s', subject));
-			continue
+			Logger.debug('applicationBuffer', sprintf('Received subject: %s.', subject));
+            continue
 		else
 			phase = events(index).value;
-            Logger.debug('applicationBuffer', sprintf('Got something in loop: %s.', phase));
-			break
-		end
-	end
+            break
+        end
+    end
 	
 	if(isempty(phase))
 		continue
-	end
+    end
 	
-	Logger.debug('applicationBuffer', sprintf('[%d]: %s', getwTime(), phase));
+	Logger.debug('applicationBuffer', sprintf('Received phase %s.', phase));
 	
 	switch(phase)
 		%% Cap fitting.
@@ -64,14 +63,12 @@ while(true)
 			sendEvent(phase, 'start');
 			capFitting('noiseThresholds', Settings.cap.noiseThresholds, 'badChThreshold', Settings.cap.badChannelThreshold, 'verb', Settings.verbose, 'showOffset', 0, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames);
 			sendEvent(phase, 'end');
-			break
 
 		%% EEG viewer.
 		case 'eegViewer'
 			sendEvent(phase, 'start');
 			eegViewer(Settings.buffer.host, Settings.buffer.port, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames);
 			sendEvent(phase, 'end');
-			break
 			
 		%% Training.
 		case 'training'
@@ -92,7 +89,6 @@ while(true)
 			save(classifierFile, '-struct', 'classifier');
 
 			Logger.debug('applicationBuffer', sprintf('Saved classifier to %s.', classifierFile));
-			break
 	
 		%% Testing.
 		case 'testing'
@@ -105,7 +101,6 @@ while(true)
 			sendEvent(phase, 'start');
 			phaseTesting();
 			sendEvent(phase, 'end');
-			break
 		
 		%% Exit.
 		case 'exit'
@@ -113,6 +108,5 @@ while(true)
     
 		otherwise
 			Logger.warning('applicationBuffer', sprintf('Unrecognized command %s.', phase));
-			break
 	end
 end
