@@ -2,7 +2,7 @@
 if ( exist('imConfig','var') && ~isempty(imConfig) ) return; end;
 imConfig=true;
 
-run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
+run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
 
 buffhost='localhost';buffport=1972;
 global ft_buff; ft_buff=struct('host',buffhost,'port',buffport);
@@ -22,7 +22,8 @@ end;
 initgetwTime();
 initsleepSec();
 
-capFile='1010';%'cap_tmsi_mobita_im';
+%capFile='1010';%'cap_tmsi_mobita_im';
+capFile='cap_tmsi_mobita_im';
 
 verb=0;
 buffhost='localhost';
