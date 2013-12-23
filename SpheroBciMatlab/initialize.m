@@ -15,7 +15,7 @@ Settings.buffer.host = 'localhost';
 Settings.buffer.port = 1972;
 
 %% Logger.
-Settings.logger.file = 'log.txt';
+Settings.logger.file = sprintf('%s.%s', date, 'log');
 Settings.logger.commandWindowLevel = log4m.ALL;
 Settings.logger.logLevel = log4m.DEBUG;
 
