@@ -22,10 +22,6 @@ Settings.interTrialDuration = 2;
 Settings.baselineDuration = 2;
 Settings.feedbackDuration = 1;
 
-Settings.color.background = [.5 .5 .5]; %?
-Settings.color.fixation = [1 0 0]; %?
-Settings.color.target = [0 1 0]; %?
-
 Settings.trial.length = 3000;
 Settings.trial.lengthOl = 3000; %?
 Settings.smoothFactor = log(2)/log(10);

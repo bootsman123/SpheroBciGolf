@@ -1,38 +1,37 @@
-configureIM();
+settings();
 
 % make the target sequence
-tgtSeq=mkStimSeqRand(nSymbs,nSeq);
+targets = mkStimSeqRand(Settings.numberOfSymbols, Settings.numberOfSequences);
 
-sendEvent('stimulus.testing','start');
-sendEvent('TEXT_VALUE',['Congratulations, you succesfully fullfilled the training phase! '...
-    'Now, you have to imagine some movements again. However, this time we will ' ... 
-   ' present to you our prediction of the movement you imagined.']);
-sendEvent('TEXT_SHOW',0);
+sendEvent('stimulus.testing', 'start');
+sendEvent('TEXT_VALUE', 'Congratulations, you succesfully fullfilled the training phase!\nNow, you have to imagine some movements again.\nHowever, this time we will present to you our prediction of the movement you imagined.');
+sendEvent('TEXT_SHOW', 0);
 
-pause(10); % Pause for a while to let Java draw
+pause(10);
 sendEvent('TEXT_HIDE',0);
 sendEvent('DIRECTION_METER_RESET',0);
 sendEvent('DIRECTION_METER_SHOW',0);
 
-endTesting=false; dvs=[];
-for si=1:nSeq;  
+endTesting=false;
+dvs=[];
+
+for index = 1:Settings.numberOfSequences
+    Logger.debug('phaseTrainingFeedback', sprintf('[Sequence %d]: Target %s', index, find(targets(:,index) > 0)));
+	
     sleepSec(intertrialDuration);
     sendEvent('stimulus.baseline','start');
     sleepSec(baselineDuration);
     sendEvent('stimulus.baseline','end');
     
-    % show the target
-    fprintf('%d) tgt=%d : ',si,find(tgtSeq(:,si)>0));
-    
-    sendEvent('stimulus.target',find(tgtSeq(:,si)>0));
-    if(find(tgtSeq(:,si)>0) == 1)
+    sendEvent('stimulus.target',find(targets(:,index) > 0));
+    if(find(targets(:,index)>0) == 1)
         sendEvent('DIRECTION_METER_ROTATION','CLOCKWISE');
     else
         sendEvent('DIRECTION_METER_ROTATION','COUNTER_CLOCKWISE');
     end
     sendEvent('stimulus.trial','start');
     
-    % initial fixation point position
+    % initial fixation point poindextion
     dvs(:)=0; nPred=0; state=[];
     trlStartTime=getwTime();
     timetogo = trialDuration;
@@ -46,7 +45,7 @@ for si=1:nSeq;
                 pred=ev.value;
                 % now do something with the prediction....
                 if ( numel(pred)==1 )
-                    if ( pred>0 && pred<=nSymbs && isinteger(pred) ) % predicted symbol, convert to dv equivalent
+                    if ( pred>0 && pred<=nSymbs && iindexnteger(pred) ) % predicted symbol, convert to dv equivalent
                         tmp=pred; pred=zeros(nSymbs,1); pred(tmp)=1;
                     else % binary problem, convert to per-class
                         pred=[pred -pred];
@@ -68,15 +67,13 @@ for si=1:nSeq;
     end % loop accumulating prediction events
     
     % give the feedback on the predicted class
-    dv = sum(dvs,2); prob=1./(1+exp(-dv)); prob=prob./sum(prob);
-    if ( verb>=0 )
-        fprintf('dv:');
-        fprintf('%5.4f ',pred);
-        fprintf('\t\tProb:');
-        fprintf('%5.4f ',prob);
-        fprintf('\n');
-    end;
-    [ans,predTgt]=max(dv); % prediction is max classifier output
+    dv = sum(dvs,2);
+	prob=1./(1+exp(-dv));
+	prob=prob./sum(prob);
+	
+	Logger.debug('phaseTrainingFeedback', sprintf('[Prediction]: %5.4f (%5.4f)', pred, prob));
+
+    [ans,predTgt]=max(dv); % prediction is max clasindexfier output
     
     % predicaion is made, now display the prediction
     % TODO: maybe we need to give this feedback another color
@@ -94,14 +91,13 @@ for si=1:nSeq;
     
     ftime=getwTime();
     fprintf('\n');
-end % loop over sequences in the experiment
-% end training marker
+end
+
+%% End training.
 sendEvent('DIRECTION_METER_HIDE',0);
 sendEvent('stimulus.testing','end');
 
-% thanks message
-sendEvent('TEXT_VALUE',['That ends the feedback phase. ' ... 
-   'Thanks for your patience']);
+sendEvent('TEXT_VALUE', 'That ends the feedback phase.\nThanks for your patience!');
 sendEvent('TEXT_SHOW',0);
 pause(5);
 sendEvent('TEXT_HIDE',0);
