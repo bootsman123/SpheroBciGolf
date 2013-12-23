@@ -31,7 +31,15 @@ while(ishandle(Gui.figure))
     sendEvent('subject', Gui.data.subject);
     sendEvent('startPhase.cmd', phase);
 	
-    buffer_waitData(Settings.buffer.host,Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);           
+    buffer_waitData(Settings.buffer.host,Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);   
+
+   %% Training.
+   % TODO: Remove multiple cases.
+   case {'train','classifier'};
+    sendEvent('subject', Gui.data.subject);
+    sendEvent('startPhase.cmd', phase);
+	
+    buffer_waitData(Settings.buffer.host,Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);          
     
    %% Practicing.
    case 'practice';
@@ -51,22 +59,14 @@ while(ishandle(Gui.figure))
     imCalibrateStimulus();
     sendEvent(phase,'end');
 
-   %% Training.
-   % TODO: Remove multiple cases.
-   case {'train','classifier'};
-    sendEvent('subject', Gui.data.subject);
-    sendEvent('startPhase.cmd', phase);
-	
-    buffer_waitData(Settings.buffer.host,Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);  
-
-   %% Epoch feedback.
+   %% Feedback.
    case 'epochfeedback';
     sendEvent('subject',Gui.data.subject);
     %sleepSec(.1);
     sendEvent(phase,'start');
     %try
       sendEvent('startPhase.cmd','testing');
-      imEpochFeedbackStimulus;
+      phaseTrainingFeedback();
     %catch
       % le=lasterror;fprintf('ERROR Caught:\n %s\n%s\n',le.identifer,le.message);
     %end
