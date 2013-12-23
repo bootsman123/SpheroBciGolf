@@ -1,4 +1,4 @@
-configureIM();
+settings();
 
 sendEvent('stimulus.testing','start');
 
