@@ -24,7 +24,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 17-Nov-2013 23:18:24
+% Last Modified by GUIDE v2.5 23-Dec-2013 12:54:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,11 +57,11 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for gui
 handles.output = hObject;
 data = handles;
-data.subject='test';
-data.level =1;
-data.speed =6;
-data.phasesCompleted={};
-data.phase=[];
+data.subject = 'test';
+data.level = 1;
+data.speed = 6;
+data.phasesCompleted = {};
+data.phase = [];
 
 % Update handles structure
 guidata(hObject, data);
@@ -80,22 +80,19 @@ function varargout = gui_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
-
-function subjectName_Callback(hObject, eventdata, handles)
-% hObject    handle to subjectName (see GCBO)
+function textSubject_Callback(hObject, eventdata, handles)
+% hObject    handle to textSubject (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of subjectName as text
-%        str2double(get(hObject,'String')) returns contents of subjectName as a double
+% Hints: get(hObject,'String') returns contents of textSubject as text
+%        str2double(get(hObject,'String')) returns contents of textSubject as a double
 handles.subject=get(hObject,'String');
 guidata(hObject,handles);
 
-
 % --- Executes during object creation, after setting all properties.
-function subjectName_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to subjectName (see GCBO)
+function textSubject_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textSubject (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -105,114 +102,56 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
-% --- Executes on button press in capFitting.
-function capFitting_Callback(hObject, eventdata, handles)
-% hObject    handle to capFitting (see GCBO)
+% --- Executes on button press in buttonCapFitting.
+function buttonCapFitting_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonCapFitting (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
+handles.phase = 'capFitting';
 guidata(hObject,handles);
 uiresume;
 
-
-% --- Executes on button press in calibration.
-function calibration_Callback(hObject, eventdata, handles)
-% hObject    handle to calibration (see GCBO)
+% --- Executes on button press in buttonEegViewer.
+function buttonEegViewer_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonEegViewer (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
+handles.phase = 'eegViewer';
 guidata(hObject,handles);
 uiresume;
 
-
-% --- Executes on button press in classifier.
-function classifier_Callback(hObject, eventdata, handles)
-% hObject    handle to classifier (see GCBO)
+% --- Executes on button press in buttonTraining.
+function buttonTraining_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonTraining (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase='train';
+handles.phase = 'training';
 guidata(hObject,handles);
 uiresume;
 
-
-% --- Executes on button press in snake.
-function copyspell1_Callback(hObject, eventdata, handles)
-% hObject    handle to snake (see GCBO)
+% --- Executes on button press in buttonTrainClassifier.
+function buttonTrainClassifier_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonTrainClassifier (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
+handles.phase = 'trainClassifier';
 guidata(hObject,handles);
 uiresume;
 
-
-% --- Executes on button press in sokoban.
-function copyspell2_Callback(hObject, eventdata, handles)
-% hObject    handle to sokoban (see GCBO)
+% --- Executes on button press in buttonFeedback.
+function buttonFeedback_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonFeedback (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
+handles.phase = 'feedback';
 guidata(hObject,handles);
 uiresume;
 
-
-% --- Executes on button press in contFeedback.
-function freespelling_Callback(hObject, eventdata, handles)
-% hObject    handle to contFeedback (see GCBO)
+% --- Executes on button press in buttonTesting.
+function buttonTesting_Callback(hObject, eventdata, handles)
+% hObject    handle to buttonTesting (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
+handles.phase = 'testing';
 guidata(hObject,handles);
 uiresume;
-
-
-% --- Executes on button press in practice.
-function practice_Callback(hObject, eventdata, handles)
-% hObject    handle to practice (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
-guidata(hObject,handles);
-uiresume;
-
-
-% --- Executes on button press in eegviewer.
-function eegviewer_Callback(hObject, eventdata, handles)
-% hObject    handle to eegviewer (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
-guidata(hObject,handles);
-uiresume;
-
-
-% --- Executes on button press in contFeedback.
-function contFeedback_Callback(hObject, eventdata, handles)
-% hObject    handle to contFeedback (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
-guidata(hObject,handles);
-uiresume;
-
-
-% --- Executes on button press in neurofeedback.
-function neurofeedback_Callback(hObject, eventdata, handles)
-% hObject    handle to neurofeedback (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
-guidata(hObject,handles);
-uiresume;
-
-
-% --- Executes on button press in epochFeedback.
-function epochFeedback_Callback(hObject, eventdata, handles)
-% hObject    handle to epochFeedback (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles.phase=get(hObject,'Tag');
-guidata(hObject,handles);
-uiresume;
-
-
