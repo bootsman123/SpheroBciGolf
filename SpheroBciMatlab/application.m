@@ -20,7 +20,7 @@ while(ishandle(Gui.figure))
   
     switch phase
         %% Capfitting.
-        case 'capfitting';
+        case 'capFitting';
             sendEvent('subject', Gui.data.subject);
             sendEvent('startPhase.cmd', phase);
             buffer_waitData(Settings.buffer.host,Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);
