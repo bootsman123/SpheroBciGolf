@@ -4,7 +4,7 @@ call "C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci\utilities\findMatl
 :: ...
 
 :: Start application buffer.
-start "matlab" %matexe% -nodesktop -nosplash -minimize -singleCompThread -r "buffer;quit;"
+start "matlab" %matexe% -nodesktop -nosplash -minimize -singleCompThread -r "applicationBuffer;quit;"
 
 :: Start application.
 start "matlab" %matexe% -nodesktop -nosplash -minimize -singleCompThread -r "application;quit;"
