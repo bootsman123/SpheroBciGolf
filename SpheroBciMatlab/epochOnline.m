@@ -17,15 +17,15 @@ elseif(strcmp(epochType, 'POWER'))
     sendEvent('TEXT_VALUE','You can now set the speed of your move.');
     sendEvent('TEXT_SHOW',0);
 end
-pause(3);
+pause(Settings.instructionTextDuration);
 sendEvent('TEXT_HIDE',0);
 
 %% Initialize the right baseline panel
 if(strcmp(epochType, 'DIRECTION'))
-    sendEvent('DIRECTION_METER_VALUE',Sphero.direction);
+    sendEvent('DIRECTION_METER_VALUE',Settings.sphero.angle);
     sendEvent('DIRECTION_METER_SHOW',0);
 elseif(strcmp(epochType, 'POWER'))
-    sendEvent('POWER_METER_VALUE',Sphero.power);
+    sendEvent('POWER_METER_VALUE',Settings.sphero.power);
     sendEvent('POWER_METER_SHOW',0);
 end
 
@@ -74,19 +74,19 @@ while (timeLeft>0)
             %% Update state variables based on the predicted class
             if predictedTarget==1
                 if(strcmp(epochType, 'DIRECTION'))
-                    Sphero.direction = Sphero.direction - degtorad(30);
-                    Sphero.direction = mod(Sphero.direction,2*pi);
+                    Settings.sphero.angle = Settings.sphero.angle - degtorad(30);
+                    Settings.sphero.angle = mod(Settings.sphero.angle,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
-                    Sphero.power = Sphero.power - 0.2;
-                    Sphero.power = max(Sphero.power, 0);
+                    Settings.sphero.power= Settings.sphero.power- 0.2;
+                    Settings.sphero.power= max(Settings.sphero.power, 0);
                 end
             elseif predictedTarget==2
                 if(strcmp(epochType, 'DIRECTION'))
                     Sphero.direction = Sphero.direction + degtorad(30);
                     Sphero.direction = mod(Sphero.direction,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
-                    Sphero.power = Sphero.power + 0.2;
-                    Sphero.power = min(Sphero.power, 1);
+                    Settings.sphero.power = Settings.sphero.power+ 0.2;
+                    Settings.sphero.power= min(Settings.sphero.power, 1);
                 end
             end
             
@@ -94,7 +94,7 @@ while (timeLeft>0)
             if(strcmp(epochType, 'DIRECTION'))
                 sendEvent('DIRECTION_METER_VALUE',Sphero.direction);
             elseif(strcmp(epochType, 'POWER'))
-                sendEvent('POWER_METER_VALUE',Sphero.power);
+                sendEvent('POWER_METER_VALUE',Settings.sphero.power);
             end
             
         end

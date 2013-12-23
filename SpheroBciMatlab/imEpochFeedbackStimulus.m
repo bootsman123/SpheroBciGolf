@@ -103,5 +103,5 @@ sendEvent('stimulus.testing','end');
 sendEvent('TEXT_VALUE',['That ends the feedback phase. ' ... 
    'Thanks for your patience']);
 sendEvent('TEXT_SHOW',0);
-pause(5);
+pause(Settings.instructionTextDuration);
 sendEvent('TEXT_HIDE',0);

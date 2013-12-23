@@ -3,9 +3,9 @@ if(exist('Settings','var') && ~isempty(Settings))
 	return;
 end;
 
-run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
+%run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 % ^^ PC Bas(?)
-%run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths'; 
+run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths'; 
 %^^ PC Roland
 Settings.buffer.host = 'localhost';
 Settings.buffer.port = 1972;
@@ -23,6 +23,8 @@ Settings.trialDuration = 3;
 Settings.interTrialDuration = 2;
 Settings.baselineDuration = 2;
 Settings.feedbackDuration = 1;
+Settings.webcamShowDuration = 5;
+Settings.instructionTextDuration = 5;
 
 Settings.color.background = [.5 .5 .5]; %?
 Settings.color.fixation = [1 0 0]; %?
@@ -32,9 +34,8 @@ Settings.trial.length = 3000;
 Settings.trial.lengthOl = 3000; %?
 Settings.smoothFactor = log(2)/log(10);
 
-Settings.sphero.angle = 0;
-Settings.sphero.velocity = 0;
-Settings.sphero.duration = 2500;
+Settings.sphero.angle = 0; % Between 0 and 360
+Settings.sphero.power = 0.5; % Between 0 and 1
 
 % Initialize clock.
 initgetwTime();
