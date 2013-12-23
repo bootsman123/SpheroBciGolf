@@ -1,4 +1,4 @@
-settings();
+initialize();
 
 % Target sequence.
 targets = mkStimSeqRand(Settings.numberOfSymbols, Settings.numberOfSequences);

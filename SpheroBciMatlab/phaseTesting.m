@@ -1,4 +1,4 @@
-settings();
+initialize();
 
 sendEvent('stimulus.testing','start');
 

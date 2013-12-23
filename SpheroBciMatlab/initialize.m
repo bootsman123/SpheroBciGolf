@@ -4,8 +4,12 @@ end;
 
 %run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 % ^^ PC Bas(?)
-run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths'; 
+%run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths'; 
 %^^ PC Roland
+
+%% Backwards compatible.
+Settings.verbose = 2;
+
 %% Buffer.
 Settings.buffer.host = 'localhost';
 Settings.buffer.port = 1972;
@@ -15,7 +19,8 @@ Settings.logger.file = 'log.txt';
 Settings.logger.commandWindowLevel = log4m.ALL;
 Settings.logger.logLevel = log4m.DEBUG;
 
-Settings.cap.file = 'cap_tmsi_mobita_im'; %1010
+Settings.cap.file = 'cap_tmsi_mobita_im'; % 1010
+Settings.cap.noiseThresholds = [0.5 3]; % [0.0 0.1 0.2 5]
 Settings.cap.badChannelThreshold = 0.5; % 1e-4
 Settings.cap.overrideChannelNames = 0; % 1
 

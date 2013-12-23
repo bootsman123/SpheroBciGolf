@@ -1,36 +1,34 @@
-settings();
+initialize();
 
-% create the control window and execute the phase selection loop
+%% Phase execution loop.
 Gui.figure = gui();
 Gui.data = guidata(Gui.figure); 
 
 while(ishandle(Gui.figure))
-    set(Gui.figure,'visible', 'on');
+    set(Gui.figure, 'visible', 'on');
     uiwait(Gui.figure);
     if(~ishandle(Gui.figure))
-        break;
-    end;
+        break
+    end
 
-    set(Gui.figure,'visible','off');
+    set(Gui.figure, 'visible', 'off');
     Gui.data = guidata(Gui.figure); 
-    subject = Gui.data.subject;
-    phase = lower(Gui.data.phase);
-
-    Logger.debug('application', sprintf('Starting phase %s', phase));
+    
+    Logger.debug('application', sprintf('Starting phase %s.', Gui.data.phase));
   
-    switch phase
+    switch Gui.data.phase
         %% Capfitting.
-        case 'capFitting';
+        case 'capFitting'
             sendEvent('subject', Gui.data.subject);
-            sendEvent('startPhase.cmd', phase);
-            buffer_waitData(Settings.buffer.host,Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);
+            sendEvent('startPhase.cmd', Gui.data.phase);
+            buffer_waitData(Settings.buffer.host, Settings.buffer.port, [], 'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
             break;
 
         %% EEG viewer.
         case 'eegViewer'
             sendEvent('subject', Gui.data.subject);
-            sendEvent('startPhase.cmd', phase);
-            buffer_waitData(Settings.buffer.host, Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);
+            sendEvent('startPhase.cmd', Gui.data.phase);
+            buffer_waitData(Settings.buffer.host, Settings.buffer.port, [],'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
             break;        
             
         %% Training.
@@ -44,29 +42,30 @@ while(ishandle(Gui.figure))
         %% Train classifier.
         case 'trainClassifier'
             sendEvent('subject', Gui.data.subject);
-            sendEvent('startPhase.cmd', phase);
-            buffer_waitData(Settings.buffer.host, Settings.buffer.port,[],'exitSet',{{phase} {'end'}},'verb',verb);
+            sendEvent('startPhase.cmd', Gui.data.phase);
+            buffer_waitData(Settings.buffer.host, Settings.buffer.port, [], 'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
             break;
 
         %% Feedback.
         case 'feedback';
             sendEvent('subject', Gui.data.subject);
             
-            sendEvent(phase,'start');
+            sendEvent(Gui.data.phase,'start');
             phaseFeedback();
-            sendEvent(phase,'end');
+            sendEvent(Gui.data.phase,'end');
             break;
    
         %% Feedback.
         case 'testing';
             sendEvent('subject', Gui.data.subject);
             
-            sendEvent(phase,'start');
+            sendEvent(Gui.data.phase,'start');
             phaseTesting();
-            sendEvent(phase,'end');
+            sendEvent(Gui.data.phase,'end');
             break;
     end;
   
+    %{
     Gui.data.phasesCompleted = {Gui.data.phasesCompleted{:} Gui.data.phase};
     if ( ~ishandle(Gui.figure) ) 
         oGui.data = Gui.data;
@@ -76,9 +75,10 @@ while(ishandle(Gui.figure))
         Gui.data.phasesCompleted = oGui.data.phasesCompleted;
         Gui.data.phase = oGui.data.phase;
         Gui.data.subject = oGui.data.subject;
-        set(Gui.data.subjectName,'String',Gui.data.subject);
+        set(Gui.data.subjectName, 'String', Gui.data.subject);
         guidata(Gui.figure, Gui.data);
     end;
+    %}
 end;
 
 sendEvent('startPhase.cmd', 'exit');

@@ -57,9 +57,7 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for gui
 handles.output = hObject;
 data = handles;
-data.subject = 'test';
-data.level = 1;
-data.speed = 6;
+data.subject = 'subject';
 data.phasesCompleted = {};
 data.phase = [];
 
@@ -87,7 +85,7 @@ function textSubject_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of textSubject as text
 %        str2double(get(hObject,'String')) returns contents of textSubject as a double
-handles.subject=get(hObject,'String');
+handles.subject = get(hObject,'String');
 guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.

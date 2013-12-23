@@ -27,7 +27,7 @@ while(true)
 	%% Process commands.
 	Logger.debug('buffer', 'Waiting for a command...');
 	
-	[data, devents, state] = buffer_waitData(Settings.buffer.host, Settings.buffer.port, state, 'trlen_ms', 0, 'exitSet', {{'startPhase.cmd' 'subject'}}, 'verb', 0, 'timeOut_ms', 5000);   
+	[data, devents, state] = buffer_waitData(Settings.buffer.host, Settings.buffer.port, state, 'trlen_ms', 0, 'exitSet', {{'startPhase.cmd' 'subject'}}, 'verb', Settings.verbose, 'timeOut_ms', 5000);   
 	if(numel(devents) == 0)
 		continue
 	end
@@ -63,14 +63,14 @@ while(true)
 		%% Cap fitting.
 		case 'capFitting'
 			sendEvent(phase, 'start');
-			capFitting('noiseThresholds', thresh, 'badChThreshold', badchThresh, 'verb', verb, 'showOffset', 0, 'capFile', capFile, 'overridechnms',overridechnms);
+			capFitting('noiseThresholds', Settings.cap.noiseThresholds, 'badChThreshold', Settings.cap.badChannelThreshold, 'verb', Settings.verbose, 'showOffset', 0, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames);
 			sendEvent(phase, 'end');
 			break
 
 		%% EEG viewer.
 		case 'eegViewer'
 			sendEvent(phase, 'start');
-			eegViewer(Settings.buffer.host, Settings.buffer.port, 'capFile', Settings.cap.file, 'overridechnms', overridechnms);
+			eegViewer(Settings.buffer.host, Settings.buffer.port, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames);
 			sendEvent(phase, 'end');
 			break
 			
@@ -86,7 +86,7 @@ while(true)
 			
 			sendEvent(phase, 'start');
 			classifier = buffer_train_ersp_clsfr(traindata, traindevents, state.hdr, 'spatialfilter', 'slap', 'freqband', [6 10 26 30], 'badchrm', 1, 'badtrrm', 1, ...
-												 'objFn', 'lr_cg', 'compKernel', 0, 'dim', 3, 'capFile', Settings.cap.file, 'overridechnms', overridechnms, 'visualize', 2);
+												 'objFn', 'lr_cg', 'compKernel', 0, 'dim', 3, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames, 'visualize', 2);
 			classifierSubject = subject;
 			
 			classifierFile = sprintf('%s_%s_%s', date, subject, Settings.classifier.file);

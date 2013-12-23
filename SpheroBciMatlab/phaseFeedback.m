@@ -1,4 +1,4 @@
-settings();
+initialize();
 
 % make the target sequence
 targets = mkStimSeqRand(Settings.numberOfSymbols, Settings.numberOfSequences);
@@ -89,8 +89,7 @@ for index = 1:Settings.numberOfSequences
     sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');
     
-    ftime=getwTime();
-    fprintf('\n');
+    ftime = getwTime();
 end
 
 %% End training.
