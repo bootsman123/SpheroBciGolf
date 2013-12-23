@@ -7,7 +7,10 @@
 %  (startPhase.cmd,exit)       -- stop everything
 settings();
 
-if ( ~exist('capFile','var') ) capFile='1010'; end; %'cap_tmsi_mobita_num'; 
+if ( ~exist('capFile','var') ) 
+    capFile='1010'; 
+end; %'cap_tmsi_mobita_num'; 
+
 if ( ~isempty(strfind(capFile,'tmsi')) ) thresh=[.0 .1 .2 5]; badchThresh=1e-4; overridechnms=1;
 else                                     thresh=[.5 3];  badchThresh=.5;   overridechnms=0;
 end

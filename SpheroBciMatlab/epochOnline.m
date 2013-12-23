@@ -82,8 +82,8 @@ while (timeLeft>0)
                 end
             elseif predictedTarget==2
                 if(strcmp(epochType, 'DIRECTION'))
-                    Sphero.direction = Sphero.direction + degtorad(30);
-                    Sphero.direction = mod(Sphero.direction,2*pi);
+                    Settings.sphero.angle  = Settings.sphero.angle  + degtorad(30);
+                    Settings.sphero.angle  = mod(Settings.sphero.angle ,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
                     Settings.sphero.power = Settings.sphero.power+ 0.2;
                     Settings.sphero.power= min(Settings.sphero.power, 1);
