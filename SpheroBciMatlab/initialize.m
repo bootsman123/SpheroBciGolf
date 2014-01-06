@@ -12,7 +12,11 @@ run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 %run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
 
 %% Path.
-Settings.path = 'C:\Users\bootsman\Documents\Development\SpheroBciGolf\SpheroBciMatlab';
+% Bas
+% Settings.path = 'C:\Users\bootsman\Documents\Development\SpheroBciGolf\SpheroBciMatlab';
+
+% Thymen
+Settings.path = 'D:\Users\My Documents\Studie\Master\BCI\SpheroBciGolf\SpheroBciMatlab';
 
 %% Backwards compatible.
 Settings.verbose = 2;

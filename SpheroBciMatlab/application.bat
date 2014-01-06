@@ -1,4 +1,4 @@
-set path=C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci
+set path=D:\Users\My Documents\MATLAB\buffer_bci
 
 :: Find Matlab path.
 call "%path%\utilities\findMatlab.bat"

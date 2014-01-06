@@ -72,7 +72,7 @@ while(true)
 
         %% Phase training.
         case 'phaseTraining';
-            [trainData, trainEvents, state] = buffer_waitData(buffhost,buffport,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',verb,'trlen_ms',Settings.trial.length);
+            [trainData, trainEvents, state] = buffer_waitData(buffhost,buffport,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',Settings.verbose,'trlen_ms',Settings.trial.length);
             
             % Remove last event.
             events = matchEvents(trainEvents,'stimulus.training','end'); 
