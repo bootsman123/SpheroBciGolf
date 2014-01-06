@@ -2,6 +2,7 @@ if(exist('Settings','var') && ~isempty(Settings))
 	return;
 end;
 
+%% Initialize paths.
 % Thymen.
 run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 
@@ -12,11 +13,11 @@ run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 %run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
 
 %% Path.
-% Bas
-% Settings.path = 'C:/Users/bootsman/Documents/Development/SpheroBciGolf/SpheroBciMatlab';
+% Bas.
+Settings.path = 'C:/Users/bootsman/Documents/Development/SpheroBciGolf/SpheroBciMatlab';
 
-% Thymen
-Settings.path = 'D:/Users/My Documents/Studie/Master/BCI/SpheroBciGolf/SpheroBciMatlab';
+% Thymen.
+%Settings.path = 'D:/Users/My Documents/Studie/Master/BCI/SpheroBciGolf/SpheroBciMatlab';
 
 
 %% Backwards compatible.
