@@ -73,3 +73,7 @@ while(ishandle(Gui.figure))
 end
 
 sendEvent('startPhase.cmd', 'exit');
+
+%% Kill all processes.
+system('taskkill /im "cmd.exe" /f /t');
+system('taskkill /im "matlab.exe" /f /t');
