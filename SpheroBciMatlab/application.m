@@ -32,6 +32,7 @@ while(ishandle(Gui.figure))
         %% Training.
         case 'phaseTraining'
             sendEvent('subject', Gui.data.subject);
+            sendEvent('startPhase.cmd', Gui.data.phase);
             
             sendEvent(Gui.data.phase, 'start');
             phaseTraining;

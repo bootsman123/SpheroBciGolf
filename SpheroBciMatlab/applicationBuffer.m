@@ -72,15 +72,15 @@ while(true)
 
         %% Phase training.
         case 'phaseTraining';
-            [trainData, trainEvents, state] = buffer_waitData(buffhost,buffport,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',Settings.verbose,'trlen_ms',Settings.trial.length);
+            [trainData, trainEvents, state] = buffer_waitData(Settings.buffer.host,Settings.buffer.port,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',Settings.verbose,'trlen_ms',Settings.trial.length);
             
             % Remove last event.
             events = matchEvents(trainEvents,'stimulus.training','end'); 
             trainEvents(events) = [];
             trainData(events) = [];
             
-            dataFile = sprintf('%s_%s_%s', date, subject, Settings.data.file);
-            save(dataFile, 'trainData', 'trainEvents');
+            dataFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.data.file);
+            save(dataFile, 'trainData', 'trainEvents', 'state');
             Logger.debug('applicationBuffer', sprintf('Saved %d epochs to : %s.\n', numel(trainEvents), dataFile));
             
             trainingSubject = subject;
@@ -89,7 +89,7 @@ while(true)
 		%% Train the classifier.
 		case 'trainClassifier'
 			if(~isequal(trainingSubject, subject) || ~exist('traindata', 'var'))
-				dataFile = sprintf('%s_%s_%s', date, subject, Settings.data.file);
+				dataFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.data.file);
 				load(dataFile);
 				trainingSubject = subject;
 		
@@ -97,11 +97,14 @@ while(true)
 			end
 			
 			sendEvent(bufferPhase, 'start');
-			classifier = buffer_train_ersp_clsfr(trainData, trainevents, state.hdr, 'spatialfilter', 'slap', 'freqband', [6 10 26 30], 'badchrm', 1, 'badtrrm', 1, ...
+            Logger.debug('applicationBuffer', sprintf('Before classifier.'));
+			classifier = buffer_train_ersp_clsfr(trainData, trainEvents, state.hdr, 'spatialfilter', 'slap', 'freqband', [6 10 26 30], 'badchrm', 1, 'badtrrm', 1, ...
 												 'objFn', 'lr_cg', 'compKernel', 0, 'dim', 3, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames, 'visualize', 2);
 			classifierSubject = subject;
+            Logger.debug('applicationBuffer', sprintf('After classifier.'));
 			
-			classifierFile = sprintf('%s_%s_%s', date, subject, Settings.classifier.file);
+			classifierFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.classifier.file);
+            Logger.debug('applicationBuffer', sprintf('After file name: %s.', classifierFile));
 			save(classifierFile, '-struct', 'classifier');
 
 			Logger.debug('applicationBuffer', sprintf('Saved classifier to %s.', classifierFile));
@@ -109,7 +112,7 @@ while(true)
 		%% Phase testing.
 		case 'phaseTesting'
 			if(~isequal(classifierSubject, subject) || ~exist('classifier','var'))
-				classifierFile = sprintf('%s_%s_%s', date, subject, Settings.classifier.file);
+				classifierFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.classifier.file);
 				classifier = load(classifierFile);
 				classifierSubject = subject;
 			end

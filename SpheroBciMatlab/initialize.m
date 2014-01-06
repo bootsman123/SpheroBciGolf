@@ -31,7 +31,7 @@ Settings.logger.file = sprintf('%s/%s.%s', Settings.path, date, 'log');
 Settings.logger.commandWindowLevel = log4m.ALL;
 Settings.logger.logLevel = log4m.ALL;
 
-Settings.cap.file = 'cap_tmsi_mobita_im'; % 1010
+Settings.cap.file = 'cap_tmsi_mobita_im'; % 1010 
 Settings.cap.noiseThresholds = [0.5 3]; % [0.0 0.1 0.2 5]
 Settings.cap.badChannelThreshold = 0.5; % 1e-4
 Settings.cap.overrideChannelNames = 0; % 1
@@ -40,17 +40,16 @@ Settings.data.file = 'data';
 Settings.classifier.file = 'classifier';
 
 Settings.numberOfSymbols = 2;
-Settings.numberOfSequences = 5;
-Settings.numberOfBlocks = 2; %10
-Settings.trialDuration = 3;
-Settings.interTrialDuration = 2;
-Settings.baselineDuration = 2;
-Settings.feedbackDuration = 1;
-Settings.webcamShowDuration = 5;
-Settings.instructionTextDuration = 5;
+Settings.numberOfSequences = 20;
+Settings.trialDuration = .3; %3
+Settings.interTrialDuration = .2; %2
+Settings.baselineDuration = .2; %2
+Settings.feedbackDuration = 1; %1
+Settings.webcamShowDuration = 5; %5 
+Settings.instructionTextDuration = 2; %5
 
-Settings.trial.length = 3000;
-Settings.trial.lengthOl = 3000; %?
+Settings.trial.length = 300; %3000
+Settings.trial.lengthOl = 300; %?
 Settings.smoothFactor = log(2)/log(10);
 
 Settings.sphero.angle = 0; % Between 0 and 360

@@ -6,9 +6,9 @@ sendEvent('stimulus.testing','start');
 sendEvent('TEXT_VALUE',['Welcome to the Sphero Golf Game!\n'...
     'During the game you need to perform a set of moves in order to reach the hole.']);
 sendEvent('TEXT_SHOW',0);
-pause(Settings.webcamShowDuration ); 
+pause(Settings.instructionTextDuration); 
 sendEvent('TEXT_VALUE','Please get ready to make your first move.');
-pause(Settings.webcamShowDuration ); 
+pause(Settings.instructionTextDuration); 
 sendEvent('TEXT_HIDE',0);
 
 %% Set time variables

@@ -1,4 +1,4 @@
-initialize();
+initialize;
 
 % make the target sequence
 targets = mkStimSeqRand(Settings.numberOfSymbols, Settings.numberOfSequences);
@@ -7,7 +7,7 @@ sendEvent('stimulus.testing', 'start');
 sendEvent('TEXT_VALUE', 'Congratulations, you succesfully fullfilled the training phase!\nNow, you have to imagine some movements again.\nHowever, this time we will present to you our prediction of the movement you imagined.');
 sendEvent('TEXT_SHOW', 0);
 
-pause(10);
+pause(instructionTextDuration);
 sendEvent('TEXT_HIDE',0);
 sendEvent('DIRECTION_METER_RESET',0);
 sendEvent('DIRECTION_METER_SHOW',0);
@@ -18,9 +18,9 @@ dvs=[];
 for index = 1:Settings.numberOfSequences
     Logger.debug('phaseTrainingFeedback', sprintf('[Sequence %d]: Target %s', index, find(targets(:,index) > 0)));
 	
-    sleepSec(intertrialDuration);
+    sleepSec(Settings.interTrialDuration);
     sendEvent('stimulus.baseline','start');
-    sleepSec(baselineDuration);
+    sleepSec(Settings.baselineDuration);
     sendEvent('stimulus.baseline','end');
     
     sendEvent('stimulus.target',find(targets(:,index) > 0));
@@ -34,9 +34,9 @@ for index = 1:Settings.numberOfSequences
     % initial fixation point poindextion
     dvs(:)=0; nPred=0; state=[];
     trlStartTime=getwTime();
-    timetogo = trialDuration;
+    timetogo = Settings.trialDuration;
     while (timetogo>0)
-        timetogo = trialDuration - (getwTime()-trlStartTime); % time left to run in this trial
+        timetogo = Settings.trialDuration - (getwTime()-trlStartTime); % time left to run in this trial
         % wait for events to process *or* end of trial *or* out of time
         [dat,events,state]=buffer_waitData(buffhost,buffport,state,'exitSet',{timetogo*1000 {'stimulus.prediction' 'stimulus.testing'}},'verb',verb);
         for ei=1:numel(events);
@@ -84,7 +84,7 @@ for index = 1:Settings.numberOfSequences
     else
         sendEvent('DIRECTION_METER_VALUE', pi);
     end
-    sleepSec(feedbackDuration);
+    sleepSec(Settings.feedbackDuration);
     
     sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');
