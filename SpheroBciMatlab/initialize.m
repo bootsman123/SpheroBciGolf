@@ -3,10 +3,10 @@ if(exist('Settings','var') && ~isempty(Settings))
 end;
 
 % Thymen.
-%run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
+run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 
 % Bas.
-run 'C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci\utilities\initPaths';
+%run 'C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci\utilities\initPaths';
 
 % Roland.
 %run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
@@ -32,7 +32,7 @@ Settings.data.file = 'data';
 Settings.classifier.file = 'classifier';
 
 Settings.numberOfSymbols = 2;
-Settings.numberOfSequences = 20;
+Settings.numberOfSequences = 5;
 Settings.numberOfBlocks = 2; %10
 Settings.trialDuration = 3;
 Settings.interTrialDuration = 2;
