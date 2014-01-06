@@ -13,7 +13,7 @@ sendEvent('DIRECTION_METER_RESET',0);
 sendEvent('DIRECTION_METER_SHOW',0);
 
 for index = 1:Settings.numberOfSequences
-    Logger.debug('phaseTraining', sprintf('[Sequence %d]: Target %s', index, find(targets(:,index) > 0)));
+    Logger.debug('phaseTraining', sprintf('[Sequence %d]: Target %d', index, find(targets(:,index) > 0)));
 	
     sleepSec(Settings.interTrialDuration);
     sendEvent('stimulus.baseline','start');

@@ -123,7 +123,7 @@ function buttonTraining_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonTraining (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase = 'training';
+handles.phase = 'phaseTraining';
 guidata(hObject,handles);
 uiresume;
 
@@ -141,7 +141,7 @@ function buttonFeedback_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonFeedback (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase = 'feedback';
+handles.phase = 'phaseFeedback';
 guidata(hObject,handles);
 uiresume;
 
@@ -150,6 +150,6 @@ function buttonTesting_Callback(hObject, eventdata, handles)
 % hObject    handle to buttonTesting (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.phase = 'testing';
+handles.phase = 'phaseTesting';
 guidata(hObject,handles);
 uiresume;

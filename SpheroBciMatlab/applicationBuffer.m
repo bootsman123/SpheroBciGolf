@@ -71,7 +71,7 @@ while(true)
 			sendEvent(phase, 'end');
 			
 		%% Training.
-		case 'training'
+		case 'phaseTraining'
 			if(~isequal(trainingSubject, subject) || ~exist('traindata', 'var'))
 				dataFile = sprintf('%s_%s_%s', date, subject, Settings.data.file);
 				load(dataFile);
@@ -91,7 +91,7 @@ while(true)
 			Logger.debug('applicationBuffer', sprintf('Saved classifier to %s.', classifierFile));
 	
 		%% Testing.
-		case 'testing'
+		case 'trainClassifier'
 			if(~isequal(classifierSubject, subject) || ~exist('classifier','var'))
 				classifierFile = sprintf('%s_%s_%s', date, subject, Settings.classifier.file);
 				classifier = load(classifierFile);

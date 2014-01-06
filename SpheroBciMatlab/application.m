@@ -30,12 +30,12 @@ while(ishandle(Gui.figure))
             buffer_waitData(Settings.buffer.host, Settings.buffer.port, [],'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
             
         %% Training.
-        case 'training'
+        case 'phaseTraining'
             sendEvent('subject', Gui.data.subject);
             
-            sendEvent(phase, 'start');
+            sendEvent(Gui.data.phase, 'start');
             phaseTraining;
-            sendEvent(phase, 'end');
+            sendEvent(Gui.data.phase, 'end');
 
         %% Train classifier.
         case 'trainClassifier'
@@ -44,7 +44,7 @@ while(ishandle(Gui.figure))
             buffer_waitData(Settings.buffer.host, Settings.buffer.port, [], 'exitSet', {{Gui.data.phase} {'end'}}, 'verb', Settings.verbose);
 
         %% Feedback.
-        case 'feedback';
+        case 'phaseFeedback';
             sendEvent('subject', Gui.data.subject);
             
             sendEvent(Gui.data.phase,'start');
@@ -52,7 +52,7 @@ while(ishandle(Gui.figure))
             sendEvent(Gui.data.phase,'end');
    
         %% Feedback.
-        case 'testing';
+        case 'phaseTesting';
             sendEvent('subject', Gui.data.subject);
             
             sendEvent(Gui.data.phase,'start');
