@@ -13,6 +13,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
 import nl.ru.spherobciviewer.State;
 import nl.ru.spherobciviewer.StateListener;
@@ -182,15 +183,14 @@ public abstract class MeterPanel extends BasePanel
         // Draw markers.
         double markerSize = this.getConfiguration().getDouble("marker.size", 0.0) * size;
         double markerOffset = this.getConfiguration().getDouble("marker.offset", 0.0);
-        double frameAngleStart = Math.toRadians(this.getConfiguration().getInt("frame.angle.start", 0));
-        double frameAngleEnd = Math.toRadians(this.getConfiguration().getInt("frame.angle.end", 0));
+        double frameAngleTotal = Math.toRadians(Math.abs(this.getConfiguration().getInt("frame.angle.start", 0) - this.getConfiguration().getInt("frame.angle.end", 0)));
         
-        int markerCount = (Math.abs(frameAngleEnd - frameAngleStart) - 2 * Math.PI <= MeterPanel.EPSILON) ? this.getConfiguration().getInt("marker.count", 0) : this.getConfiguration().getInt("marker.count", 0) - 1;
+        int markerCount = (Math.abs(frameAngleTotal - 2 * Math.PI) <= MeterPanel.EPSILON) ? this.getConfiguration().getInt("marker.count", 2) : this.getConfiguration().getInt("marker.count", 1) - 1;
 
-        double markerAngleStep = (frameAngleEnd - frameAngleStart) / markerCount;
+        double markerAngleStep = frameAngleTotal / markerCount;
 
         // Draw markers.
-        for(int marker = 0; marker < this.getConfiguration().getInt("marker.count"); marker++)
+        for(int marker = 0; marker < this.getConfiguration().getInt("marker.count", 0); marker++)
         {
             // Marker.
             double markerAngle = marker * markerAngleStep;
@@ -203,6 +203,8 @@ public abstract class MeterPanel extends BasePanel
             if(this.getConfiguration().containsKey("marker.value.start") && 
                this.getConfiguration().containsKey("marker.value.end"))
             {
+                DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                
                 int markerValueStart = this.getConfiguration().getInt("marker.value.start");
                 int markerValueEnd = this.getConfiguration().getInt("marker.value.end");
                 double markerValueStep = (double)Math.abs(markerValueStart - markerValueEnd) / markerCount;               
@@ -211,11 +213,11 @@ public abstract class MeterPanel extends BasePanel
                 Font font = new Font(this.getConfiguration().getString("text.font"), Font.PLAIN, this.getConfiguration().getInt("text.size"));
                 FontMetrics fontMetrics = this.getFontMetrics(font);
 
-                Rectangle2D markerValueBounds = fontMetrics.getStringBounds(String.valueOf(markerValue), g);
+                Rectangle2D markerValueBounds = fontMetrics.getStringBounds(decimalFormat.format(markerValue), g);
 
                 g2d.setFont(font);
                 g2d.setColor(Color.decode(this.getConfiguration().getString("text.color")));
-                g2d.drawString(String.valueOf(markerValue),
+                g2d.drawString(decimalFormat.format(markerValue),
                               (int)((this.getWidth() - markerValueBounds.getWidth()) / 2 + frameRadius * Math.cos(markerAngle) * (1 + markerOffset)),
                               (int)((this.getHeight() - markerValueBounds.getHeight()) / 2 + fontMetrics.getAscent() + frameRadius * Math.sin(-markerAngle) * (1 + markerOffset)));
             }
