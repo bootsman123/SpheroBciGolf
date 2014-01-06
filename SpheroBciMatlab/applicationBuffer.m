@@ -1,4 +1,4 @@
-initialize();
+initialize;
 
 %% Wait until the buffer is ready.
 header = [];
@@ -12,6 +12,9 @@ while(isempty(header) || ~isstruct(header) || (header.nchans==0))
     pause(1);
 end
 
+jDesktop = com.mathworks.mde.desk.MLDesktop.getInstance;
+jDesktop.getMainFrame.setTitle('Application buffer');
+
 %% Main loop.
 classifierSubject = [];
 trainingSubject = [];
@@ -20,7 +23,7 @@ state = struct('pending', [], 'nevents', [], 'nsamples', [], 'hdr', header);
 bufferPhase = [];
 
 while(true)
-	if( ~isempty(bufferPhase) )
+	if(~isempty(bufferPhase))
 		state = [];
 	end
 	
@@ -71,14 +74,19 @@ while(true)
 			sendEvent(bufferPhase, 'end');
             
         case 'phaseTraining';
-            [traindata,traindevents,state]=buffer_waitData(buffhost,buffport,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',verb,'trlen_ms',Settings.trial.length);
-            mi=matchEvents(traindevents,'stimulus.training','end'); 
-            traindevents(mi)=[];
-            traindata(mi)=[];%remove exit event
-            Logger.debug('applicationBuffer', fprinf('Saving %d epochs to : %s\n',numel(traindevents),[dname '_' subject '_' datestr]));
-            save([dname '_' subject '_' datestr],'traindata','traindevents');
+            [trainData, trainEvents, state] = buffer_waitData(buffhost,buffport,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',verb,'trlen_ms',Settings.trial.length);
+            
+            % Remove last event.
+            events = matchEvents(trainEvents,'stimulus.training','end'); 
+            trainEvents(events) = [];
+            trainData(events) = [];
+            
+            dataFile = sprintf('%s_%s_%s', date, subject, Settings.data.file);
+            save(dataFile, 'trainData', 'trainEvents');
+            Logger.debug('applicationBuffer', sprintf('Saved %d epochs to : %s.\n', numel(trainEvents), dataFile));
+            
             trainingSubject = subject;
-            sendEvent(bufferPhase,'end'); % mark start/end testing
+            sendEvent(bufferPhase,'end');
 			
 		%% Train the classifier.
 		case 'trainClassifier'
@@ -91,7 +99,7 @@ while(true)
 			end
 			
 			sendEvent(bufferPhase, 'start');
-			classifier = buffer_train_ersp_clsfr(traindata, trainevents, state.hdr, 'spatialfilter', 'slap', 'freqband', [6 10 26 30], 'badchrm', 1, 'badtrrm', 1, ...
+			classifier = buffer_train_ersp_clsfr(trainData, trainevents, state.hdr, 'spatialfilter', 'slap', 'freqband', [6 10 26 30], 'badchrm', 1, 'badtrrm', 1, ...
 												 'objFn', 'lr_cg', 'compKernel', 0, 'dim', 3, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames, 'visualize', 2);
 			classifierSubject = subject;
 			
