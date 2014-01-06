@@ -12,9 +12,6 @@ while(isempty(header) || ~isstruct(header) || (header.nchans==0))
     pause(1);
 end
 
-jDesktop = com.mathworks.mde.desk.MLDesktop.getInstance;
-jDesktop.getMainFrame.setTitle('Application buffer');
-
 %% Main loop.
 classifierSubject = [];
 trainingSubject = [];
@@ -72,7 +69,8 @@ while(true)
 			sendEvent(bufferPhase, 'start');
 			eegViewer(Settings.buffer.host, Settings.buffer.port, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames);
 			sendEvent(bufferPhase, 'end');
-            
+
+        %% Phase training.
         case 'phaseTraining';
             [trainData, trainEvents, state] = buffer_waitData(buffhost,buffport,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',verb,'trlen_ms',Settings.trial.length);
             
@@ -108,7 +106,7 @@ while(true)
 
 			Logger.debug('applicationBuffer', sprintf('Saved classifier to %s.', classifierFile));
 	
-		%% Testing.
+		%% Phase testing.
 		case 'phaseTesting'
 			if(~isequal(classifierSubject, subject) || ~exist('classifier','var'))
 				classifierFile = sprintf('%s_%s_%s', date, subject, Settings.classifier.file);
