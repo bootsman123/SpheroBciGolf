@@ -32,9 +32,11 @@ public class MATLABController
     	System.out.println("Started MATLAB controller");
         try
         {
-            this.buffer = new Buffer("localhost", 1972);
+            this.buffer = new Buffer("145.116.173.45", 1972);
             this.buffer.addEventListener(new ApplicationBufferEventListener());
             this.buffer.execute();
+            
+            System.out.println("Connected to the buffer.");
         }
         catch(IOException e)
         {
@@ -46,23 +48,31 @@ public class MATLABController
     {
         public void onReceived(BufferEvent event)
         {
-        	if (event.getType().equals("GOLFER_SHOOT"))
-        	{
-        		model.executeCommandOnSphero();
-        	}
-        	else if (event.getType().equals("GOLFER_POWER_VALUE;")) // Between 0 and 1
-        	{
-        		String message = event.getValue().toString();
-        		double receivedDurationOnScale = Double.parseDouble(message);
-	        	int duration = (int) (MINIMUM_DURATION + receivedDurationOnScale * 1.0/(MAXIMUM_DURATION - MINIMUM_DURATION));
-	        	model.setDuration(duration);
-        	}
-        	else if (event.getType().equals("GOLFER_DIRECTION_VALUE;"))  // In degrees
-        	{
-        		String message = event.getValue().toString();
-        		int directionValue = Integer.parseInt(message);
-        		model.setHeading(directionValue);
-        	}
+            try
+            {
+                ActionEvent actionEvent = ActionEvent.valueOf(event.getType().toString());
+
+                switch(actionEvent)
+                {
+                    case GOLFER_DIRECTION_VALUE:
+        		model.setHeading((int)Double.parseDouble(event.getValue().toString()));
+                        break;
+                        
+                    case GOLFER_POWER_VALUE:
+                        model.setDuration((int)(MINIMUM_DURATION + Double.parseDouble(event.getValue().toString()) * 1.0/(MAXIMUM_DURATION - MINIMUM_DURATION)));
+                        break;
+                        
+                    case GOLFER_SHOOT:
+                        model.executeCommandOnSphero();
+                        break;
+                }
+            
+                System.out.printf("[Buffer event]: %s: %s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));
+            }
+            catch(IllegalArgumentException e)
+            {
+                System.out.printf("[Unknown buffer event]: %s: %s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));
+            }
         }
     }
 }
