@@ -24,9 +24,9 @@ public class PowerMeterPanel extends MeterPanel
     protected void paintArrow(Graphics g)
     {
         double angleMin = Math.toRadians(this.getConfiguration().getInt("frame.angle.start"));
-        double angleTotal = (Math.toRadians(this.getConfiguration().getInt("frame.angle.end")) - Math.toRadians(this.getConfiguration().getInt("frame.angle.start")));
-        
-        double power = this.getState().getPower();
+        double angleTotal = Math.toRadians(Math.abs(this.getConfiguration().getInt("frame.angle.end") - this.getConfiguration().getInt("frame.angle.start")));
+ 
+        double power = (this.getConfiguration().getInt("marker.value.start") > this.getConfiguration().getInt("marker.value.end")) ? 1.0 - this.getState().getPower() : this.getState().getPower();
         double direction = power * angleTotal - angleMin;
         
         this.paintArrow(g, -direction); // Note the minus.

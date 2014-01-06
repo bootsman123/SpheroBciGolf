@@ -185,7 +185,7 @@ public class Application extends JFrame
             try
             {
                 ActionEvent actionEvent = ActionEvent.valueOf(event.getType().toString());
-                
+
                 switch(actionEvent)
                 {
                     case WEBCAM_SHOW:
@@ -229,7 +229,7 @@ public class Application extends JFrame
                         break;
                         
                     case POWER_METER_VALUE:
-                        state.setPower(Integer.parseInt(event.getValue().toString()));
+                        state.setPower(Double.parseDouble(event.getValue().toString()));
                         break;
                         
                     case TEXT_SHOW:
