@@ -17,10 +17,10 @@ classifierSubject = [];
 trainingSubject = [];
 
 state = struct('pending', [], 'nevents', [], 'nsamples', [], 'hdr', header); 
-phase = [];
+bufferPhase = [];
 
 while(true)
-	if( ~isempty(phase) )
+	if( ~isempty(bufferPhase) )
 		state = [];
 	end
 	
@@ -39,39 +39,49 @@ while(true)
 	Logger.debug('applicationBuffer', sprintf('Received event: %s', ev2str(events)));
   
 	%% Extract subject information.
-	phase = [];
+	bufferPhase = [];
 	for index = 1:numel(events)
 		if(strcmp(events(index).type, 'subject'))
 			subject = events(index).value;
 			Logger.debug('applicationBuffer', sprintf('Received subject: %s.', subject));
             continue
 		else
-			phase = events(index).value;
+			bufferPhase = events(index).value;
             break
         end
     end
 	
-	if(isempty(phase))
+	if(isempty(bufferPhase))
 		continue
     end
 	
-	Logger.debug('applicationBuffer', sprintf('Received phase %s.', phase));
+	Logger.debug('applicationBuffer', sprintf('Received phase %s.', bufferPhase));
 	
-	switch(phase)
+	switch(bufferPhase)
 		%% Cap fitting.
 		case 'capFitting'
-			sendEvent(phase, 'start');
+			sendEvent(bufferPhase, 'start');
 			capFitting('noiseThresholds', Settings.cap.noiseThresholds, 'badChThreshold', Settings.cap.badChannelThreshold, 'verb', Settings.verbose, 'showOffset', 0, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames);
-			sendEvent(phase, 'end');
+			sendEvent(bufferPhase, 'end');
 
 		%% EEG viewer.
 		case 'eegViewer'
-			sendEvent(phase, 'start');
+			sendEvent(bufferPhase, 'start');
 			eegViewer(Settings.buffer.host, Settings.buffer.port, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames);
-			sendEvent(phase, 'end');
+			sendEvent(bufferPhase, 'end');
+            
+        case 'phaseTraining';
+            [traindata,traindevents,state]=buffer_waitData(buffhost,buffport,state,'startSet',{'stimulus.target'},'exitSet',{'stimulus.training' 'end'},'verb',verb,'trlen_ms',Settings.trial.length);
+            mi=matchEvents(traindevents,'stimulus.training','end'); 
+            traindevents(mi)=[];
+            traindata(mi)=[];%remove exit event
+            Logger.debug('applicationBuffer', fprinf('Saving %d epochs to : %s\n',numel(traindevents),[dname '_' subject '_' datestr]));
+            save([dname '_' subject '_' datestr],'traindata','traindevents');
+            trainingSubject = subject;
+            sendEvent(bufferPhase,'end'); % mark start/end testing
 			
-		%% Training.
-		case 'phaseTraining'
+		%% Train the classifier.
+		case 'trainClassifier'
 			if(~isequal(trainingSubject, subject) || ~exist('traindata', 'var'))
 				dataFile = sprintf('%s_%s_%s', date, subject, Settings.data.file);
 				load(dataFile);
@@ -80,7 +90,7 @@ while(true)
 				Logger.debug('applicationBuffer', sprintf('Loaded data from %s.', dataFile));
 			end
 			
-			sendEvent(phase, 'start');
+			sendEvent(bufferPhase, 'start');
 			classifier = buffer_train_ersp_clsfr(traindata, trainevents, state.hdr, 'spatialfilter', 'slap', 'freqband', [6 10 26 30], 'badchrm', 1, 'badtrrm', 1, ...
 												 'objFn', 'lr_cg', 'compKernel', 0, 'dim', 3, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames, 'visualize', 2);
 			classifierSubject = subject;
@@ -91,22 +101,22 @@ while(true)
 			Logger.debug('applicationBuffer', sprintf('Saved classifier to %s.', classifierFile));
 	
 		%% Testing.
-		case 'trainClassifier'
+		case 'phaseTesting'
 			if(~isequal(classifierSubject, subject) || ~exist('classifier','var'))
 				classifierFile = sprintf('%s_%s_%s', date, subject, Settings.classifier.file);
 				classifier = load(classifierFile);
 				classifierSubject = subject;
 			end
 			
-			sendEvent(phase, 'start');
-			phaseTesting();
-			sendEvent(phase, 'end');
+			sendEvent(bufferPhase, 'start');
+			phaseTesting;
+			sendEvent(bufferPhase, 'end');
 		
 		%% Exit.
 		case 'exit'
 			break
     
 		otherwise
-			Logger.warning('applicationBuffer', sprintf('Unrecognized command %s.', phase));
+			Logger.warning('applicationBuffer', sprintf('Unrecognized command %s.', bufferPhase));
 	end
 end
