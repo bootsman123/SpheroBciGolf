@@ -11,6 +11,9 @@ run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
 % Roland.
 %run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
 
+%% Path.
+Settings.path = 'C:\Users\bootsman\Documents\Development\SpheroBciGolf\SpheroBciMatlab';
+
 %% Backwards compatible.
 Settings.verbose = 2;
 
@@ -19,7 +22,7 @@ Settings.buffer.host = 'localhost';
 Settings.buffer.port = 1972;
 
 %% Logger.
-Settings.logger.file = sprintf('%s.%s', date, 'log');
+Settings.logger.file = sprintf('%s\%s.%s', Settings.path, date, 'log');
 Settings.logger.commandWindowLevel = log4m.ALL;
 Settings.logger.logLevel = log4m.ALL;
 
