@@ -1,4 +1,4 @@
-initialize();
+initialize;
 
 % Target sequence.
 targets = mkStimSeqRand(Settings.numberOfSymbols, Settings.numberOfSequences);
@@ -15,10 +15,10 @@ sendEvent('DIRECTION_METER_SHOW',0);
 for index = 1:Settings.numberOfSequences
     Logger.debug('phaseTraining', sprintf('[Sequence %d]: Target %s', index, find(targets(:,index) > 0)));
 	
-    sleepSec(intertrialDuration);
+    sleepSec(Settings.interTrialDuration);
     sendEvent('stimulus.baseline','start');
 	
-    sleepSec(baselineDuration);
+    sleepSec(Settings.baselineDuration);
     sendEvent('stimulus.baseline','end');
 
     sendEvent('stimulus.target', find(targets(:,index) > 0));
@@ -29,12 +29,11 @@ for index = 1:Settings.numberOfSequences
     end
 	
     sendEvent('stimulus.trial','start');
-    sleepSec(trialDuration);
+    sleepSec(Settings.trialDuration);
     
     sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');
     
-    ftime = getwTime();
     fprintf('\n');
 end
 
@@ -46,3 +45,5 @@ sendEvent('TEXT_VALUE', 'That ends the training phase.\nThanks for your patience
 sendEvent('TEXT_SHOW', 0);
 pause(5);
 sendEvent('TEXT_HIDE', 0);
+
+Logger.debug('phaseTraining', 'Training phase end...');

@@ -1,4 +1,4 @@
-initialize();
+initialize;
 
 %% Phase execution loop.
 Gui.figure = gui();
@@ -34,7 +34,7 @@ while(ishandle(Gui.figure))
             sendEvent('subject', Gui.data.subject);
             
             sendEvent(phase, 'start');
-            phaseTraining();
+            phaseTraining;
             sendEvent(phase, 'end');
 
         %% Train classifier.
@@ -48,7 +48,7 @@ while(ishandle(Gui.figure))
             sendEvent('subject', Gui.data.subject);
             
             sendEvent(Gui.data.phase,'start');
-            phaseFeedback();
+            phaseFeedback;
             sendEvent(Gui.data.phase,'end');
    
         %% Feedback.
@@ -56,7 +56,7 @@ while(ishandle(Gui.figure))
             sendEvent('subject', Gui.data.subject);
             
             sendEvent(Gui.data.phase,'start');
-            phaseTesting();
+            phaseTesting;
             sendEvent(Gui.data.phase,'end');
     end
 

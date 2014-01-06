@@ -2,10 +2,14 @@ if(exist('Settings','var') && ~isempty(Settings))
 	return;
 end;
 
+% Thymen.
 %run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
-% ^^ PC Bas(?)
-%run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths'; 
-%^^ PC Roland
+
+% Bas.
+run 'C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci\utilities\initPaths';
+
+% Roland.
+%run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
 
 %% Backwards compatible.
 Settings.verbose = 2;
