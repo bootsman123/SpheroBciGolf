@@ -47,14 +47,16 @@ while(ishandle(Gui.figure))
         %% Feedback.
         case 'phaseFeedback';
             sendEvent('subject', Gui.data.subject);
+            sendEvent('startPhase.cmd', 'runClassifier');
             
             sendEvent(Gui.data.phase,'start');
             phaseFeedback;
             sendEvent(Gui.data.phase,'end');
    
-        %% Feedback.
+        %% Testing.
         case 'phaseTesting';
             sendEvent('subject', Gui.data.subject);
+            sendEvent('startPhase.cmd', 'runClassifier');
             
             sendEvent(Gui.data.phase,'start');
             phaseTesting;

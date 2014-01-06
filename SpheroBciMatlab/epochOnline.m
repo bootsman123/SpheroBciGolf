@@ -1,4 +1,4 @@
-status=buffer('wait_dat',[-1 -1 -1],buffhost,buffport); % get current state
+status=buffer('wait_dat',[-1 -1 -1],Settings.buffer.host,Settings.buffer.port); % get current state
 nevents=status.nevents;
 nsamples=status.nsamples;
 steps = 0;
@@ -31,13 +31,13 @@ end
 
 %% Start with the baseline
 sendEvent('stimulus.baseline','start');
-sleepSec(baselineDuration);
+sleepSec(Settings.baselineDuration);
 sendEvent('stimulus.baseline','end');
 
 %% Loop until an epoch has finished
 while (timeLeft>0)
     timeLeft = epochDuration - (getwTime()-epochStartTime); % Update the time left in this epoch
-    status=buffer('wait_dat',[-1 nevents min(5000,timetogo*1000/4)],buffhost,buffport); % Wait for events or stop epoch
+    status=buffer('wait_dat',[-1 nevents min(5000,timeLeft*1000/4)],Settings.buffer.host,Settings.buffer.port); % Wait for events or stop epoch
     fprintf('.');
     stime = getwTime();
     
@@ -47,7 +47,7 @@ while (timeLeft>0)
     end
     
     %% Get all new events and filter them
-    allEvents=buffer('get_evt',[nevents status.nevents-1],buffhost,buffport);
+    allEvents=buffer('get_evt',[nevents status.nevents-1],Settings.buffer.host,Settings.buffer.port);
     nevents = status.nevents; % Store latest received event.
     matchedEvents = matchEvents(allEvents,{'stimulus.prediction'});
     predictionEvents=allEvents(matchedEvents);
@@ -60,9 +60,9 @@ while (timeLeft>0)
             prediction=event.value;
             % now do something with the prediction....
             if ( numel(prediction)==1 )
-                if ( prediction>0 && prediction<=nSymbs && isinteger(prediction) ) % predicted symbol, convert to dv
+                if ( prediction>0 && prediction<=Settings.numberOfSymbols && isinteger(prediction) ) % predicted symbol, convert to dv
                     tmp=prediction;
-                    prediction=zeros(nSymbs,1);
+                    prediction=zeros(Settings.numberOfSymbols,1);
                     prediction(tmp)=1;
                 else % binary problem
                     prediction=[prediction -prediction];
@@ -92,7 +92,7 @@ while (timeLeft>0)
             
             %% Update the stimulus viewer
             if(strcmp(epochType, 'DIRECTION'))
-                sendEvent('DIRECTION_METER_VALUE',Sphero.direction);
+                sendEvent('DIRECTION_METER_VALUE',Settings.sphero.angle);
             elseif(strcmp(epochType, 'POWER'))
                 sendEvent('POWER_METER_VALUE',Settings.sphero.power);
             end

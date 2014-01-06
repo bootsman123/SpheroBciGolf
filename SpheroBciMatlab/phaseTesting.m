@@ -1,6 +1,4 @@
-initialize();
-
-sendEvent('stimulus.testing','start');
+initialize;
 
 %% Inform the user about the phase
 sendEvent('TEXT_VALUE',['Welcome to the Sphero Golf Game!\n'...
@@ -42,11 +40,11 @@ while (timeLeft>0)
     %% Let the Spehere perform the move
     sendEvent('TEXT_VALUE','Now, it is time to let the Sphero move.');
     sendEvent('TEXT_SHOW',0);
-    pause(Settings.webcamShowDuration ); 
+    pause(Settings.instructionTextDuration ); 
     sendEvent('TEXT_HIDE',0);
     sendEvent('WEBCAM_SHOW',0);
-    sendEvent('GOLFER_DIRECTION_VALUE',radtodeg(Sphero.direction));
-    sendEvent('GOLFER_POWER_VALUE',Sphero.power);
+    sendEvent('GOLFER_DIRECTION_VALUE',radtodeg(Settings.sphero.angle));
+    sendEvent('GOLFER_POWER_VALUE',Settings.sphero.power);
     pause(Settings.webcamShowDuration);
     sendEvent('GOLFER_SHOOT',0);
     pause(Settings.webcamShowDuration); 
