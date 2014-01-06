@@ -1,4 +1,4 @@
-package nl.project.mainproject;
+package nl.ru.spherobcigolfer;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;

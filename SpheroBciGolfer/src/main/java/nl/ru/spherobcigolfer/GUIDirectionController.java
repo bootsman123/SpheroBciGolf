@@ -1,4 +1,4 @@
-package nl.project.mainproject;
+package nl.ru.spherobcigolfer;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,6 +31,7 @@ public class GUIDirectionController extends JPanel implements MouseMotionListene
 	}
 	private static final long serialVersionUID = 1L;
 
+        @Override
 	public void paint(Graphics g){
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;

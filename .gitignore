@@ -24,3 +24,5 @@ slprj/
 
 # Ingore log files.
 *.log
+/Test/nbproject/private/
+/SpheroBciGolfer/target/

@@ -1,4 +1,4 @@
-package nl.project.mainproject;
+package nl.ru.spherobcigolfer;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -19,13 +19,13 @@ public class SpheroControllingView implements Observer, RobotListener {
 	private WorldModel model;
 	public SpheroControllingView(WorldModel model) throws InvalidRobotAddressException, RobotBluetoothException{
 		this.model = model ; 
-		robot.addListener(this);
+		//robot.addListener(this);
 		ball = new BlueToothSphero();
 		ball.setHeading(0); 
-		ball.setVelocity(180);
-		ball.setDuration(2500); 
+		//ball.setVelocity(180);
+		//ball.setDuration(2500); 
 		
-		ball.move();
+		//ball.move();
 	}
 	
 	@Override

@@ -1,4 +1,4 @@
-package nl.project.mainproject;
+package nl.ru.spherobcigolfer;
 import se.nicklasgavelin.sphero.exception.InvalidRobotAddressException;
 import se.nicklasgavelin.sphero.exception.RobotBluetoothException;
 
@@ -10,13 +10,13 @@ public class SperoControllerMain {
 		
 		GUIFrame view = new GUIFrame(model); //View of the program
 		
-		//SpheroControllingView controller = new SpheroControllingView(model); //View of the sphero
-		System.out.println("Starting main");
+		SpheroControllingView controller = new SpheroControllingView(model); //View of the sphero
+                
 		MATLABController matlabController = new MATLABController(model);
 		
 		model.addObserver(view);
-	//	model.addObserver(controller);
-	//	model.addObserver(matlabController);
+		model.addObserver(controller);
+		//model.addObserver(matlabController);
 		
 		
 		

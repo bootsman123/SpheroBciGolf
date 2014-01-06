@@ -1,4 +1,4 @@
-package nl.ru.spherobciviewer;
+package nl.ru.spherobcigolfer.buffer;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
-package nl.project.mainproject;
+package nl.ru.spherobcigolfer;
 
 import java.io.IOException;
 
 import nl.fcdonders.fieldtrip.BufferEvent;
-import nl.ru.spherobciviewer.Buffer;
-import nl.ru.spherobciviewer.BufferEventListener;
+import nl.ru.spherobcigolfer.buffer.Buffer;
+import nl.ru.spherobcigolfer.buffer.BufferEventListener;
 
 /**
  *
