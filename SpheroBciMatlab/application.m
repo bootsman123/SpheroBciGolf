@@ -14,7 +14,7 @@ while(ishandle(Gui.figure))
     set(Gui.figure, 'visible', 'off');
     Gui.data = guidata(Gui.figure); 
     
-    Logger.debug('application', sprintf('Starting phase %s.', Gui.data.phase));
+    Logger.debug('application', sprintf('Starting phase: %s.', Gui.data.phase));
   
     switch Gui.data.phase
         %% Capfitting.
