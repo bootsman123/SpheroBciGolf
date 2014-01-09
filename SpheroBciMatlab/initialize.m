@@ -3,22 +3,16 @@ if(exist('Settings','var') && ~isempty(Settings))
 end;
 
 %% Initialize paths.
-% Thymen.
-run 'D:\Users\My Documents\MATLAB\buffer_bci\utilities\initPaths';
-
 % Bas.
-%run 'C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci\utilities\initPaths';
-
-% Roland.
-%run '~/Documents/MATLAB/BCIinpractice/buffer_bci/utilities/initPaths';
-
-%% Path.
-% Bas.
-%Settings.path = 'C:/Users/bootsman/Documents/Development/SpheroBciGolf/SpheroBciMatlab';
+%Settings.path.toolbox = 'C:/Users/bootsman/Documents/MATLAB/Toolboxes/buffer_bci';
+%Settings.path.application = 'C:/Users/bootsman/Documents/Development/SpheroBciGolf/SpheroBciMatlab';
 
 % Thymen.
-Settings.path = 'D:/Users/My Documents/Studie/Master/BCI/SpheroBciGolf/SpheroBciMatlab';
+Settings.path.toolbox = 'D:/Users/My Documents/MATLAB/buffer_bci';
+Settings.path.application = 'D:/Users/My Documents/Studie/Master/BCI/SpheroBciGolf/SpheroBciMatlab';
 
+initPaths = sprintf('%s/%s', Settings.path.toolbox, 'utilities/initPaths');
+run initPaths;
 
 %% Backwards compatible.
 Settings.verbose = 2;
@@ -28,7 +22,7 @@ Settings.buffer.host = 'localhost';
 Settings.buffer.port = 1972;
 
 %% Logger.
-Settings.logger.file = sprintf('%s/%s.%s', Settings.path, date, 'log');
+Settings.logger.file = sprintf('%s/%s.%s', Settings.path.application, date, 'log');
 Settings.logger.commandWindowLevel = log4m.ALL;
 Settings.logger.logLevel = log4m.ALL;
 
@@ -42,15 +36,14 @@ Settings.classifier.file = 'classifier';
 
 Settings.numberOfSymbols = 2;
 Settings.numberOfSequences = 20;
-Settings.trialDuration = .3; %3
-Settings.interTrialDuration = .2; %2
-Settings.baselineDuration = .2; %2
-Settings.feedbackDuration = 1; %1
-Settings.webcamShowDuration = 5; %5 
-Settings.instructionTextDuration = 2; %5
+Settings.trialDuration = 3;
+Settings.interTrialDuration = 2;
+Settings.baselineDuration = 2;
+Settings.feedbackDuration = 1;
+Settings.webcamShowDuration = 5;
+Settings.instructionTextDuration = 5;
 
 Settings.trial.length = 300; %3000
-Settings.trial.lengthOl = 300; %?
 Settings.smoothFactor = log(2)/log(10);
 
 Settings.sphero.angle = 0; % Between 0 and 360

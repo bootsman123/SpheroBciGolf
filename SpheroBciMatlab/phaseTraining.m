@@ -33,8 +33,6 @@ for index = 1:Settings.numberOfSequences
     
     sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');
-    
-    fprintf('\n');
 end
 
 %% End training.
@@ -46,4 +44,4 @@ sendEvent('TEXT_SHOW', 0);
 pause(5);
 sendEvent('TEXT_HIDE', 0);
 
-Logger.debug('phaseTraining', 'Training phase end...');
+Logger.debug('phaseTraining', 'Training phase ended.');

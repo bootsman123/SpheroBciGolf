@@ -55,7 +55,7 @@ while(true)
 		continue
     end
 	
-	Logger.debug('applicationBuffer', sprintf('Received phase %s.', bufferPhase));
+	Logger.debug('applicationBuffer', sprintf('Received phase: %s.', bufferPhase));
 	
 	switch(bufferPhase)
 		%% Cap fitting.
@@ -81,7 +81,7 @@ while(true)
             
             dataFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.data.file);
             save(dataFile, 'trainData', 'trainEvents', 'state');
-            Logger.debug('applicationBuffer', sprintf('Saved %d epochs to : %s.\n', numel(trainEvents), dataFile));
+            Logger.debug('applicationBuffer', sprintf('Saved training data to: %s.', dataFile));
             
             trainingSubject = subject;
             sendEvent(bufferPhase,'end');
@@ -93,21 +93,18 @@ while(true)
 				load(dataFile);
 				trainingSubject = subject;
 		
-				Logger.debug('applicationBuffer', sprintf('Loaded data from %s.', dataFile));
+				Logger.debug('applicationBuffer', sprintf('Loaded training data from: %s.', dataFile));
 			end
 			
 			sendEvent(bufferPhase, 'start');
-            Logger.debug('applicationBuffer', sprintf('Before classifier.'));
 			classifier = buffer_train_ersp_clsfr(trainData, trainEvents, state.hdr, 'spatialfilter', 'slap', 'freqband', [6 10 26 30], 'badchrm', 1, 'badtrrm', 1, ...
 												 'objFn', 'lr_cg', 'compKernel', 0, 'dim', 3, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames, 'visualize', 2);
 			classifierSubject = subject;
-            Logger.debug('applicationBuffer', sprintf('After classifier.'));
 			
 			classifierFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.classifier.file);
-            Logger.debug('applicationBuffer', sprintf('After file name: %s.', classifierFile));
 			save(classifierFile, '-struct', 'classifier');
 
-			Logger.debug('applicationBuffer', sprintf('Saved classifier to %s.', classifierFile));
+			Logger.debug('applicationBuffer', sprintf('Saved classifier to: %s.', classifierFile));
 	
 		%% Run classifier.
 		case 'runClassifier'
@@ -115,6 +112,8 @@ while(true)
 				classifierFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.classifier.file);
 				classifier = load(classifierFile);
 				classifierSubject = subject;
+                
+                Logger.debug('applicationBuffer', sprintf('Loaded classifier from: %s.', classifierFile));
 			end
 			
 			sendEvent(bufferPhase, 'start');
@@ -126,6 +125,6 @@ while(true)
 			break
     
 		otherwise
-			Logger.warning('applicationBuffer', sprintf('Unrecognized command %s.', bufferPhase));
+			Logger.warning('applicationBuffer', sprintf('Unrecognized command: %s.', bufferPhase));
 	end
 end

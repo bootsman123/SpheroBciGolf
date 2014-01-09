@@ -36,11 +36,9 @@ for index = 1:Settings.numberOfSequences
     trlStartTime=getwTime();
     timetogo = Settings.trialDuration;
     while (timetogo>0)  
-        Logger.debug('phaseFeedback', sprintf('Time to go: %d.\n', timetogo));
         timetogo = Settings.trialDuration - (getwTime()-trlStartTime); % time left to run in this trial
         % wait for events to process *or* end of trial *or* out of time
         [dat,events,state]=buffer_waitData(Settings.buffer.host,Settings.buffer.port,state,'exitSet',{timetogo*1000 {'stimulus.prediction' 'stimulus.testing'}},'verb',Settings.verbose);
-        Logger.debug('phaseFeedback', sprintf('We have %d events.\n', numel(events)));
         
         for ei=1:numel(events);
             ev=events(ei);
@@ -56,7 +54,7 @@ for index = 1:Settings.numberOfSequences
                 end
                 nPred=nPred+1;
                 dvs(:,nPred)=pred;
-                Logger.debug('phaseFeedback',sprintf('dv: %5.4f \n', pred));
+                Logger.debug('phaseFeedback', sprintf('dv: %5.4f', pred));
             elseif ( strcmp(ev.type,'stimulus.testing') )
                 endTesting=true; 
                 break;
@@ -72,7 +70,7 @@ for index = 1:Settings.numberOfSequences
 	prob=1./(1+exp(-dv));
 	prob=prob./sum(prob);
 	
-	Logger.debug('phaseTrainingFeedback', sprintf('[Prediction]: %5.4f (%5.4f)', pred, prob));
+	Logger.debug('phaseFeedback', sprintf('Prediction: %5.4f (%5.4f)', pred, prob));
 
     [ans,predTgt]=max(dv); % prediction is max clasindexfier output
     
@@ -101,3 +99,5 @@ sendEvent('TEXT_VALUE', 'That ends the feedback phase.\nThanks for your patience
 sendEvent('TEXT_SHOW',0);
 pause(Settings.instructionTextDuration);
 sendEvent('TEXT_HIDE',0);
+
+Logger.debug('phaseFeedback', 'Feedback phase ended.');

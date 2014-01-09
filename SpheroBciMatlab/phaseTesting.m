@@ -59,3 +59,5 @@ sendEvent('TEXT_VALUE',['That ends the game phase. ' ...
 sendEvent('TEXT_SHOW',0);
 pause(5);
 sendEvent('TEXT_HIDE',0);
+
+Logger.debug('phaseTesting', 'Testing phase ended');
