@@ -11,15 +11,15 @@ sendEvent('TEXT_HIDE',0);
 
 %% Set time variables
 gameStartTime=getwTime();
-gameDuration = 60*60;
+gameDuration = 60*60*60;
 timeLeft=gameDuration;
 
 %% Run the game
-while (timeLeft>0)
+while (true)
 	timeLeft = gameDuration - (getwTime() - gameStartTime);
   
 	%% Initialise the Sphero command   
-    Sphero.power = 0.5;
+    Settings.sphero.power = 0.5;
     Settings.sphero.angle = 0.5*pi;
   
     %% Let the user plan a move

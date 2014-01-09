@@ -27,9 +27,9 @@ Settings.logger.commandWindowLevel = log4m.ALL;
 Settings.logger.logLevel = log4m.ALL;
 
 Settings.cap.file = 'cap_tmsi_mobita_im'; % 1010 
-Settings.cap.noiseThresholds = [0.5 3]; % [0.0 0.1 0.2 5]
-Settings.cap.badChannelThreshold = 0.5; % 1e-4
-Settings.cap.overrideChannelNames = 0; % 1
+Settings.cap.noiseThresholds = [0.0 0.1 0.2 5]; %  [0.5 3]
+Settings.cap.badChannelThreshold = 1e-4; % 0.5
+Settings.cap.overrideChannelNames = 1; % 1
 
 Settings.data.file = 'data';
 Settings.classifier.file = 'classifier';
@@ -41,9 +41,9 @@ Settings.interTrialDuration = 2;
 Settings.baselineDuration = 2;
 Settings.feedbackDuration = 1;
 Settings.webcamShowDuration = 5;
-Settings.instructionTextDuration = 5;
+Settings.instructionTextDuration = 8;
 
-Settings.trial.length = 300; %3000
+Settings.trial.length = 3000; %3000
 Settings.smoothFactor = log(2)/log(10);
 
 Settings.sphero.angle = 0; % Between 0 and 360

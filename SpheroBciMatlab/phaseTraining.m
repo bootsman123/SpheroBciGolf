@@ -15,10 +15,10 @@ sendEvent('DIRECTION_METER_SHOW',0);
 for index = 1:Settings.numberOfSequences
     Logger.debug('phaseTraining', sprintf('[Sequence %d]: Target %d', index, find(targets(:,index) > 0)));
 	
-    sleepSec(Settings.interTrialDuration);
+    pause(Settings.interTrialDuration);
     sendEvent('stimulus.baseline','start');
 	
-    sleepSec(Settings.baselineDuration);
+    pause(Settings.baselineDuration);
     sendEvent('stimulus.baseline','end');
 
     sendEvent('stimulus.target', find(targets(:,index) > 0));
@@ -29,7 +29,7 @@ for index = 1:Settings.numberOfSequences
     end
 	
     sendEvent('stimulus.trial','start');
-    sleepSec(Settings.trialDuration);
+    pause(Settings.trialDuration);
     
     sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');

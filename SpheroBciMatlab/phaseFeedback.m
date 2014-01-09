@@ -18,9 +18,9 @@ dvs=[];
 for index = 1:Settings.numberOfSequences
     Logger.debug('phaseFeedback', sprintf('[Sequence %d]: Target %d', index, find(targets(:,index) > 0)));
 	
-    sleepSec(Settings.interTrialDuration);
+    pause(Settings.interTrialDuration);
     sendEvent('stimulus.baseline','start');
-    sleepSec(Settings.baselineDuration);
+    pause(Settings.baselineDuration);
     sendEvent('stimulus.baseline','end');
     
     sendEvent('stimulus.target',find(targets(:,index) > 0));
@@ -83,7 +83,7 @@ for index = 1:Settings.numberOfSequences
     else
         sendEvent('DIRECTION_METER_VALUE', pi);
     end
-    sleepSec(Settings.feedbackDuration);
+    pause(Settings.feedbackDuration);
     
     sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');

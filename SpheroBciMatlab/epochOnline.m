@@ -74,19 +74,19 @@ while (timeLeft>0)
             %% Update state variables based on the predicted class
             if predictedTarget==1
                 if(strcmp(epochType, 'DIRECTION'))
-                    Settings.sphero.angle = Settings.sphero.angle - degtorad(30);
+                    Settings.sphero.angle = Settings.sphero.angle - degtorad(10);
                     Settings.sphero.angle = mod(Settings.sphero.angle,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
-                    Settings.sphero.power= Settings.sphero.power- 0.2;
-                    Settings.sphero.power= max(Settings.sphero.power, 0);
+                    Settings.sphero.power= Settings.sphero.power + 0.05;
+                    Settings.sphero.power= min(Settings.sphero.power, 1);
                 end
             elseif predictedTarget==2
                 if(strcmp(epochType, 'DIRECTION'))
-                    Settings.sphero.angle  = Settings.sphero.angle  + degtorad(30);
+                    Settings.sphero.angle  = Settings.sphero.angle  + degtorad(10);
                     Settings.sphero.angle  = mod(Settings.sphero.angle ,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
-                    Settings.sphero.power = Settings.sphero.power+ 0.2;
-                    Settings.sphero.power= min(Settings.sphero.power, 1);
+                    Settings.sphero.power = Settings.sphero.power - 0.05;
+                    Settings.sphero.power= max(Settings.sphero.power, 0);
                 end
             end
             

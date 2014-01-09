@@ -79,7 +79,7 @@ while(true)
             trainEvents(events) = [];
             trainData(events) = [];
             
-            dataFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.data.file);
+            dataFile = sprintf('%s/%s_%s_%s', Settings.path.application, date, subject, Settings.data.file);
             save(dataFile, 'trainData', 'trainEvents', 'state');
             Logger.debug('applicationBuffer', sprintf('Saved training data to: %s.', dataFile));
             
@@ -89,7 +89,7 @@ while(true)
 		%% Train classifier.
 		case 'trainClassifier'
 			if(~isequal(trainingSubject, subject) || ~exist('traindata', 'var'))
-				dataFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.data.file);
+				dataFile = sprintf('%s/%s_%s_%s', Settings.path.application, date, subject, Settings.data.file);
 				load(dataFile);
 				trainingSubject = subject;
 		
@@ -101,7 +101,7 @@ while(true)
 												 'objFn', 'lr_cg', 'compKernel', 0, 'dim', 3, 'capFile', Settings.cap.file, 'overridechnms', Settings.cap.overrideChannelNames, 'visualize', 2);
 			classifierSubject = subject;
 			
-			classifierFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.classifier.file);
+			classifierFile = sprintf('%s/%s_%s_%s', Settings.path.application, date, subject, Settings.classifier.file);
 			save(classifierFile, '-struct', 'classifier');
 
 			Logger.debug('applicationBuffer', sprintf('Saved classifier to: %s.', classifierFile));
@@ -109,7 +109,7 @@ while(true)
 		%% Run classifier.
 		case 'runClassifier'
 			if(~isequal(classifierSubject, subject) || ~exist('classifier','var'))
-				classifierFile = sprintf('%s/%s_%s_%s', Settings.path, date, subject, Settings.classifier.file);
+				classifierFile = sprintf('%s/%s_%s_%s', Settings.path.application, date, subject, Settings.classifier.file);
 				classifier = load(classifierFile);
 				classifierSubject = subject;
                 
