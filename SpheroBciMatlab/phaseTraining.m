@@ -4,10 +4,11 @@ initialize;
 targets = mkStimSeqRand(Settings.numberOfSymbols, Settings.numberOfSequences);
 
 sendEvent('stimulus.training','start');
-sendEvent('TEXT_VALUE', 'Welcome to the training phase!\nIn the following minutes you will see some arrows pointing clockwise (right) or counter clockwise (left).\nPlease imagine the direction of each arrow when it is displayed.');
+sendEvent('TEXT_VALUE', ['Welcome to the training phase!\n'...
+        'In the following minutes you will see some arrows pointing clockwise (right) or counter clockwise (left).\n'...
+        'Please imagine the direction of each arrow when it is displayed.']);
 sendEvent('TEXT_SHOW',0);
-
-pause(10); % Pause for a while to let Java draw
+pause(Settings.instructionTextDuration); 
 sendEvent('TEXT_HIDE',0);
 sendEvent('DIRECTION_METER_RESET',0);
 sendEvent('DIRECTION_METER_SHOW',0);
@@ -41,7 +42,7 @@ sendEvent('stimulus.training', 'end');
 
 sendEvent('TEXT_VALUE', 'That ends the training phase.\nThanks for your patience!');
 sendEvent('TEXT_SHOW', 0);
-pause(5);
+pause(Settings.notificationTextDuration);
 sendEvent('TEXT_HIDE', 0);
 
 Logger.debug('phaseTraining', 'Training phase ended.');

@@ -42,12 +42,17 @@ Settings.baselineDuration = 2;
 Settings.feedbackDuration = 1;
 Settings.webcamShowDuration = 5;
 Settings.instructionTextDuration = 8;
+Settings.notificationTextDuration = 3;
+Settings.epochDuration = 20; % Number of seconds user can set the direction or power
+Settings.numberOfStrokes = 10; % Maximum number user is allowed to shoot the ball
 
 Settings.trial.length = 3000; %3000
 Settings.smoothFactor = log(2)/log(10);
 
-Settings.sphero.angle = 0; % Between 0 and 360
-Settings.sphero.power = 0.5; % Between 0 and 1
+Settings.direction.default = 0.5*pi; % Between 0 and 2pi
+Settings.power.default = 0.5; % Between 0 and 1
+Settings.power.stepSize = 0.05; % Default power increase/decrase
+Settings.direction.stepSize = 10; % Default direction change (in degrees) 
 
 %% Initialize clock.
 initgetwTime();
