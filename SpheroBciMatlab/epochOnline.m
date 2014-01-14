@@ -71,7 +71,7 @@ while (epochTimeLeft > 0)
             %% Update state variables based on the predicted class
             if predictedTarget==1
                 if(strcmp(epochType, 'DIRECTION'))
-                    directionValue = directionValue - degtorad(Setting.direction.stepSize);
+                    directionValue = directionValue - degtorad(Settings.direction.stepSize);
                     directionValue = mod(directionValue,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
                     powerValue= powerValue + Settings.power.stepSize;
@@ -79,7 +79,7 @@ while (epochTimeLeft > 0)
                 end
             elseif predictedTarget==2
                 if(strcmp(epochType, 'DIRECTION'))
-                    directionValue  = directionValue  + degtorad(Setting.direction.stepSize);
+                    directionValue  = directionValue  + degtorad(Settings.direction.stepSize);
                     directionValue  = mod(directionValue ,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
                     powerValue = powerValue - Settings.power.stepSize;
