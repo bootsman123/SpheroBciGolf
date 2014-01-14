@@ -9,7 +9,6 @@ pause(Settings.instructionTextDuration);
 sendEvent('TEXT_HIDE',0);
 
 %% Set time variables
-gameStartTime=getwTime();
 strokesLeft = Settings.numberOfStrokes;
 
 %% Run the game
