@@ -12,8 +12,8 @@ sendEvent('TEXT_HIDE',0);
 sendEvent('DIRECTION_METER_RESET',0);
 sendEvent('DIRECTION_METER_SHOW',0);
 
-endTesting=false;
-dvs=[];
+endTesting = false;
+dvs = [];
 
 for index = 1:Settings.numberOfSequences
     Logger.debug('phaseFeedback', sprintf('[Sequence %d]: Target %d', index, find(targets(:,index) > 0)));
@@ -32,16 +32,19 @@ for index = 1:Settings.numberOfSequences
     sendEvent('stimulus.trial','start');
    
     % initial fixation point poindextion
-    dvs(:)=0; nPred=0; state=[];
-    trlStartTime=getwTime();
-    timetogo = Settings.trialDuration;
-    while (timetogo>0)  
-        timetogo = Settings.trialDuration - (getwTime()-trlStartTime); % time left to run in this trial
-        % wait for events to process *or* end of trial *or* out of time
-        [dat,events,state]=buffer_waitData(Settings.buffer.host,Settings.buffer.port,state,'exitSet',{timetogo*1000 {'stimulus.prediction' 'stimulus.testing'}},'verb',Settings.verbose);
+    dvs(:) = 0;
+    numberOfPredictions = 0;
+    state = [];
+    
+    trialTimeStart = clock;
+    trialTimeLeft = Settings.trialDuration * 1000;
+    
+    while (trialTimeLeft > 0)  
+        trialTimeLeft = Settings.trialDuration * 1000 - round(etime(clock, trialTimeStart) * 1000);
         
+        [dat, events, state] = buffer_waitData(Settings.buffer.host, Settings.buffer.port, state, 'exitSet', {trialTimeLeft {'stimulus.prediction' 'stimulus.testing'}}, 'verb', Settings.verbose);
         for ei=1:numel(events);
-            ev=events(ei);
+            ev = events(ei);
             if ( strcmp(ev.type,'stimulus.prediction') )
                 pred=ev.value;
                 % now do something with the prediction....
@@ -52,40 +55,39 @@ for index = 1:Settings.numberOfSequences
                         pred=[pred -pred];
                     end
                 end
-                nPred=nPred+1;
-                dvs(:,nPred)=pred;
+                numberOfPredictions = numberOfPredictions + 1;
+                dvs(:,numberOfPredictions) = pred;
                 Logger.debug('phaseFeedback', sprintf('dv: %5.4f', pred));
             elseif ( strcmp(ev.type,'stimulus.testing') )
                 endTesting=true; 
                 break;
-            end % prediction events to processa
-        end % if feedback events to process
+            end
+        end
         if ( endTesting ) 
             break; 
         end;
-    end % loop accumulating prediction events
+    end
     
-    % give the feedback on the predicted class
+    %% Determine prediction.
     dv = sum(dvs,2);
 	prob=1./(1+exp(-dv));
 	prob=prob./sum(prob);
 	
 	Logger.debug('phaseFeedback', sprintf('Prediction: %5.4f (%5.4f)', pred, prob));
 
-    [ans,predTgt]=max(dv); % prediction is max clasindexfier output
+    [~, prediction]=max(dv); % prediction is max clasindexfier output
     
-    % predicaion is made, now display the prediction
-    % TODO: maybe we need to give this feedback another color
-    sendEvent('stimulus.predTgt',predTgt);
-    sendEvent('DIRECTION_METER_RESET',0);
-    if(predTgt == 1)
+    %% Display prediction.
+    sendEvent('stimulus.predTgt', prediction);
+    sendEvent('DIRECTION_METER_RESET', 0);
+    if(prediction == 1)
         sendEvent('DIRECTION_METER_VALUE', 0);
     else
         sendEvent('DIRECTION_METER_VALUE', pi);
     end
     pause(Settings.feedbackDuration);
     
-    sendEvent('DIRECTION_METER_RESET',0);
+    sendEvent('DIRECTION_METER_RESET', 0);
     sendEvent('stimulus.trial','end');
     
     ftime = getwTime();
