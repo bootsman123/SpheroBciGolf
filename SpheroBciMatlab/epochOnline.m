@@ -2,9 +2,6 @@ status=buffer('wait_dat',[-1 -1 -1],Settings.buffer.host,Settings.buffer.port); 
 nevents=status.nevents;
 nsamples=status.nsamples;
 
-epochStartTime = getwTime();
-epochDuration = Settings.epochDuration;
-timeLeft = epochDuration;
 
 sendEvent('stimulus.testing.epoch',epochType);
 
@@ -34,12 +31,13 @@ sleepSec(Settings.baselineDuration);
 sendEvent('stimulus.baseline','end');
 
 %% Loop until an epoch has finished
-while (timeLeft>0)
-    timeLeft = epochDuration - (getwTime()-epochStartTime); % Update the time left in this epoch
-    status=buffer('wait_dat',[-1 nevents min(5000,timeLeft*1000/4)],Settings.buffer.host,Settings.buffer.port); % Wait for events or stop epoch
-    fprintf('.');
-    stime = getwTime();
+epochTimeStart = clock;
+epochTimeLeft = Settings.epochDuration * 1000;
+
+while (epochTimeLeft > 0)
+    epochTimeLeft = Settings.epochDuration * 1000 - round(etime(clock, epochTimeStart) * 1000);
     
+    status = buffer('wait_dat',[-1 nevents min(5000,timeLeft*1000/4)],Settings.buffer.host,Settings.buffer.port); % Wait for events or stop epoch
     if ( status.nevents <= nevents ) % Check whether there are new events to process
         fprintf('Timeout waiting for prediction events\n');
         continue;
