@@ -67,6 +67,8 @@ while (epochTimeLeft > 0)
             end
             
             [ans,predictedTarget]=max(prediction);
+                        
+            Logger.debug('epochOnline', sprintf('Classified target: %d', predictedTarget));
             
             %% Update state variables based on the predicted class
             if predictedTarget==1
