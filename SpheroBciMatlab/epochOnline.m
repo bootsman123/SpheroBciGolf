@@ -37,7 +37,7 @@ epochTimeLeft = Settings.epochDuration * 1000;
 while (epochTimeLeft > 0)
     epochTimeLeft = Settings.epochDuration * 1000 - round(etime(clock, epochTimeStart) * 1000);
     
-    status = buffer('wait_dat',[-1 nevents min(5000,timeLeft*1000/4)],Settings.buffer.host,Settings.buffer.port); % Wait for events or stop epoch
+    status = buffer('wait_dat',[-1 nevents min(5000,epochTimeLeft/4)],Settings.buffer.host,Settings.buffer.port); % Wait for events or stop epoch
     if ( status.nevents <= nevents ) % Check whether there are new events to process
         fprintf('Timeout waiting for prediction events\n');
         continue;
