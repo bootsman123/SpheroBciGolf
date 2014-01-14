@@ -27,7 +27,7 @@ end
 
 %% Start with the baseline
 sendEvent('stimulus.baseline','start');
-sleepSec(Settings.baselineDuration);
+pause(Settings.baselineDuration);
 sendEvent('stimulus.baseline','end');
 
 %% Loop until an epoch has finished
