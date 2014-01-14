@@ -51,8 +51,8 @@ Settings.smoothFactor = log(2)/log(10);
 
 Settings.direction.default = 0.5*pi; % Between 0 and 2pi
 Settings.power.default = 0.5; % Between 0 and 1
-Settings.power.stepSize = 0.05; % Default power increase/decrase
-Settings.direction.stepSize = 10; % Default direction change (in degrees) 
+Settings.power.stepSize = 0.02; % Default power increase/decrase
+Settings.direction.stepSize = 5; % Default direction change (in degrees) 
 
 %% Initialize clock.
 initgetwTime();
