@@ -59,12 +59,22 @@ public class Application extends JFrame
      */
     public Application()
     {
+        this("localhost", 1972);
+    }
+    
+    /**
+     * Constructor.
+     * @param bufferHost
+     * @param bufferPort 
+     */
+    public Application(String bufferHost, int bufferPort)
+    {
         this.addWindowListener(new ApplicationWindowListener());
         
         // Buffer.
         try
         {
-            this.buffer = new Buffer("145.116.173.45", 1972); //145.116.173.45
+            this.buffer = new Buffer(bufferHost, bufferPort);
             this.buffer.addEventListener(new ApplicationBufferEventListener());
             this.buffer.execute();
             
@@ -320,14 +330,14 @@ public class Application extends JFrame
      * Main function.
      * @param args
      */
-    public static void main(String[] args)
+    public static void main(final String[] args)
     {
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
             public void run()
             {
-                Application application = new Application();
+                Application application = (args.length > 0) ? new Application(args[0], Integer.valueOf(args[1])) : new Application(); 
                 application.setVisible(true);
             }
         });

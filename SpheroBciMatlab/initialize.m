@@ -1,4 +1,4 @@
-if(exist('Settings','var') && ~isempty(Settings))
+ if(exist('Settings','var') && ~isempty(Settings))
 	return;
 end;
 
