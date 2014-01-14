@@ -3,7 +3,8 @@ import java.awt.Color;
 import java.util.Observable;
 
 
-public class WorldModel extends Observable {
+public class WorldModel extends Observable
+{
 	private int heading;
 	private int velocity;
 	private int duration; 
@@ -13,43 +14,57 @@ public class WorldModel extends Observable {
 	
 	private Color color;
 	
-	public WorldModel(){
-		heading = 0; 
-		velocity = 100;
-		duration = 0;
-		shouldStartRolling = false;
-		shouldChangeColor = false;
-		shouldDisconnect = false; 
+	public WorldModel()
+        {
+            heading = 0; 
+            velocity = 100;
+            duration = 0;
+            shouldStartRolling = false;
+            shouldChangeColor = false;
+            shouldDisconnect = false; 
+        }
+        
+	public int getHeading()
+        {
+            return heading;
 	}
-	public int getHeading(){
-		return heading;
+        
+	public int getVelocity()
+        {
+            return velocity;
 	}
-	public int getVelocity(){
-		return velocity;
+        
+	public int getDuration()
+        {
+            return duration; 
 	}
-	public int getDuration(){
-		return duration; 
+        
+	public void setDuration(int duration)
+        {
+            this.duration = duration;
+            setChanged();
+            notifyObservers();
 	}
-	public void setDuration(int duration){
-		this.duration = duration;
-		setChanged();
-		notifyObservers();
+        
+	public void setHeading(int heading)
+        {
+            this.heading = heading;
+            setChanged();
+            notifyObservers();
 	}
-	public void setHeading(int heading){
-		this.heading = heading;
-		setChanged();
-        notifyObservers();
+        
+	public void setVelocity(int velocity)
+        {
+            this.velocity = velocity;
+            setChanged();
+            notifyObservers();
 	}
-	public void setVelocity(int velocity){
-		this.velocity = velocity;
-		setChanged();
-        notifyObservers();
-	}
-	public void executeCommandOnSphero(){
-		System.out.println("WorldModel: executing command on Sphero with heading: " + heading + " velocity: " + velocity + " duration: " + duration);
-		this.shouldStartRolling = true;
-		setChanged();
-        notifyObservers();
+        
+	public void executeCommandOnSphero()
+        {
+            this.shouldStartRolling = true;
+            setChanged();
+            notifyObservers();
 	}
 	/**
 	 * Indicates whether there is a command that should be executed on the sphero. After this is read by the sphero it is set back to false. 

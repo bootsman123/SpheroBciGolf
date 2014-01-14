@@ -1,38 +1,45 @@
 package nl.ru.spherobcigolfer;
 
 import java.io.IOException;
-
 import nl.fcdonders.fieldtrip.BufferEvent;
 import nl.ru.spherobcigolfer.buffer.Buffer;
 import nl.ru.spherobcigolfer.buffer.BufferEventListener;
 
 /**
- *
- * @author bootsman
+ * MATLAB Controller.
+ * @author Roland Meertens
  */
-public class MATLABController 
+public class MATLABController
 {
-    
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
     public static final String POWER_METER_PANEL = "power-meter-panel";
     private WorldModel model;
     public static final double MAXIMUM_DURATION = 5000.0;
     public static final double MINIMUM_DURATION = 500.0;
 
-
     private Buffer buffer;
-    
     
     /**
      * Constructor.
+     * @param model 
      */
     public MATLABController(WorldModel model)
     {
+        this(model, "localhost", 1972);
+    }
+    
+    /**
+     * Constructor.
+     * @param model
+     * @param host
+     * @param port 
+     */
+    public MATLABController(WorldModel model, String host, int port)
+    {
     	this.model = model;
-    	System.out.println("Started MATLAB controller");
         try
         {
-            this.buffer = new Buffer("145.116.173.45", 1972);
+            this.buffer = new Buffer(host, port);
             this.buffer.addEventListener(new ApplicationBufferEventListener());
             this.buffer.execute();
             

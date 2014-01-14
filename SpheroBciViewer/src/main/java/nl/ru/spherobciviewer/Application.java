@@ -106,10 +106,15 @@ public class Application extends JFrame
         
         // Webcam panel.
         //https://github.com/sarxos/webcam-capture/blob/master/webcam-capture/src/example/java/CustomResolutionExample.java
-        this.webcam = Webcam.getWebcams().get(0);
+        this.webcam = Webcam.getWebcams().get(Webcam.getWebcams().size() - 1);
         this.webcam.setViewSize(this.webcam.getViewSizes()[this.webcam.getViewSizes().length - 1]);
         this.webcamPanel = new WebcamPanel(this.webcam);
         this.webcamPanel.setFillArea(true);
+        
+        for(Webcam w : Webcam.getWebcams())
+        {
+            System.out.printf("Webcam: %s\n", w.getName());
+        }
  
         // Direction meter panel.
         try
@@ -176,7 +181,7 @@ public class Application extends JFrame
         this.cardPanel.add(this.powerMeterPanel, Application.POWER_METER_PANEL);
         this.getContentPane().add(this.cardPanel);
         
-        this.cardLayout.show(this.cardPanel, Application.PLAIN_PANEL);
+        this.cardLayout.show(this.cardPanel, Application.WEBCAM_PANEL);
         
         this.setUndecorated(true);
         this.setBackground(Color.BLACK);
