@@ -2,30 +2,32 @@ initialize;
 
 %% Inform the user about the phase
 sendEvent('TEXT_VALUE',['Welcome to the Sphero Golf Game!\n'...
-    'During the game you need to perform a set of moves in order to reach the hole.']);
+    'During the game you need to perform a set of strokes in order to reach the hole.\n'...
+    'You can set the direction and speed of a stroke during imagined movements.']);
 sendEvent('TEXT_SHOW',0);
-pause(Settings.instructionTextDuration); 
-sendEvent('TEXT_VALUE','Please get ready to make your first move.');
 pause(Settings.instructionTextDuration); 
 sendEvent('TEXT_HIDE',0);
 
 %% Set time variables
 gameStartTime=getwTime();
-gameDuration = 60*60;
-timeLeft=gameDuration;
+strokesLeft = Settings.numberOfStrokes;
 
 %% Run the game
-while (timeLeft>0)
-	timeLeft = gameDuration - (getwTime() - gameStartTime);
-  
+while (strokesLeft > 0) 
 	%% Initialise the Sphero command   
-    Sphero.power = 0.5;
-    Settings.sphero.angle = 0.5*pi;
+    powerValue = Settings.power.default;
+    directionValue = Settings.direction.default;
   
     %% Let the user plan a move
-    sendEvent('TEXT_VALUE','Take a look at the golf course and plan your next move.');
+    if(strokesLeft > 1)
+        numStrokesNotificaton = sprintf('You have %d strokes left.\n',strokesLeft);
+    else
+        numStrokesNotificaton = 'This is your last attempt to hit the Shero into the hole.\n';
+    end;
+    sendEvent('TEXT_VALUE',[numStrokesNotificaton...
+        'You can now plan your next move.\n']);
     sendEvent('TEXT_SHOW',0);
-    pause(Settings.instructionTextDuration); 
+    pause(Settings.notificationTextDuration); 
     sendEvent('TEXT_HIDE',0);
     sendEvent('WEBCAM_SHOW',0);
     pause(Settings.webcamShowDuration); 
@@ -33,31 +35,33 @@ while (timeLeft>0)
     
     %% Let the user imagine the direction and power of the move
     epochType = 'DIRECTION';
-    epochOnline();
+    epochOnline;
     epochType = 'POWER';
-    epochOnline();
+    epochOnline;
     
     %% Let the Spehere perform the move
-    sendEvent('TEXT_VALUE','Now, it is time to let the Sphero move.');
+    sendEvent('TEXT_VALUE','Now, it is time to hit the Sphero.');
     sendEvent('TEXT_SHOW',0);
-    pause(Settings.instructionTextDuration ); 
+    sendEvent('GOLFER_DIRECTION_VALUE',radtodeg(directionValue));
+    sendEvent('GOLFER_POWER_VALUE',powerValue);
+    pause(Settings.notificationTextDuration); 
     sendEvent('TEXT_HIDE',0);
     sendEvent('WEBCAM_SHOW',0);
-    sendEvent('GOLFER_DIRECTION_VALUE',radtodeg(Settings.sphero.angle));
-    sendEvent('GOLFER_POWER_VALUE',Settings.sphero.power);
     pause(Settings.webcamShowDuration);
     sendEvent('GOLFER_SHOOT',0);
     pause(Settings.webcamShowDuration); 
     sendEvent('WEBCAM_HIDE',0);
+    
+    strokesLeft = strokesLeft - 1;
 end 
 
 sendEvent('stimulus.training','end');
 
 %% Thanks message
-sendEvent('TEXT_VALUE',['That ends the game phase. ' ... 
+sendEvent('TEXT_VALUE',['That ends the game phase.\n' ... 
    'Thanks for your patience']);
 sendEvent('TEXT_SHOW',0);
-pause(5);
+pause(Settings.notificationTextDuration); 
 sendEvent('TEXT_HIDE',0);
 
 Logger.debug('phaseTesting', 'Testing phase ended');

@@ -1,5 +1,5 @@
-::set path=D:\Users\My Documents\MATLAB\buffer_bci
-set path=C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci
+set path=D:\Users\My Documents\MATLAB\buffer_bci
+::set path=C:\Users\bootsman\Documents\MATLAB\Toolboxes\buffer_bci
 
 :: Find Matlab path.
 call "%path%\utilities\findMatlab.bat"
@@ -8,7 +8,8 @@ call "%path%\utilities\findMatlab.bat"
 call "%path%\dataAcq\startBuffer.bat"
 
 :: Start signal proxy.
-call "%path%\dataAcq\startSignalProxy.bat"
+::call "%path%\dataAcq\startSignalProxy.bat"
+Pause
 
 :: Start application buffer.
 start "matlab" %matexe% -nodesktop -nosplash -minimize -singleCompThread -r "applicationBuffer;quit;"

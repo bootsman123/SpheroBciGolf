@@ -4,9 +4,9 @@ initialize;
 targets = mkStimSeqRand(Settings.numberOfSymbols, Settings.numberOfSequences);
 
 sendEvent('stimulus.testing', 'start');
-sendEvent('TEXT_VALUE', 'Congratulations, you succesfully fullfilled the training phase!\nNow, you have to imagine some movements again.\nHowever, this time we will present to you our prediction of the movement you imagined.');
+sendEvent('TEXT_VALUE', ['Welcome back! Now, you have to imagine some movements again.\n'...
+    'However, this time we will present to you our prediction of the imagined movement.']);
 sendEvent('TEXT_SHOW', 0);
-
 pause(Settings.instructionTextDuration);
 sendEvent('TEXT_HIDE',0);
 sendEvent('DIRECTION_METER_RESET',0);
@@ -18,9 +18,9 @@ dvs=[];
 for index = 1:Settings.numberOfSequences
     Logger.debug('phaseFeedback', sprintf('[Sequence %d]: Target %d', index, find(targets(:,index) > 0)));
 	
-    sleepSec(Settings.interTrialDuration);
+    pause(Settings.interTrialDuration);
     sendEvent('stimulus.baseline','start');
-    sleepSec(Settings.baselineDuration);
+    pause(Settings.baselineDuration);
     sendEvent('stimulus.baseline','end');
     
     sendEvent('stimulus.target',find(targets(:,index) > 0));
@@ -83,7 +83,7 @@ for index = 1:Settings.numberOfSequences
     else
         sendEvent('DIRECTION_METER_VALUE', pi);
     end
-    sleepSec(Settings.feedbackDuration);
+    pause(Settings.feedbackDuration);
     
     sendEvent('DIRECTION_METER_RESET',0);
     sendEvent('stimulus.trial','end');
@@ -97,7 +97,7 @@ sendEvent('stimulus.testing','end');
 
 sendEvent('TEXT_VALUE', 'That ends the feedback phase.\nThanks for your patience!');
 sendEvent('TEXT_SHOW',0);
-pause(Settings.instructionTextDuration);
+pause(Settings.notificationTextDuration);
 sendEvent('TEXT_HIDE',0);
 
 Logger.debug('phaseFeedback', 'Feedback phase ended.');

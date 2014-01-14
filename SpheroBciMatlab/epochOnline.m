@@ -1,10 +1,9 @@
 status=buffer('wait_dat',[-1 -1 -1],Settings.buffer.host,Settings.buffer.port); % get current state
 nevents=status.nevents;
 nsamples=status.nsamples;
-steps = 0;
 
 epochStartTime = getwTime();
-epochDuration = 15;
+epochDuration = Settings.epochDuration;
 timeLeft = epochDuration;
 
 sendEvent('stimulus.testing.epoch',epochType);
@@ -17,15 +16,15 @@ elseif(strcmp(epochType, 'POWER'))
     sendEvent('TEXT_VALUE','You can now set the speed of your move.');
     sendEvent('TEXT_SHOW',0);
 end
-pause(Settings.instructionTextDuration);
+pause(Settings.notificationTextDuration);
 sendEvent('TEXT_HIDE',0);
 
 %% Initialize the right baseline panel
 if(strcmp(epochType, 'DIRECTION'))
-    sendEvent('DIRECTION_METER_VALUE',Settings.sphero.angle);
+    sendEvent('DIRECTION_METER_VALUE',directionValue);
     sendEvent('DIRECTION_METER_SHOW',0);
 elseif(strcmp(epochType, 'POWER'))
-    sendEvent('POWER_METER_VALUE',Settings.sphero.power);
+    sendEvent('POWER_METER_VALUE',powerValue);
     sendEvent('POWER_METER_SHOW',0);
 end
 
@@ -74,27 +73,27 @@ while (timeLeft>0)
             %% Update state variables based on the predicted class
             if predictedTarget==1
                 if(strcmp(epochType, 'DIRECTION'))
-                    Settings.sphero.angle = Settings.sphero.angle - degtorad(30);
-                    Settings.sphero.angle = mod(Settings.sphero.angle,2*pi);
+                    directionValue = directionValue - degtorad(Setting.direction.stepSize);
+                    directionValue = mod(directionValue,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
-                    Settings.sphero.power= Settings.sphero.power- 0.2;
-                    Settings.sphero.power= max(Settings.sphero.power, 0);
+                    powerValue= powerValue + Settings.power.stepSize;
+                    powerValue= min(powerValue, 1);
                 end
             elseif predictedTarget==2
                 if(strcmp(epochType, 'DIRECTION'))
-                    Settings.sphero.angle  = Settings.sphero.angle  + degtorad(30);
-                    Settings.sphero.angle  = mod(Settings.sphero.angle ,2*pi);
+                    directionValue  = directionValue  + degtorad(Setting.direction.stepSize);
+                    directionValue  = mod(directionValue ,2*pi);
                 elseif(strcmp(epochType, 'POWER'))
-                    Settings.sphero.power = Settings.sphero.power+ 0.2;
-                    Settings.sphero.power= min(Settings.sphero.power, 1);
+                    powerValue = powerValue - Settings.power.stepSize;
+                    powerValue= max(powerValue, 0);
                 end
             end
             
             %% Update the stimulus viewer
             if(strcmp(epochType, 'DIRECTION'))
-                sendEvent('DIRECTION_METER_VALUE',Settings.sphero.angle);
+                sendEvent('DIRECTION_METER_VALUE',directionValue);
             elseif(strcmp(epochType, 'POWER'))
-                sendEvent('POWER_METER_VALUE',Settings.sphero.power);
+                sendEvent('POWER_METER_VALUE',powerValue);
             end
             
         end
