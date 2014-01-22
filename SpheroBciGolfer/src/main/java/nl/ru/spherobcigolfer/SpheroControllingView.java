@@ -13,15 +13,15 @@ import se.nicklasgavelin.sphero.response.InformationResponseMessage;
 import se.nicklasgavelin.sphero.response.ResponseMessage;
 
 
-public class SpheroControllingView implements Observer, RobotListener {
-	private Robot robot;
-	private BlueToothSphero ball ;
+public class SpheroControllingView implements Observer, RobotListener
+{
+	private BlueToothSphero ball;
 	private WorldModel model;
 	public SpheroControllingView(WorldModel model) throws InvalidRobotAddressException, RobotBluetoothException{
 		this.model = model ; 
 		//robot.addListener(this);
 		ball = new BlueToothSphero();
-		ball.setHeading(0); 
+		ball.setHeading(0);
 		//ball.setVelocity(180);
 		//ball.setDuration(2500); 
 		
