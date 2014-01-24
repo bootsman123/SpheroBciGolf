@@ -1,31 +1,33 @@
 package nl.ru.spherobcigolfer;
 
 import java.io.IOException;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import nl.fcdonders.fieldtrip.BufferEvent;
 import nl.ru.spherobcigolfer.buffer.Buffer;
 import nl.ru.spherobcigolfer.buffer.BufferEventListener;
+import se.nicklasgavelin.sphero.exception.InvalidRobotAddressException;
+import se.nicklasgavelin.sphero.exception.RobotBluetoothException;
 
 /**
- * MATLAB Controller.
- * @author Roland Meertens
+ * Application.
+ * @author Bas Bootsma
  */
-public class MATLABController
+public class Application extends JFrame
 {
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
     public static final String POWER_METER_PANEL = "power-meter-panel";
-    private WorldModel model;
-    public static final double MAXIMUM_DURATION = 5000.0;
-    public static final double MINIMUM_DURATION = 500.0;
-
+    
+    private Sphero sphero;
     private Buffer buffer;
     
     /**
      * Constructor.
      * @param model 
      */
-    public MATLABController(WorldModel model)
+    public Application()
     {
-        this(model, "localhost", 1972);
+        this("145.116.172.195", 1972);
     }
     
     /**
@@ -34,9 +36,8 @@ public class MATLABController
      * @param host
      * @param port 
      */
-    public MATLABController(WorldModel model, String host, int port)
+    public Application(String host, int port)
     {
-    	this.model = model;
         try
         {
             this.buffer = new Buffer(host, port);
@@ -49,6 +50,24 @@ public class MATLABController
         {
             System.out.println("Unable to connect to the buffer: " + e.getMessage());
         }
+        
+        try
+        {
+            this.sphero = new Sphero();
+            this.sphero.connect();
+            
+            System.out.println("Connected to the Sphero.");
+        }
+        catch(RobotBluetoothException e)
+        {
+            System.out.println(String.format("Invalid Sphero bluetooth: %s.", e.getMessage()));
+        }
+        catch(InvalidRobotAddressException e)
+        {
+            System.out.println(String.format("Invalid Sphero address: %s.", e.getMessage()));
+        }
+        
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private class ApplicationBufferEventListener implements BufferEventListener
@@ -62,15 +81,15 @@ public class MATLABController
                 switch(actionEvent)
                 {
                     case GOLFER_DIRECTION_VALUE:
-        		model.setHeading((int)Double.parseDouble(event.getValue().toString()));
+        		sphero.setHeading(Float.parseFloat(event.getValue().toString()));
                         break;
                         
                     case GOLFER_POWER_VALUE:
-                        model.setDuration((int)(MINIMUM_DURATION + Double.parseDouble(event.getValue().toString()) * 1.0/(MAXIMUM_DURATION - MINIMUM_DURATION)));
+                        sphero.setVelocity(Float.parseFloat(event.getValue().toString()));
                         break;
                         
                     case GOLFER_SHOOT:
-                        model.executeCommandOnSphero();
+                        sphero.move();
                         break;
                 }
             
@@ -81,5 +100,22 @@ public class MATLABController
                 System.out.printf("[Unknown buffer event]: %s: %s%s", event.getType().toString(), event.getValue().toString(), System.getProperty("line.separator"));
             }
         }
+    }
+    
+        /**
+     * Main function.
+     * @param args
+     */
+    public static void main(final String[] args)
+    {
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Application application = (args.length > 0) ? new Application(args[0], Integer.valueOf(args[1])) : new Application(); 
+                application.setVisible(true);
+            }
+        });
     }
 }

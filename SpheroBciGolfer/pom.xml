@@ -22,7 +22,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>nl.ru.spherobcigolfer.SperoControllerMain</mainClass>
+                            <mainClass>nl.ru.spherobcigolfer.Application</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

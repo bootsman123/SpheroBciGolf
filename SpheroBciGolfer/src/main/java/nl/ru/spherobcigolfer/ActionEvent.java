@@ -1,7 +1,7 @@
 package nl.ru.spherobcigolfer;
 
 /**
- *
+ * ActionEvent.
  * @author Bas Bootsma
  */
 public enum ActionEvent

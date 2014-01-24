@@ -103,6 +103,7 @@ while(true)
 			
 			classifierFile = sprintf('%s/%s_%s_%s', Settings.path.application, date, subject, Settings.classifier.file);
 			save(classifierFile, '-struct', 'classifier');
+            sendEvent(bufferPhase, 'end');
 
 			Logger.debug('applicationBuffer', sprintf('Saved classifier to: %s.', classifierFile));
 	
