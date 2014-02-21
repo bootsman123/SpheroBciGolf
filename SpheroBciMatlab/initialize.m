@@ -44,7 +44,7 @@ Settings.webcamShowDuration = 5;
 Settings.instructionTextDuration = 8;
 Settings.notificationTextDuration = 3;
 Settings.epochDuration = 15; % Number of seconds user can set the direction or power
-Settings.numberOfStrokes = 10; % Maximum number user is allowed to shoot the ball
+Settings.numberOfStrokes = 15; % Maximum number user is allowed to shoot the ball
 
 Settings.trial.length = 3000; %3000
 Settings.smoothFactor = log(2)/log(10);

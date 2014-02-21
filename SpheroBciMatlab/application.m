@@ -56,11 +56,14 @@ while(ishandle(Gui.figure))
         %% Testing.
         case 'phaseTesting';
             sendEvent('subject', Gui.data.subject);
+            %sendEvent('subject', 'subject');
             sendEvent('startPhase.cmd', 'runClassifier');
             
             sendEvent(Gui.data.phase,'start');
+            %sendEvent('phaseTesting','start');
             phaseTesting;
             sendEvent(Gui.data.phase,'end');
+            %sendEvent('phaseTesting','end');
     end
 
     if(~ishandle(Gui.figure)) 

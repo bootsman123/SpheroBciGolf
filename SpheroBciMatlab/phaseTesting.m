@@ -1,11 +1,13 @@
 initialize;
 
 %% Inform the user about the phase
-sendEvent('TEXT_VALUE',['Welcome to the Sphero Golf Game!\n'...
-    'During the game you need to perform a set of strokes in order to reach the hole.\n'...
-    'You can set the direction and speed of a stroke during imagined movements.']);
+sendEvent('TEXT_VALUE',['Welcome to the Sphero Golf Game! '...
+    'During the game you need hit a serie of holes.\n'...
+    'You go from hole 1, to 2, to 3 and finally hole 4.\n'...
+    'You can set the direction and speed of a stroke using imagined movements.']);
 sendEvent('TEXT_SHOW',0);
 pause(Settings.instructionTextDuration); 
+pause(Settings.notificationTextDuration);
 sendEvent('TEXT_HIDE',0);
 
 %% Set time variables
@@ -41,8 +43,14 @@ while (strokesLeft > 0)
     %% Let the Spehere perform the move
     sendEvent('TEXT_VALUE','Now, it is time to hit the Sphero.');
     sendEvent('TEXT_SHOW',0);
-    sendEvent('GOLFER_DIRECTION_VALUE',radtodeg(directionValue));
+    sendEvent('GOLFER_DIRECTION_VALUE',mod(-atan2(sin(directionValue-pi),cos(directionValue-pi)),2*pi)*180/pi); % Sphero directions are a bit different
     sendEvent('GOLFER_POWER_VALUE',powerValue);
+    
+    Logger.debug('phaseTesting', sprintf('Direction valaue: %f\n',directionValue));
+    Logger.debug('phaseTesting', sprintf('Power value: %f\n',powerValue));
+    Logger.debug('phaseTesting', sprintf('Direction to robot: %f\n',mod(-atan2(sin(directionValue-pi),cos(directionValue-pi)),2*pi)*180/pi));
+    Logger.debug('phaseTesting', sprintf('Power to robot: %f\n',powerValue));
+    
     pause(Settings.notificationTextDuration); 
     sendEvent('TEXT_HIDE',0);
     sendEvent('WEBCAM_SHOW',0);
