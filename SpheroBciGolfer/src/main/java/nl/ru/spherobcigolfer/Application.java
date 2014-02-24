@@ -18,6 +18,8 @@ public class Application extends JFrame
     public static final String DIRECTION_METER_PANEL = "direction-meter-panel";
     public static final String POWER_METER_PANEL = "power-meter-panel";
     
+    public static final String DEFAULT_SPHERO_ID = Sphero.RGR_SPHERO_ID;
+    
     private Sphero sphero;
     private Buffer buffer;
     
@@ -27,7 +29,7 @@ public class Application extends JFrame
      */
     public Application()
     {
-        this("145.116.172.195", 1972);
+        this("localhost", 1972, Application.DEFAULT_SPHERO_ID);
     }
     
     /**
@@ -35,8 +37,9 @@ public class Application extends JFrame
      * @param model
      * @param host
      * @param port 
+     * @param spheroId 
      */
-    public Application(String host, int port)
+    public Application(String host, int port, String spheroId)
     {
         try
         {
@@ -53,7 +56,7 @@ public class Application extends JFrame
         
         try
         {
-            this.sphero = new Sphero();
+            this.sphero = new Sphero(spheroId);
             this.sphero.connect();
             
             System.out.println("Connected to the Sphero.");
@@ -113,7 +116,7 @@ public class Application extends JFrame
             @Override
             public void run()
             {
-                Application application = (args.length > 0) ? new Application(args[0], Integer.valueOf(args[1])) : new Application(); 
+                Application application = (args.length > 0) ? new Application(args[0], Integer.valueOf(args[1]), args[2]) : new Application(); 
                 application.setVisible(true);
             }
         });

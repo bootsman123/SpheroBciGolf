@@ -95,8 +95,11 @@ public class Sphero
      */
     public void move()
     {
+        //this.robot.roll(this.heading, this.velocity);
+        //this.robot.stopMotors();
+        
         this.robot.sendCommand(new RollCommand(this.heading, this.velocity, false));
-        this.robot.sendCommand(new RollCommand(this.heading, this.velocity, true), 1000);
+        this.robot.sendCommand(new RollCommand(this.heading, 0.0f, true), 1000);
     }
     
     /**
